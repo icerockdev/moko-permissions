@@ -13,7 +13,7 @@ allprojects {
 
         maven { url = URI("https://kotlin.bintray.com/kotlin") }
         maven { url = URI("https://kotlin.bintray.com/kotlinx") }
-        maven { url = URI("https://icerockdev.bintray.com/moko") }
+        maven { url = URI("https://dl.bintray.com/icerockdev/moko") }
     }
 
     // workaround for https://youtrack.jetbrains.com/issue/KT-27170
