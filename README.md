@@ -2,7 +2,7 @@
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion)
 
 # Mobile Kotlin runtime permissions multiplatform controller
-This is a Kotlin MultiPlatform library that provides control of runtime permissions on iOS & Android. 
+**moko-permissions** - Kotlin MultiPlatform library for providing runtime permissions on iOS & Android.
 
 ## Table of Contents
 - [Features](#features)
@@ -15,7 +15,9 @@ This is a Kotlin MultiPlatform library that provides control of runtime permissi
 - [License](#license)
 
 ## Features
-TODO
+- **Permission** - enumeration with primary types of device permissions
+- **PermissionsController** - handler for runtime permission requests can be used in the common code with lifecycle safety for Android
+- **DeniedException** and **DeniedAlwaysException** - exceptions to handle user denial of permissions
 
 ## Requirements
 - Gradle version 5.4.1+
@@ -23,7 +25,7 @@ TODO
 - iOS version 9.0+
 
 ## Installation
-root build.gradle  
+root **build.gradle**
 ```groovy
 allprojects {
     repositories {
@@ -32,14 +34,14 @@ allprojects {
 }
 ```
 
-project build.gradle
+project **build.gradle**
 ```groovy
 dependencies {
     commonMainApi("dev.icerock.moko:permissions:0.1.0")
 }
 ```
 
-settings.gradle  
+**settings.gradle**
 ```groovy
 enableFeaturePreview("GRADLE_METADATA")
 ```
@@ -63,11 +65,15 @@ class ViewModel(val permissionsController: PermissionsController): ViewModel() {
 ```
 android:
 ```kotlin
-val viewModel = getViewModel {
-    ViewModel(PermissionsController())
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+        
+    val viewModel = getViewModel {
+        ViewModel(PermissionsController())
+    }
+        
+    viewModel.permissionsController.bind(lifecycle, supportFragmentManager)
 }
-
-viewModel.permissionsController.bind(lifecycle, supportFragmentManager)
 ```
 iOS:
 ```swift
