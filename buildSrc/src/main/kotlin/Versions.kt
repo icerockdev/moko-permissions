@@ -20,7 +20,7 @@ object Versions {
         }
 
         object MultiPlatform {
-            const val mokoCore: String = "0.1.0"
+            const val mokoPermissions: String = "0.1.0"
         }
     }
 }

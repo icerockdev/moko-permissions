@@ -1,9 +1,5 @@
 object Deps {
     object Plugins {
-        const val android =
-            "com.android.tools.build:gradle:${Versions.Plugins.android}"
-        const val kotlin =
-            "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.Plugins.kotlin}"
         const val androidExtensions =
             "org.jetbrains.kotlin:kotlin-android-extensions:${Versions.Plugins.androidExtensions}"
     }
@@ -24,19 +20,14 @@ object Deps {
                 common = "org.jetbrains.kotlin:kotlin-stdlib-common:${Versions.kotlin}"
             )
             val mokoPermissions = MultiPlatformLibrary(
-                common = "dev.icerock.moko:permissions:${Versions.Libs.MultiPlatform.mokoCore}",
-                iosX64 = "dev.icerock.moko:permissions-iosx64:${Versions.Libs.MultiPlatform.mokoCore}",
-                iosArm64 = "dev.icerock.moko:permissions-iosarm64:${Versions.Libs.MultiPlatform.mokoCore}"
+                common = "dev.icerock.moko:permissions:${Versions.Libs.MultiPlatform.mokoPermissions}",
+                iosX64 = "dev.icerock.moko:permissions-iosx64:${Versions.Libs.MultiPlatform.mokoPermissions}",
+                iosArm64 = "dev.icerock.moko:permissions-iosarm64:${Versions.Libs.MultiPlatform.mokoPermissions}"
             )
         }
     }
 
     val plugins: Map<String, String> = mapOf(
-        "com.android.application" to Plugins.android,
-        "com.android.library" to Plugins.android,
-        "org.jetbrains.kotlin.multiplatform" to Plugins.kotlin,
-        "kotlin-kapt" to Plugins.kotlin,
-        "kotlin-android" to Plugins.kotlin,
         "kotlin-android-extensions" to Plugins.androidExtensions
     )
 }

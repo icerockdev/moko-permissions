@@ -2,15 +2,13 @@
  * Copyright 2019 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import java.net.URI
-
 pluginManagement {
     repositories {
         jcenter()
         google()
 
-        maven { url = URI("https://dl.bintray.com/kotlin/kotlin") }
-        maven { url = URI("https://kotlin.bintray.com/kotlinx") }
+        maven { url = uri("https://dl.bintray.com/kotlin/kotlin") }
+        maven { url = uri("https://kotlin.bintray.com/kotlinx") }
     }
     resolutionStrategy.eachPlugin {
         val module = Deps.plugins[requested.id.id] ?: return@eachPlugin
