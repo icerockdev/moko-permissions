@@ -5,4 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onRequestButtonClick"
+        android:layout_marginTop="32dp"
+        android:text="Request permission" />
+
 </LinearLayout>
