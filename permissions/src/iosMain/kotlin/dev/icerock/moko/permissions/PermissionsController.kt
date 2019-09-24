@@ -22,8 +22,8 @@ actual class PermissionsController {
             Permission.GALLERY -> provideGalleryPermission()
             Permission.CAMERA -> provideCameraPermission()
             Permission.STORAGE -> { } // not needed any permissions to storage
-            Permission.LOCATION -> provideLocationPermition(permission)
-            Permission.COARSE_LOCATION -> provideLocationPermition(permission)
+            Permission.LOCATION -> provideLocationPermission(permission)
+            Permission.COARSE_LOCATION -> provideLocationPermission(permission)
         }
     }
 
@@ -58,7 +58,7 @@ actual class PermissionsController {
         }
     }
 
-    private suspend fun provideLocationPermition(permission: Permission, initialStatus: CLAuthorizationStatus? = null) {
+    private suspend fun provideLocationPermission(permission: Permission, initialStatus: CLAuthorizationStatus? = null) {
         val status = initialStatus ?: CLLocationManager.authorizationStatus()
         when (status) {
             kCLAuthorizationStatusAuthorized,
@@ -68,7 +68,7 @@ actual class PermissionsController {
                 val newStatus = suspendCoroutine<CLAuthorizationStatus> { continuation ->
                     locationManagerDelegate.requestLocationAccess { continuation.resume(it) }
                 }
-                provideLocationPermition(permission, newStatus)
+                provideLocationPermission(permission, newStatus)
             }
             kCLAuthorizationStatusDenied -> throw DeniedAlwaysException(permission)
             else -> throw IllegalStateException("location permission was denied")
