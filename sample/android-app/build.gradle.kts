@@ -47,5 +47,7 @@ dependencies {
     implementation(Deps.Libs.Android.appCompat.name)
     implementation(Deps.Libs.Android.coroutines.name)
 
+    implementation(Deps.Libs.Android.material.name)
+
     implementation(project(":sample:mpp-library"))
 }

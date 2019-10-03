@@ -15,6 +15,9 @@ object Deps {
             val coroutines = AndroidLibrary(
                 name = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.Libs.MultiPlatform.coroutines}"
             )
+            val material = AndroidLibrary(
+                name = "com.google.android.material:material:${Versions.Libs.Android.material}"
+            )
         }
 
         object MultiPlatform {
