@@ -46,37 +46,54 @@ dependencies {
 enableFeaturePreview("GRADLE_METADATA")
 ```
 
-## Usage
-TODO
+## List of supported permissions
 
+The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
+
+* Camera: **Permission.CAMERA**
+* Gallery: **Permission.GALLERY**
+* Storage: **Permission.STORAGE**
+* Fine location: **Permission.LOCATION**
+* Coarse location: **Permission.COARSE_LOCATION**
+
+## Usage example
+
+Common code:
 ```kotlin
 class ViewModel(val permissionsController: PermissionsController): ViewModel() {
     fun onPhotoPressed() {
-        launch {
+        coroutineScope.launch {
             try {
                 permissionsController.providePermission(Permission.GALLERY)
-                // granted
-            } catch(error: Throwable) {
-                // denied
+                // Permission has been granted successfully.
+            } catch(deniedAlways: DeniedAlwaysException) {
+                // Permission is always denied (android specific).
+            } catch(denied: DeniedException) {
+                // Permission was denied.
             }
         }
     }
 }
 ```
-android:
+
+Android:
 ```kotlin
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
         
     val viewModel = getViewModel {
+        // Pass the platform implementation of the permission controller to a common code.
         ViewModel(PermissionsController())
     }
-        
+    
+    // Binds the permissions controller to the activity lifecycle.
     viewModel.permissionsController.bind(lifecycle, supportFragmentManager)
 }
 ```
+
 iOS:
 ```swift
+// Just pass the platform implementation of the permission controller to a common code.
 let viewModel = ViewModel(permissionsController: PermissionsController())
 ```
 
