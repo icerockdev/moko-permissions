@@ -1,39 +1,38 @@
 package com.icerockdev.library
 
+import dev.icerock.moko.mvvm.dispatcher.EventsDispatcher
+import dev.icerock.moko.mvvm.dispatcher.EventsDispatcherOwner
+import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.DeniedAlwaysException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
-expect val mainCoroutineContext: CoroutineContext
-
-class PermissionsHandler(
-    override val coroutineContext: CoroutineContext,
+class SampleViewModel(
+    override val eventsDispatcher: EventsDispatcher<EventListener>,
     private val permissionsController: PermissionsController
-) : CoroutineScope {
+) : ViewModel(), EventsDispatcherOwner<SampleViewModel.EventListener> {
 
     /**
      * An example of using [PermissionsController] in common code.
      */
-    fun providePermission(permission: Permission, listener: PermissionsProviderListener) {
-        launch {
+    fun providePermission(permission: Permission) {
+        coroutineScope.launch {
             try {
                 // Calls suspend function in the coroutine to request some permission.
                 permissionsController.providePermission(permission)
                 // If there are no exceptions, permission has been granted successfully.
-                listener.onSuccess()
+                eventsDispatcher.dispatchEvent { onSuccess() }
             } catch (deniedAlwaysException: DeniedAlwaysException) {
-                listener.onDeniedAlways(deniedAlwaysException)
+                eventsDispatcher.dispatchEvent { onDeniedAlways(deniedAlwaysException) }
             } catch (deniedException: DeniedException) {
-                listener.onDenied(deniedException)
+                eventsDispatcher.dispatchEvent { onDenied(deniedException) }
             }
         }
     }
 
-    interface PermissionsProviderListener {
+    interface EventListener {
 
         fun onSuccess()
 

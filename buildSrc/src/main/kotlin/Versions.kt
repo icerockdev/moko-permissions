@@ -17,12 +17,14 @@ object Versions {
     object Libs {
         object Android {
             const val appCompat = "1.0.2"
-            const val material = "1.0.0" // for sample purposes
+            const val material = "1.0.0"
+            const val lifecycle = "2.0.0"
         }
 
         object MultiPlatform {
             const val coroutines = "1.3.0"
-            const val mokoPermissions: String = "0.1.0"
+            const val mokoPermissions = "0.1.0"
+            const val mokoMvvm = "0.2.0"
         }
     }
 }

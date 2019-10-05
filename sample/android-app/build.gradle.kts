@@ -45,7 +45,6 @@ android {
 dependencies {
     implementation(Deps.Libs.Android.kotlinStdLib.name)
     implementation(Deps.Libs.Android.appCompat.name)
-    implementation(Deps.Libs.Android.coroutines.name)
 
     implementation(Deps.Libs.Android.material.name)
 
