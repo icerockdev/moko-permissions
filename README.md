@@ -8,9 +8,10 @@
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [List of supported permissions](#list-of-supported-permissions)
 - [Usage](#usage)
 - [Samples](#samples)
-- [Set Up Locally](#setup-locally)
+- [Set Up Locally](#set-up-locally)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -56,7 +57,7 @@ The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
 * Fine location: **Permission.LOCATION**
 * Coarse location: **Permission.COARSE_LOCATION**
 
-## Usage example
+## Usage
 
 Common code:
 ```kotlin
@@ -67,7 +68,7 @@ class ViewModel(val permissionsController: PermissionsController): ViewModel() {
                 permissionsController.providePermission(Permission.GALLERY)
                 // Permission has been granted successfully.
             } catch(deniedAlways: DeniedAlwaysException) {
-                // Permission is always denied (android specific).
+                // Permission is always denied.
             } catch(denied: DeniedException) {
                 // Permission was denied.
             }
