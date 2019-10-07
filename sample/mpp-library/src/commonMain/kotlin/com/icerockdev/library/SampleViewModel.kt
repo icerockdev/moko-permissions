@@ -17,7 +17,7 @@ class SampleViewModel(
     /**
      * An example of using [PermissionsController] in common code.
      */
-    fun providePermission(permission: Permission) {
+    fun onRequestPermissionButtonPressed(permission: Permission) {
         coroutineScope.launch {
             try {
                 // Calls suspend function in the coroutine to request some permission.

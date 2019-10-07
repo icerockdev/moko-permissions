@@ -15,10 +15,11 @@ import android.content.Intent
 import android.net.Uri
 import com.icerockdev.library.SampleViewModel
 import dev.icerock.moko.mvvm.dispatcher.eventsDispatcherOnMain
+import dev.icerock.moko.mvvm.getViewModel
 
 class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
 
-    private lateinit var sampleViewModel: SampleViewModel
+    private lateinit var viewModel: SampleViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,17 +31,19 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
         }
 
         // Creates viewModel from common code.
-        sampleViewModel = SampleViewModel(
-            eventsDispatcher = eventsDispatcherOnMain(),
-            permissionsController = permissionsController
-        ).also {
+        viewModel = getViewModel {
+            SampleViewModel(
+                eventsDispatcher = eventsDispatcherOnMain(),
+                permissionsController = permissionsController
+            )
+        }.also {
             it.eventsDispatcher.bind(this, this)
         }
     }
 
     fun onRequestButtonClick(view: View?) {
         // Starts permission providing process.
-        sampleViewModel.providePermission(Permission.CAMERA)
+        viewModel.onRequestPermissionButtonPressed(Permission.CAMERA)
     }
 
     override fun onSuccess() {
