@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
 
     fun onRequestButtonClick(view: View?) {
         // Starts permission providing process.
-        viewModel.onRequestPermissionButtonPressed(Permission.CAMERA)
+        viewModel.onRequestPermissionButtonPressed()
     }
 
     override fun onSuccess() {

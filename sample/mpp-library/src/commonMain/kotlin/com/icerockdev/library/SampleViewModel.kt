@@ -17,10 +17,16 @@ class SampleViewModel(
     /**
      * An example of using [PermissionsController] in common code.
      */
-    fun onRequestPermissionButtonPressed(permission: Permission) {
+    fun onRequestPermissionButtonPressed() {
+        // For example, let's request the camera permission:
+        val permissionType = Permission.CAMERA
+        requestPermission(permissionType)
+    }
+
+    private fun requestPermission(permission: Permission) {
         coroutineScope.launch {
             try {
-                // Calls suspend function in the coroutine to request some permission.
+                // Calls suspend function in a coroutine to request some permission.
                 permissionsController.providePermission(permission)
                 // If there are no exceptions, permission has been granted successfully.
                 eventsDispatcher.dispatchEvent { onSuccess() }
