@@ -15,11 +15,17 @@ android {
 
 setupFramework(
     exports = listOf(
+        Deps.Libs.MultiPlatform.mokoMvvm,
         Deps.Libs.MultiPlatform.mokoPermissions
     )
 )
 
 dependencies {
     mppLibrary(Deps.Libs.MultiPlatform.kotlinStdLib)
+    mppLibrary(Deps.Libs.MultiPlatform.coroutines)
+
+    mppLibrary(Deps.Libs.MultiPlatform.mokoMvvm)
     mppLibrary(Deps.Libs.MultiPlatform.mokoPermissions)
+
+    androidLibrary(Deps.Libs.Android.lifecycle)
 }
