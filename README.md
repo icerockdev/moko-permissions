@@ -1,29 +1,38 @@
 ![moko-permissions](img/logo.png)  
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion) ![kotlin-version](https://img.shields.io/badge/kotlin-1.3.50-orange)
 
 # Mobile Kotlin runtime permissions multiplatform controller
-This is a Kotlin MultiPlatform library that provides control of runtime permissions on iOS & Android. 
+**moko-permissions** - Kotlin MultiPlatform library for providing runtime permissions on iOS & Android.
 
 ## Table of Contents
 - [Features](#features)
 - [Requirements](#requirements)
+- [Versions](#versions)
 - [Installation](#installation)
+- [List of supported permissions](#list-of-supported-permissions)
 - [Usage](#usage)
 - [Samples](#samples)
-- [Set Up Locally](#setup-locally)
+- [Set Up Locally](#set-up-locally)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Features
-TODO
+- **Permission** - enumeration with primary types of device permissions
+- **PermissionsController** - handler for runtime permission requests can be used in the common code with lifecycle safety for Android
+- **DeniedException** and **DeniedAlwaysException** - exceptions to handle user denial of permissions
 
 ## Requirements
 - Gradle version 5.4.1+
 - Android API 21+
 - iOS version 9.0+
 
+## Versions
+- kotlin 1.3.50
+  - 0.1.0
+  - 0.2.0
+
 ## Installation
-root build.gradle  
+root **build.gradle**
 ```groovy
 allprojects {
     repositories {
@@ -32,45 +41,66 @@ allprojects {
 }
 ```
 
-project build.gradle
+project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.1.0")
+    commonMainApi("dev.icerock.moko:permissions:0.2.0")
 }
 ```
 
-settings.gradle  
+**settings.gradle**
 ```groovy
 enableFeaturePreview("GRADLE_METADATA")
 ```
 
-## Usage
-TODO
+## List of supported permissions
 
+The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
+
+* Camera: **Permission.CAMERA**
+* Gallery: **Permission.GALLERY**
+* Storage: **Permission.STORAGE**
+* Fine location: **Permission.LOCATION**
+* Coarse location: **Permission.COARSE_LOCATION**
+
+## Usage
+
+Common code:
 ```kotlin
 class ViewModel(val permissionsController: PermissionsController): ViewModel() {
     fun onPhotoPressed() {
-        launch {
+        coroutineScope.launch {
             try {
                 permissionsController.providePermission(Permission.GALLERY)
-                // granted
-            } catch(error: Throwable) {
-                // denied
+                // Permission has been granted successfully.
+            } catch(deniedAlways: DeniedAlwaysException) {
+                // Permission is always denied.
+            } catch(denied: DeniedException) {
+                // Permission was denied.
             }
         }
     }
 }
 ```
-android:
-```kotlin
-val viewModel = getViewModel {
-    ViewModel(PermissionsController())
-}
 
-viewModel.permissionsController.bind(lifecycle, supportFragmentManager)
+Android:
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+        
+    val viewModel = getViewModel {
+        // Pass the platform implementation of the permission controller to a common code.
+        ViewModel(PermissionsController())
+    }
+    
+    // Binds the permissions controller to the activity lifecycle.
+    viewModel.permissionsController.bind(lifecycle, supportFragmentManager)
+}
 ```
+
 iOS:
 ```swift
+// Just pass the platform implementation of the permission controller to a common code.
 let viewModel = ViewModel(permissionsController: PermissionsController())
 ```
 

@@ -53,7 +53,7 @@ actual class PermissionsController(
 
         val platformPermission = permission.toPlatformPermission()
         suspendCoroutine<Unit> { continuation ->
-            resolverFragment.requestPermission(platformPermission) { continuation.resumeWith(it) }
+            resolverFragment.requestPermission(permission, platformPermission) { continuation.resumeWith(it) }
         }
     }
 
@@ -72,21 +72,21 @@ actual class PermissionsController(
             retainInstance = true
         }
 
-        private val codeCallbackMap = mutableMapOf<Int, (Result<Unit>) -> Unit>()
+        private val permissionCallbackMap = mutableMapOf<Int, PermissionCallback>()
 
-        fun requestPermission(permission: String, callback: (Result<Unit>) -> Unit) {
+        fun requestPermission(permission: Permission, permissionCode: String, callback: (Result<Unit>) -> Unit) {
             val context = requireContext()
-            if (ContextCompat.checkSelfPermission(context, permission) ==
+            if (ContextCompat.checkSelfPermission(context, permissionCode) ==
                 PackageManager.PERMISSION_GRANTED
             ) {
                 callback.invoke(Result.success(Unit))
                 return
             }
 
-            val requestCode = codeCallbackMap.keys.sorted().lastOrNull() ?: 0
-            codeCallbackMap[requestCode] = callback
+            val requestCode = permissionCallbackMap.keys.sorted().lastOrNull() ?: 0
+            permissionCallbackMap[requestCode] = PermissionCallback(permission, callback)
 
-            requestPermissions(arrayOf(permission), requestCode)
+            requestPermissions(arrayOf(permissionCode), requestCode)
         }
 
         override fun onRequestPermissionsResult(
@@ -96,22 +96,24 @@ actual class PermissionsController(
         ) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-            val callback = codeCallbackMap[requestCode] ?: return
-            codeCallbackMap.remove(requestCode)
+            val permissionCallback = permissionCallbackMap[requestCode] ?: return
+            permissionCallbackMap.remove(requestCode)
 
             val success = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
             if (success) {
-                callback.invoke(Result.success(Unit))
+                permissionCallback.callback.invoke(Result.success(Unit))
             } else {
                 if (shouldShowRequestPermissionRationale(permissions.first())) {
-                    callback.invoke(Result.failure(DeniedException()))
+                    permissionCallback.callback.invoke(Result.failure(DeniedException(permissionCallback.permission)))
                 } else {
-                    callback.invoke(Result.failure(DeniedNeverAskException()))
+                    permissionCallback.callback.invoke(Result.failure(DeniedAlwaysException(permissionCallback.permission)))
                 }
             }
         }
-    }
 
-    class DeniedException : Throwable()
-    class DeniedNeverAskException : Throwable()
+        private class PermissionCallback(
+            val permission: Permission,
+            val callback: (Result<Unit>) -> Unit
+        )
+    }
 }

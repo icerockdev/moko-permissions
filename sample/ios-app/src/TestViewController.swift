@@ -8,9 +8,34 @@ import MultiPlatformLibrary
 
 class TestViewController: UIViewController {
     
+    @IBOutlet private var label: UILabel!
+    
+    private var viewModel: SampleViewModel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        HelloWorldKt.helloWorld()
+        label.text = "wait press..."
+        
+        viewModel = SampleViewModel(eventsDispatcher: EventsDispatcher(listener: self),
+                                    permissionsController: PermissionsController())
+    }
+    
+    @IBAction func onPermissionPressed() {
+        viewModel.onRequestPermissionButtonPressed()
+    }
+}
+
+extension TestViewController: SampleViewModelEventListener {
+    func onSuccess() {
+        label.text = "success granted"
+    }
+    
+    func onDenied(exception: DeniedException) {
+        label.text = "denied" // on ios is impossible
+    }
+    
+    func onDeniedAlways(exception: DeniedAlwaysException) {
+        label.text = "denied always"
     }
 }

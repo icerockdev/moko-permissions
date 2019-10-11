@@ -6,10 +6,7 @@ package dev.icerock.moko.permissions
 
 import platform.AVFoundation.*
 import platform.CoreLocation.*
-import platform.Photos.PHAuthorizationStatus
-import platform.Photos.PHAuthorizationStatusAuthorized
-import platform.Photos.PHAuthorizationStatusNotDetermined
-import platform.Photos.PHPhotoLibrary
+import platform.Photos.*
 import platform.darwin.NSObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -22,8 +19,8 @@ actual class PermissionsController {
             Permission.GALLERY -> provideGalleryPermission()
             Permission.CAMERA -> provideCameraPermission()
             Permission.STORAGE -> { } // not needed any permissions to storage
-            Permission.LOCATION -> provideLocationPermition()
-            Permission.COARSE_LOCATION -> provideLocationPermition()
+            Permission.LOCATION -> provideLocationPermission(permission)
+            Permission.COARSE_LOCATION -> provideLocationPermission(permission)
         }
     }
 
@@ -37,6 +34,7 @@ actual class PermissionsController {
                 }
                 provideGalleryPermission(newStatus)
             }
+            PHAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.GALLERY)
             else -> throw IllegalStateException("gallery status $status")
         }
     }
@@ -52,11 +50,12 @@ actual class PermissionsController {
                 }
                 provideCameraPermission()
             }
+            AVAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.CAMERA)
             else -> throw IllegalStateException("camera status $status")
         }
     }
 
-    private suspend fun provideLocationPermition(initialStatus: CLAuthorizationStatus? = null) {
+    private suspend fun provideLocationPermission(permission: Permission, initialStatus: CLAuthorizationStatus? = null) {
         val status = initialStatus ?: CLLocationManager.authorizationStatus()
         when (status) {
             kCLAuthorizationStatusAuthorized,
@@ -66,8 +65,9 @@ actual class PermissionsController {
                 val newStatus = suspendCoroutine<CLAuthorizationStatus> { continuation ->
                     locationManagerDelegate.requestLocationAccess { continuation.resume(it) }
                 }
-                provideLocationPermition(newStatus)
+                provideLocationPermission(permission, newStatus)
             }
+            kCLAuthorizationStatusDenied -> throw DeniedAlwaysException(permission)
             else -> throw IllegalStateException("location permission was denied")
         }
     }

@@ -28,7 +28,7 @@
         <!--Test-->
         <scene sceneID="B5V-K5-FDE">
             <objects>
-                <viewController id="TTy-86-aNs" customClass="TestViewController" customModule="mokoSampleCore" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="TTy-86-aNs" customClass="TestViewController" customModule="mokoSamplePermissions" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gcA-zH-akF"/>
                         <viewControllerLayoutGuide type="bottom" id="gTY-6T-yQv"/>
@@ -36,9 +36,33 @@
                     <view key="view" contentMode="scaleToFill" id="KxK-oh-5KO">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wrA-Wa-jvv">
+                                <rect key="frame" x="128" y="269" width="64" height="30"/>
+                                <state key="normal" title="Press me"/>
+                                <connections>
+                                    <action selector="onPermissionPressed" destination="TTy-86-aNs" eventType="touchUpInside" id="hg0-6b-MSX"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SC7-EO-Tfy">
+                                <rect key="frame" x="139" y="307" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="wrA-Wa-jvv" firstAttribute="centerY" secondItem="KxK-oh-5KO" secondAttribute="centerY" id="0g2-Uu-Q0F"/>
+                            <constraint firstItem="wrA-Wa-jvv" firstAttribute="centerX" secondItem="KxK-oh-5KO" secondAttribute="centerX" id="FGq-2f-QAF"/>
+                            <constraint firstItem="SC7-EO-Tfy" firstAttribute="centerX" secondItem="KxK-oh-5KO" secondAttribute="centerX" id="Qw1-Gl-wBe"/>
+                            <constraint firstItem="SC7-EO-Tfy" firstAttribute="top" secondItem="wrA-Wa-jvv" secondAttribute="bottom" constant="8" id="hoL-Vh-IjN"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Test" id="0jM-60-fjM"/>
+                    <connections>
+                        <outlet property="label" destination="SC7-EO-Tfy" id="Jws-q5-vz2"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jxh-nl-GiI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
