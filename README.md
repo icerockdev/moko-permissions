@@ -1,5 +1,5 @@
 ![moko-permissions](img/logo.png)  
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion) ![kotlin-version](https://img.shields.io/badge/kotlin-1.3.50-orange)
 
 # Mobile Kotlin runtime permissions multiplatform controller
 **moko-permissions** - Kotlin MultiPlatform library for providing runtime permissions on iOS & Android.
@@ -7,6 +7,7 @@
 ## Table of Contents
 - [Features](#features)
 - [Requirements](#requirements)
+- [Versions](#versions)
 - [Installation](#installation)
 - [List of supported permissions](#list-of-supported-permissions)
 - [Usage](#usage)
@@ -25,6 +26,11 @@
 - Android API 21+
 - iOS version 9.0+
 
+## Versions
+- kotlin 1.3.50
+  - 0.1.0
+  - 0.2.0
+
 ## Installation
 root **build.gradle**
 ```groovy
@@ -38,7 +44,7 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.1.0")
+    commonMainApi("dev.icerock.moko:permissions:0.2.0")
 }
 ```
 
