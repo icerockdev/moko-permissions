@@ -6,10 +6,7 @@ package dev.icerock.moko.permissions
 
 import platform.AVFoundation.*
 import platform.CoreLocation.*
-import platform.Photos.PHAuthorizationStatus
-import platform.Photos.PHAuthorizationStatusAuthorized
-import platform.Photos.PHAuthorizationStatusNotDetermined
-import platform.Photos.PHPhotoLibrary
+import platform.Photos.*
 import platform.darwin.NSObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
