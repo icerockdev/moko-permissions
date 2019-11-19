@@ -20,7 +20,7 @@ object Versions {
 
         object MultiPlatform {
             const val coroutines = "1.3.2-1.3.60-eap-76"
-            const val mokoPermissions = "0.2.0-dev-1"
+            const val mokoPermissions = "0.3.0-dev-1"
             const val mokoMvvm = "0.4.0-dev-2"
         }
     }
