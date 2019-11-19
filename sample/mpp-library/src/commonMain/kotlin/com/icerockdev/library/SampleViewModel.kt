@@ -24,7 +24,7 @@ class SampleViewModel(
     }
 
     private fun requestPermission(permission: Permission) {
-        coroutineScope.launch {
+        viewModelScope.launch {
             try {
                 // Calls suspend function in a coroutine to request some permission.
                 permissionsController.providePermission(permission)
