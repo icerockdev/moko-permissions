@@ -1,5 +1,5 @@
 ![moko-permissions](img/logo.png)  
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion) ![kotlin-version](https://img.shields.io/badge/kotlin-1.3.50-orange)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion) ![kotlin-version](https://img.shields.io/badge/kotlin-1.3.60-orange)
 
 # Mobile Kotlin runtime permissions multiplatform controller
 **moko-permissions** - Kotlin MultiPlatform library for providing runtime permissions on iOS & Android.
@@ -23,13 +23,15 @@
 
 ## Requirements
 - Gradle version 5.4.1+
-- Android API 21+
+- Android API 16+
 - iOS version 9.0+
 
 ## Versions
 - kotlin 1.3.50
   - 0.1.0
   - 0.2.0
+- kotlin 1.3.60
+  - 0.3.0
 
 ## Installation
 root **build.gradle**
@@ -44,7 +46,7 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.2.0")
+    commonMainApi("dev.icerock.moko:permissions:0.3.0")
 }
 ```
 
@@ -69,7 +71,7 @@ Common code:
 ```kotlin
 class ViewModel(val permissionsController: PermissionsController): ViewModel() {
     fun onPhotoPressed() {
-        coroutineScope.launch {
+        viewModelScope.launch {
             try {
                 permissionsController.providePermission(Permission.GALLERY)
                 // Permission has been granted successfully.
