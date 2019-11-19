@@ -10,11 +10,6 @@ pluginManagement {
         maven { url = uri("https://dl.bintray.com/kotlin/kotlin") }
         maven { url = uri("https://kotlin.bintray.com/kotlinx") }
     }
-    resolutionStrategy.eachPlugin {
-        val module = Deps.plugins[requested.id.id] ?: return@eachPlugin
-
-        useModule(module)
-    }
 }
 
 enableFeaturePreview("GRADLE_METADATA")
