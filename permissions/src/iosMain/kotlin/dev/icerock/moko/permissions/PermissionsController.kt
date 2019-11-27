@@ -4,9 +4,27 @@
 
 package dev.icerock.moko.permissions
 
-import platform.AVFoundation.*
-import platform.CoreLocation.*
-import platform.Photos.*
+import platform.AVFoundation.AVAuthorizationStatus
+import platform.AVFoundation.AVAuthorizationStatusAuthorized
+import platform.AVFoundation.AVAuthorizationStatusDenied
+import platform.AVFoundation.AVAuthorizationStatusNotDetermined
+import platform.AVFoundation.AVCaptureDevice
+import platform.AVFoundation.AVMediaTypeVideo
+import platform.AVFoundation.authorizationStatusForMediaType
+import platform.AVFoundation.requestAccessForMediaType
+import platform.CoreLocation.CLAuthorizationStatus
+import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
+import platform.CoreLocation.kCLAuthorizationStatusAuthorized
+import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
+import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
+import platform.CoreLocation.kCLAuthorizationStatusDenied
+import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
+import platform.Photos.PHAuthorizationStatus
+import platform.Photos.PHAuthorizationStatusAuthorized
+import platform.Photos.PHAuthorizationStatusDenied
+import platform.Photos.PHAuthorizationStatusNotDetermined
+import platform.Photos.PHPhotoLibrary
 import platform.darwin.NSObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -18,9 +36,12 @@ actual class PermissionsController {
         when (permission) {
             Permission.GALLERY -> provideGalleryPermission()
             Permission.CAMERA -> provideCameraPermission()
-            Permission.STORAGE -> { } // not needed any permissions to storage
+            Permission.STORAGE -> {
+            } // not needed any permissions to storage
             Permission.LOCATION -> provideLocationPermission(permission)
             Permission.COARSE_LOCATION -> provideLocationPermission(permission)
+            Permission.BLUETOOTH_LE -> {
+            } // not needed any permissions to bt
         }
     }
 
@@ -55,7 +76,10 @@ actual class PermissionsController {
         }
     }
 
-    private suspend fun provideLocationPermission(permission: Permission, initialStatus: CLAuthorizationStatus? = null) {
+    private suspend fun provideLocationPermission(
+        permission: Permission,
+        initialStatus: CLAuthorizationStatus? = null
+    ) {
         val status = initialStatus ?: CLLocationManager.authorizationStatus()
         when (status) {
             kCLAuthorizationStatusAuthorized,

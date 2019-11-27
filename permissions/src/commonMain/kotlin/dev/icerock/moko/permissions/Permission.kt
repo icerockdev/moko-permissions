@@ -9,5 +9,6 @@ enum class Permission {
     GALLERY,
     STORAGE,
     LOCATION,
-    COARSE_LOCATION
+    COARSE_LOCATION,
+    BLUETOOTH_LE
 }
