@@ -45,6 +45,23 @@ actual class PermissionsController {
         }
     }
 
+    actual fun isPermissionGranted(permission: Permission): Boolean {
+        return when (permission) {
+            Permission.CAMERA -> AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) == AVAuthorizationStatusAuthorized
+            Permission.GALLERY -> PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatusAuthorized
+            Permission.STORAGE -> true
+            Permission.LOCATION,
+            Permission.COARSE_LOCATION -> {
+                return listOf(
+                    kCLAuthorizationStatusAuthorized,
+                    kCLAuthorizationStatusAuthorizedAlways,
+                    kCLAuthorizationStatusAuthorizedWhenInUse
+                ).contains(CLLocationManager.authorizationStatus())
+            }
+            Permission.BLUETOOTH_LE -> true
+        }
+    }
+
     private suspend fun provideGalleryPermission(initialStatus: PHAuthorizationStatus? = null) {
         val status = initialStatus ?: PHPhotoLibrary.authorizationStatus()
         when (status) {

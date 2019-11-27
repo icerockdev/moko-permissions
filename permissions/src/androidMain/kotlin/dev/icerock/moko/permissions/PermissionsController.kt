@@ -5,6 +5,7 @@
 package dev.icerock.moko.permissions
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -16,7 +17,8 @@ import androidx.lifecycle.OnLifecycleEvent
 import kotlin.coroutines.suspendCoroutine
 
 actual class PermissionsController(
-    val resolverFragmentTag: String = "PermissionsControllerResolver"
+    val resolverFragmentTag: String = "PermissionsControllerResolver",
+    val applicationContext: Context
 ) {
     var fragmentManager: FragmentManager? = null
 
@@ -57,6 +59,13 @@ actual class PermissionsController(
                 permission,
                 platformPermission
             ) { continuation.resumeWith(it) }
+        }
+    }
+
+    actual fun isPermissionGranted(permission: Permission): Boolean {
+        return permission.toPlatformPermission().all {
+            ContextCompat.checkSelfPermission(applicationContext, it) ==
+                    PackageManager.PERMISSION_GRANTED
         }
     }
 
