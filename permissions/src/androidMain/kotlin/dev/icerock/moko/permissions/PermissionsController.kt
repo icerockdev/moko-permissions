@@ -5,6 +5,7 @@
 package dev.icerock.moko.permissions
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -16,7 +17,8 @@ import androidx.lifecycle.OnLifecycleEvent
 import kotlin.coroutines.suspendCoroutine
 
 actual class PermissionsController(
-    val resolverFragmentTag: String = "PermissionsControllerResolver"
+    val resolverFragmentTag: String = "PermissionsControllerResolver",
+    val applicationContext: Context
 ) {
     var fragmentManager: FragmentManager? = null
 
@@ -53,17 +55,31 @@ actual class PermissionsController(
 
         val platformPermission = permission.toPlatformPermission()
         suspendCoroutine<Unit> { continuation ->
-            resolverFragment.requestPermission(permission, platformPermission) { continuation.resumeWith(it) }
+            resolverFragment.requestPermission(
+                permission,
+                platformPermission
+            ) { continuation.resumeWith(it) }
         }
     }
 
-    private fun Permission.toPlatformPermission(): String {
+    actual fun isPermissionGranted(permission: Permission): Boolean {
+        return permission.toPlatformPermission().all {
+            ContextCompat.checkSelfPermission(applicationContext, it) ==
+                    PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun Permission.toPlatformPermission(): List<String> {
         return when (this) {
-            Permission.CAMERA -> Manifest.permission.CAMERA
-            Permission.GALLERY -> Manifest.permission.READ_EXTERNAL_STORAGE
-            Permission.STORAGE -> Manifest.permission.READ_EXTERNAL_STORAGE
-            Permission.LOCATION -> Manifest.permission.ACCESS_FINE_LOCATION
-            Permission.COARSE_LOCATION -> Manifest.permission.ACCESS_COARSE_LOCATION
+            Permission.CAMERA -> listOf(Manifest.permission.CAMERA)
+            Permission.GALLERY -> listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            Permission.STORAGE -> listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            Permission.LOCATION -> listOf(Manifest.permission.ACCESS_FINE_LOCATION)
+            Permission.COARSE_LOCATION -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
+            Permission.BLUETOOTH_LE -> listOf(
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
         }
     }
 
@@ -74,19 +90,25 @@ actual class PermissionsController(
 
         private val permissionCallbackMap = mutableMapOf<Int, PermissionCallback>()
 
-        fun requestPermission(permission: Permission, permissionCode: String, callback: (Result<Unit>) -> Unit) {
+        fun requestPermission(
+            permission: Permission,
+            permissions: List<String>,
+            callback: (Result<Unit>) -> Unit
+        ) {
             val context = requireContext()
-            if (ContextCompat.checkSelfPermission(context, permissionCode) ==
-                PackageManager.PERMISSION_GRANTED
-            ) {
+            val toRequest = permissions.filter {
+                ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
+            }
+
+            if (toRequest.isEmpty()) {
                 callback.invoke(Result.success(Unit))
                 return
             }
 
-            val requestCode = permissionCallbackMap.keys.sorted().lastOrNull() ?: 0
+            val requestCode = (permissionCallbackMap.keys.max() ?: 0) + 1
             permissionCallbackMap[requestCode] = PermissionCallback(permission, callback)
 
-            requestPermissions(arrayOf(permissionCode), requestCode)
+            requestPermissions(toRequest.toTypedArray(), requestCode)
         }
 
         override fun onRequestPermissionsResult(
@@ -104,9 +126,21 @@ actual class PermissionsController(
                 permissionCallback.callback.invoke(Result.success(Unit))
             } else {
                 if (shouldShowRequestPermissionRationale(permissions.first())) {
-                    permissionCallback.callback.invoke(Result.failure(DeniedException(permissionCallback.permission)))
+                    permissionCallback.callback.invoke(
+                        Result.failure(
+                            DeniedException(
+                                permissionCallback.permission
+                            )
+                        )
+                    )
                 } else {
-                    permissionCallback.callback.invoke(Result.failure(DeniedAlwaysException(permissionCallback.permission)))
+                    permissionCallback.callback.invoke(
+                        Result.failure(
+                            DeniedAlwaysException(
+                                permissionCallback.permission
+                            )
+                        )
+                    )
                 }
             }
         }
