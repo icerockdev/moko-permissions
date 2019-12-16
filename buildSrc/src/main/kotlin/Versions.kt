@@ -5,7 +5,7 @@ object Versions {
         const val minSdk = 16
     }
 
-    const val kotlin = "1.3.60"
+    const val kotlin = "1.3.61"
 
     object Plugins {
         const val kotlin = Versions.kotlin
@@ -19,9 +19,9 @@ object Versions {
         }
 
         object MultiPlatform {
-            const val coroutines = "1.3.2-1.3.60"
-            const val mokoPermissions = "0.3.0-dev-2"
-            const val mokoMvvm = "0.4.0-dev-2"
+            const val coroutines = "1.3.3"
+            const val mokoPermissions = "0.3.0"
+            const val mokoMvvm = "0.4.0"
         }
     }
 }

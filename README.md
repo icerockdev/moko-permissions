@@ -1,5 +1,5 @@
 ![moko-permissions](img/logo.png)  
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion) ![kotlin-version](https://img.shields.io/badge/kotlin-1.3.60-orange)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion) ![kotlin-version](https://img.shields.io/badge/kotlin-1.3.61-orange)
 
 # Mobile Kotlin runtime permissions multiplatform controller
 **moko-permissions** - Kotlin MultiPlatform library for providing runtime permissions on iOS & Android.
@@ -30,7 +30,7 @@
 - kotlin 1.3.50
   - 0.1.0
   - 0.2.0
-- kotlin 1.3.60
+- kotlin 1.3.61
   - 0.3.0
 
 ## Installation
