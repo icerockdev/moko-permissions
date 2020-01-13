@@ -7,6 +7,7 @@ package dev.icerock.moko.permissions
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -80,6 +81,13 @@ actual class PermissionsController(
                 Manifest.permission.BLUETOOTH,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
+            Permission.REMOTE_NOTIFICATION -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    listOf(Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+                } else {
+                    emptyList()
+                }
+            }
         }
     }
 

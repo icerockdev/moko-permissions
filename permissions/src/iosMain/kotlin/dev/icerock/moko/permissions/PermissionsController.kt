@@ -25,9 +25,12 @@ import platform.Photos.PHAuthorizationStatusAuthorized
 import platform.Photos.PHAuthorizationStatusDenied
 import platform.Photos.PHAuthorizationStatusNotDetermined
 import platform.Photos.PHPhotoLibrary
+import platform.UIKit.UIApplication
+import platform.UIKit.registeredForRemoteNotifications
 import platform.darwin.NSObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import platform.UserNotifications.*
 
 actual class PermissionsController {
     private val locationManagerDelegate = LocationManagerDelegate()
@@ -42,6 +45,8 @@ actual class PermissionsController {
             Permission.COARSE_LOCATION -> provideLocationPermission(permission)
             Permission.BLUETOOTH_LE -> {
             } // not needed any permissions to bt
+            Permission.REMOTE_NOTIFICATION -> provideRemoteNotificationPermission()
+
         }
     }
 
@@ -59,6 +64,44 @@ actual class PermissionsController {
                 ).contains(CLLocationManager.authorizationStatus())
             }
             Permission.BLUETOOTH_LE -> true
+            Permission.REMOTE_NOTIFICATION -> UIApplication.sharedApplication().registeredForRemoteNotifications
+        }
+    }
+
+    private suspend fun provideRemoteNotificationPermission() {
+
+        val currentCenter = UNUserNotificationCenter.currentNotificationCenter()
+
+        val status = suspendCoroutine<UNAuthorizationStatus> { continuation ->
+            currentCenter.getNotificationSettingsWithCompletionHandler(
+                mainContinuation { settings: UNNotificationSettings? ->
+                    continuation.resumeWith(Result.success(settings?.authorizationStatus ?: UNAuthorizationStatusNotDetermined))
+                } )
+        }
+        when (status) {
+            UNAuthorizationStatusAuthorized -> return
+            UNAuthorizationStatusNotDetermined -> {
+                val isSuccess = suspendCoroutine<Boolean> { continuation ->
+                    UNUserNotificationCenter.currentNotificationCenter()
+                        .requestAuthorizationWithOptions(
+                            UNAuthorizationOptionSound.or(UNAuthorizationOptionAlert).or(
+                                UNAuthorizationOptionBadge
+                            ), mainContinuation { isOk, error ->
+                                if (isOk == true && error == null) {
+                                    continuation.resumeWith(Result.success(true))
+                                } else {
+                                    continuation.resumeWith(Result.success(false))
+                                }
+                            })
+                }
+                if (isSuccess) {
+                    provideRemoteNotificationPermission()
+                } else {
+                    throw IllegalStateException("notifications permission failed")
+                }
+            }
+            UNAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.REMOTE_NOTIFICATION)
+            else -> throw IllegalStateException("notifications permission status $status")
         }
     }
 
