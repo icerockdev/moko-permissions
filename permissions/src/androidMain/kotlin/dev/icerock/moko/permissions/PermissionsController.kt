@@ -81,13 +81,7 @@ actual class PermissionsController(
                 Manifest.permission.BLUETOOTH,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
-            Permission.REMOTE_NOTIFICATION -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    listOf(Manifest.permission.ACCESS_NOTIFICATION_POLICY)
-                } else {
-                    emptyList()
-                }
-            }
+            Permission.REMOTE_NOTIFICATION -> emptyList()
         }
     }
 
