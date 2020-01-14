@@ -10,5 +10,6 @@ enum class Permission {
     STORAGE,
     LOCATION,
     COARSE_LOCATION,
-    BLUETOOTH_LE
+    BLUETOOTH_LE,
+    REMOTE_NOTIFICATION
 }

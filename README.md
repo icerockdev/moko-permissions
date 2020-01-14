@@ -64,6 +64,7 @@ The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
 * Storage: **Permission.STORAGE**
 * Fine location: **Permission.LOCATION**
 * Coarse location: **Permission.COARSE_LOCATION**
+* Remote notifications: **Permission.REMOTE_NOTIFICATION**
 
 ## Usage
 
