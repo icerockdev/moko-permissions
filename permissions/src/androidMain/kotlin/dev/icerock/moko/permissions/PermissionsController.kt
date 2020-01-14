@@ -80,6 +80,7 @@ actual class PermissionsController(
                 Manifest.permission.BLUETOOTH,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
+            Permission.REMOTE_NOTIFICATION -> emptyList()
         }
     }
 

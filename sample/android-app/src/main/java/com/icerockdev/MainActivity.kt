@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
         setContentView(R.layout.activity_main)
 
         // Prepares the permissions controller and binds it to the activity lifecycle.
-        val permissionsController = PermissionsController().also {
+        val permissionsController = PermissionsController(applicationContext = this).also {
             it.bind(lifecycle, supportFragmentManager)
         }
 
