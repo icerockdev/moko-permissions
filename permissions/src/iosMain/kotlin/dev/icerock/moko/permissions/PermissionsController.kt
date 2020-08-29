@@ -14,7 +14,6 @@ import platform.AVFoundation.authorizationStatusForMediaType
 import platform.AVFoundation.requestAccessForMediaType
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.CoreLocation.kCLAuthorizationStatusAuthorized
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
@@ -27,10 +26,17 @@ import platform.Photos.PHAuthorizationStatusNotDetermined
 import platform.Photos.PHPhotoLibrary
 import platform.UIKit.UIApplication
 import platform.UIKit.registeredForRemoteNotifications
-import platform.darwin.NSObject
+import platform.UserNotifications.UNAuthorizationOptionAlert
+import platform.UserNotifications.UNAuthorizationOptionBadge
+import platform.UserNotifications.UNAuthorizationOptionSound
+import platform.UserNotifications.UNAuthorizationStatus
+import platform.UserNotifications.UNAuthorizationStatusAuthorized
+import platform.UserNotifications.UNAuthorizationStatusDenied
+import platform.UserNotifications.UNAuthorizationStatusNotDetermined
+import platform.UserNotifications.UNNotificationSettings
+import platform.UserNotifications.UNUserNotificationCenter
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import platform.UserNotifications.*
 
 actual class PermissionsController {
     private val locationManagerDelegate = LocationManagerDelegate()
@@ -75,8 +81,12 @@ actual class PermissionsController {
         val status = suspendCoroutine<UNAuthorizationStatus> { continuation ->
             currentCenter.getNotificationSettingsWithCompletionHandler(
                 mainContinuation { settings: UNNotificationSettings? ->
-                    continuation.resumeWith(Result.success(settings?.authorizationStatus ?: UNAuthorizationStatusNotDetermined))
-                } )
+                    continuation.resumeWith(
+                        Result.success(
+                            settings?.authorizationStatus ?: UNAuthorizationStatusNotDetermined
+                        )
+                    )
+                })
         }
         when (status) {
             UNAuthorizationStatusAuthorized -> return
@@ -167,28 +177,4 @@ private fun requestCameraAccess(callback: () -> Unit) {
     AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, mainContinuation { _: Boolean ->
         callback()
     })
-}
-
-internal class LocationManagerDelegate : NSObject(), CLLocationManagerDelegateProtocol {
-    private var callback: ((CLAuthorizationStatus) -> Unit)? = null
-
-    private val locationManager = CLLocationManager()
-
-    init {
-        locationManager.delegate = this
-    }
-
-    fun requestLocationAccess(callback: (CLAuthorizationStatus) -> Unit) {
-        this.callback = callback
-
-        locationManager.requestWhenInUseAuthorization()
-    }
-
-    override fun locationManager(
-        manager: CLLocationManager,
-        didChangeAuthorizationStatus: CLAuthorizationStatus
-    ) {
-        callback?.invoke(didChangeAuthorizationStatus)
-        callback = null
-    }
 }

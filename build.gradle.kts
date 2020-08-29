@@ -14,8 +14,23 @@ allprojects {
         maven { url = uri("https://dl.bintray.com/icerockdev/moko") }
     }
 
-    // workaround for https://youtrack.jetbrains.com/issue/KT-27170
-    configurations.create("compileClasspath")
+    configurations.all {
+        resolutionStrategy.dependencySubstitution {
+            substitute(module(Deps.Libs.MultiPlatform.mokoPermissions))
+                .with(project(":permissions"))
+        }
+    }
+
+    plugins.withId(Deps.Plugins.androidLibrary.id) {
+        configure<com.android.build.gradle.LibraryExtension> {
+            compileSdkVersion(Deps.Android.compileSdk)
+
+            defaultConfig {
+                minSdkVersion(Deps.Android.minSdk)
+                targetSdkVersion(Deps.Android.targetSdk)
+            }
+        }
+    }
 }
 
 tasks.register("clean", Delete::class).configure {
