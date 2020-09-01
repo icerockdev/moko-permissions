@@ -7,6 +7,8 @@ package dev.icerock.moko.permissions
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -63,6 +65,9 @@ actual class PermissionsController(
     }
 
     actual fun isPermissionGranted(permission: Permission): Boolean {
+        if (permission == Permission.REMOTE_NOTIFICATION && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return NotificationManagerCompat.from(applicationContext).areNotificationsEnabled()
+        }
         return permission.toPlatformPermission().all {
             ContextCompat.checkSelfPermission(applicationContext, it) ==
                     PackageManager.PERMISSION_GRANTED
