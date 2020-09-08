@@ -18,7 +18,7 @@ dependencies {
     androidMainImplementation(Deps.Libs.Android.lifecycle)
 
     // temporary fix of https://youtrack.jetbrains.com/issue/KT-41083
-    commonMainImplementation("dev.icerock.moko:resources:0.12.0")
+    commonMainImplementation("dev.icerock.moko:resources:0.13.0")
     commonMainImplementation("dev.icerock.moko:parcelize:0.4.0")
     commonMainImplementation("dev.icerock.moko:graphics:0.4.0")
 }
