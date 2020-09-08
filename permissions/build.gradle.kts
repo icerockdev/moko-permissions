@@ -3,28 +3,28 @@
  */
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.multiplatform")
-    id("dev.icerock.mobile.multiplatform")
-    id("maven-publish")
+    plugin(Deps.Plugins.androidLibrary)
+    plugin(Deps.Plugins.kotlinMultiplatform)
+    plugin(Deps.Plugins.mobileMultiplatform)
+    plugin(Deps.Plugins.mavenPublish)
 }
 
 group = "dev.icerock.moko"
-version = Versions.Libs.MultiPlatform.mokoPermissions
-
-android {
-    compileSdkVersion(Versions.Android.compileSdk)
-
-    defaultConfig {
-        minSdkVersion(Versions.Android.minSdk)
-        targetSdkVersion(Versions.Android.targetSdk)
-    }
-}
+version = Deps.mokoPermissionsVersion
 
 dependencies {
-    mppLibrary(Deps.Libs.MultiPlatform.kotlinStdLib)
+    commonMainImplementation(Deps.Libs.MultiPlatform.coroutines)
 
-    androidLibrary(Deps.Libs.Android.appCompat)
+    androidMainImplementation(Deps.Libs.Android.appCompat)
+}
+
+kotlin {
+    sourceSets {
+        val iosArm64Main by getting
+        val iosX64Main by getting
+
+        iosArm64Main.dependsOn(iosX64Main)
+    }
 }
 
 publishing {
