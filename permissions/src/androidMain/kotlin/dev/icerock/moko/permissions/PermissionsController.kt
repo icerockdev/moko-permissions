@@ -79,6 +79,7 @@ actual class PermissionsController(
             Permission.CAMERA -> listOf(Manifest.permission.CAMERA)
             Permission.GALLERY -> listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
             Permission.STORAGE -> listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            Permission.WRITE_STORAGE -> listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             Permission.LOCATION -> listOf(Manifest.permission.ACCESS_FINE_LOCATION)
             Permission.COARSE_LOCATION -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
             Permission.BLUETOOTH_LE -> listOf(

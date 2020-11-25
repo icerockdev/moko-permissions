@@ -8,6 +8,7 @@ enum class Permission {
     CAMERA,
     GALLERY,
     STORAGE,
+    WRITE_STORAGE,
     LOCATION,
     COARSE_LOCATION,
     BLUETOOTH_LE,
