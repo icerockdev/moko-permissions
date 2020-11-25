@@ -45,12 +45,11 @@ actual class PermissionsController {
         when (permission) {
             Permission.GALLERY -> provideGalleryPermission()
             Permission.CAMERA -> provideCameraPermission()
-            Permission.STORAGE -> {
-            } // not needed any permissions to storage
+            Permission.STORAGE -> Unit // not needed any permissions to storage
+            Permission.WRITE_STORAGE -> Unit // not needed any permissions to storage
             Permission.LOCATION -> provideLocationPermission(permission)
             Permission.COARSE_LOCATION -> provideLocationPermission(permission)
-            Permission.BLUETOOTH_LE -> {
-            } // not needed any permissions to bt
+            Permission.BLUETOOTH_LE -> Unit // not needed any permissions to bt
             Permission.REMOTE_NOTIFICATION -> provideRemoteNotificationPermission()
 
         }
@@ -61,6 +60,7 @@ actual class PermissionsController {
             Permission.CAMERA -> AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) == AVAuthorizationStatusAuthorized
             Permission.GALLERY -> PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatusAuthorized
             Permission.STORAGE -> true
+            Permission.WRITE_STORAGE -> true
             Permission.LOCATION,
             Permission.COARSE_LOCATION -> {
                 return listOf(
