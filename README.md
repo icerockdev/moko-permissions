@@ -1,5 +1,5 @@
 ![moko-permissions](img/logo.png)  
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion) ![kotlin-version](https://img.shields.io/badge/kotlin-1.4.0-orange)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Download](https://api.bintray.com/packages/icerockdev/moko/moko-permissions/images/download.svg) ](https://bintray.com/icerockdev/moko/moko-permissions/_latestVersion) ![kotlin-version](https://img.shields.io/badge/kotlin-1.4.10-orange)
 
 # Mobile Kotlin runtime permissions multiplatform controller
 **moko-permissions** - Kotlin MultiPlatform library for providing runtime permissions on iOS & Android.
@@ -38,6 +38,7 @@
   - 0.5.1
 - kotlin 1.4.0
   - 0.6.0
+  - 0.7.0
 
 ## Installation
 root **build.gradle**
@@ -52,7 +53,7 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.6.0")
+    commonMainApi("dev.icerock.moko:permissions:0.7.0")
 }
 ```
 
@@ -62,7 +63,8 @@ The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
 
 * Camera: **Permission.CAMERA**
 * Gallery: **Permission.GALLERY**
-* Storage: **Permission.STORAGE**
+* Storage read: **Permission.STORAGE**
+* Storage write: **Permission.WRITE_STORAGE**
 * Fine location: **Permission.LOCATION**
 * Coarse location: **Permission.COARSE_LOCATION**
 * Remote notifications: **Permission.REMOTE_NOTIFICATION**
