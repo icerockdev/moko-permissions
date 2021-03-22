@@ -87,6 +87,7 @@ actual class PermissionsController(
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
             Permission.REMOTE_NOTIFICATION -> emptyList()
+            Permission.RECORD_AUDIO -> listOf(Manifest.permission.RECORD_AUDIO)
         }
     }
 
