@@ -26,7 +26,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Build and publish to Bintray
-        run: ./gradlew publish -DIS_MAIN_HOST=${{ matrix.os == 'ubuntu-latest' }}
+        run: ./gradlew publish
   release:
     name: Create release
     needs: publish
