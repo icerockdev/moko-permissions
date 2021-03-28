@@ -3,20 +3,24 @@
  */
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version("1.4.0")
+    id("org.jetbrains.kotlin.jvm") version("1.4.31")
 }
 
 repositories {
     mavenLocal()
 
-    jcenter()
+    mavenCentral()
     google()
 
-    maven { url = uri("https://dl.bintray.com/icerockdev/plugins") }
+    jcenter {
+        content {
+            includeGroup("org.jetbrains.trove4j")
+        }
+    }
 }
 
 dependencies {
-    implementation("dev.icerock:mobile-multiplatform:0.7.0")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0")
+    implementation("dev.icerock:mobile-multiplatform:0.9.1")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31")
     implementation("com.android.tools.build:gradle:4.0.1")
 }
