@@ -87,6 +87,7 @@ actual class PermissionsController(
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
             Permission.REMOTE_NOTIFICATION -> emptyList()
+            Permission.RECORD_AUDIO -> listOf(Manifest.permission.RECORD_AUDIO)
         }
     }
 
@@ -128,7 +129,8 @@ actual class PermissionsController(
             val permissionCallback = permissionCallbackMap[requestCode] ?: return
             permissionCallbackMap.remove(requestCode)
 
-            val success = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+            val isCancelled = grantResults.isEmpty()
+            val success = !isCancelled && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
             if (success) {
                 permissionCallback.callback.invoke(Result.success(Unit))
             } else {

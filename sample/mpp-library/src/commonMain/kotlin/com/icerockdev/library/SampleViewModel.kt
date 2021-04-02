@@ -19,7 +19,7 @@ class SampleViewModel(
      */
     fun onRequestPermissionButtonPressed() {
         // For example, let's request the camera permission:
-        val permissionType = Permission.CAMERA
+        val permissionType = Permission.RECORD_AUDIO
         requestPermission(permissionType)
     }
 
