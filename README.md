@@ -43,8 +43,7 @@
 
 ### mavenCentral
 - kotlin 1.4.31
-  - 0.6.1
-  - 0.7.1
+  - 0.8.0
 
 ## Installation
 root **build.gradle**
@@ -59,7 +58,7 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.7.1")
+    commonMainApi("dev.icerock.moko:permissions:0.8.0")
 }
 ```
 

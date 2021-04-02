@@ -10,9 +10,9 @@ object Deps {
     private const val androidLifecycleVersion = "2.1.0"
     private const val androidCoreTestingVersion = "2.1.0"
 
-    private const val coroutinesVersion = "1.3.9"
-    private const val mokoMvvmVersion = "0.8.0"
-    const val mokoPermissionsVersion = "0.7.1"
+    private const val coroutinesVersion = "1.4.2"
+    private const val mokoMvvmVersion = "0.9.2"
+    const val mokoPermissionsVersion = "0.8.0"
 
     object Android {
         const val compileSdk = 28
