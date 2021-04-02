@@ -73,6 +73,7 @@ The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
 * Fine location: **Permission.LOCATION**
 * Coarse location: **Permission.COARSE_LOCATION**
 * Remote notifications: **Permission.REMOTE_NOTIFICATION**
+* Audio recording: **Permission.RECORD_AUDIO**
 
 ## Usage
 
