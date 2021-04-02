@@ -9,6 +9,7 @@ import platform.AVFoundation.AVAuthorizationStatusAuthorized
 import platform.AVFoundation.AVAuthorizationStatusDenied
 import platform.AVFoundation.AVAuthorizationStatusNotDetermined
 import platform.AVFoundation.AVCaptureDevice
+import platform.AVFoundation.AVMediaTypeAudio
 import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.authorizationStatusForMediaType
 import platform.AVFoundation.requestAccessForMediaType
@@ -51,7 +52,7 @@ actual class PermissionsController {
             Permission.COARSE_LOCATION -> provideLocationPermission(permission)
             Permission.BLUETOOTH_LE -> Unit // not needed any permissions to bt
             Permission.REMOTE_NOTIFICATION -> provideRemoteNotificationPermission()
-
+            Permission.RECORD_AUDIO -> provideRecordAudioPermission()
         }
     }
 
@@ -71,6 +72,7 @@ actual class PermissionsController {
             }
             Permission.BLUETOOTH_LE -> true
             Permission.REMOTE_NOTIFICATION -> UIApplication.sharedApplication().registeredForRemoteNotifications
+            Permission.RECORD_AUDIO -> AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeAudio) == AVAuthorizationStatusAuthorized
         }
     }
 
@@ -146,6 +148,22 @@ actual class PermissionsController {
         }
     }
 
+    private suspend fun provideRecordAudioPermission(initialStatus: AVAuthorizationStatus? = null){
+        val status =
+            initialStatus ?: AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeAudio)
+        when (status) {
+            AVAuthorizationStatusAuthorized -> return
+            AVAuthorizationStatusNotDetermined -> {
+                suspendCoroutine<Unit> { continuation ->
+                    requestRecordAudioAccess { continuation.resume(Unit) }
+                }
+                provideRecordAudioPermission()
+            }
+            AVAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.RECORD_AUDIO)
+            else -> throw IllegalStateException("audio record status $status")
+        }
+    }
+
     private suspend fun provideLocationPermission(
         permission: Permission,
         initialStatus: CLAuthorizationStatus? = null
@@ -175,6 +193,12 @@ private fun requestGalleryAccess(callback: (PHAuthorizationStatus) -> Unit) {
 
 private fun requestCameraAccess(callback: () -> Unit) {
     AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, mainContinuation { _: Boolean ->
+        callback()
+    })
+}
+
+private fun requestRecordAudioAccess(callback: () -> Unit) {
+    AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio, mainContinuation { _: Boolean ->
         callback()
     })
 }
