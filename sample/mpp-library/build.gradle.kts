@@ -12,18 +12,16 @@ plugins {
 dependencies {
     commonMainImplementation(Deps.Libs.MultiPlatform.coroutines)
 
-    commonMainApi(Deps.Libs.MultiPlatform.mokoMvvm.common)
+    commonMainApi(Deps.Libs.MultiPlatform.mokoMvvmCore.common)
     commonMainApi(Deps.Libs.MultiPlatform.mokoPermissions)
 
     androidMainImplementation(Deps.Libs.Android.lifecycle)
 
-    // temporary fix of https://youtrack.jetbrains.com/issue/KT-41083
-    commonMainImplementation("dev.icerock.moko:resources:0.13.0")
-    commonMainImplementation("dev.icerock.moko:parcelize:0.4.0")
-    commonMainImplementation("dev.icerock.moko:graphics:0.4.0")
+    commonTestImplementation(Deps.Libs.MultiPlatform.mokoMvvmTest.common)
+    commonTestImplementation(project(":permissions-test"))
 }
 
 framework {
     export(project(":permissions"))
-    export(Deps.Libs.MultiPlatform.mokoMvvm)
+    export(Deps.Libs.MultiPlatform.mokoMvvmCore)
 }

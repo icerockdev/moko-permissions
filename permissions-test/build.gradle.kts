@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2021 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -13,13 +13,6 @@ dependencies {
     commonMainImplementation(Deps.Libs.MultiPlatform.coroutines)
 
     androidMainImplementation(Deps.Libs.Android.appCompat)
-}
 
-kotlin {
-    sourceSets {
-        val iosArm64Main by getting
-        val iosX64Main by getting
-
-        iosArm64Main.dependsOn(iosX64Main)
-    }
+    commonMainApi(project(":permissions"))
 }

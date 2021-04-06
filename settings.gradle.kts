@@ -3,5 +3,6 @@
  */
 
 include(":permissions")
+include(":permissions-test")
 include(":sample:android-app")
 include(":sample:mpp-library")
