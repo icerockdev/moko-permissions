@@ -1,21 +1,20 @@
 package com.icerockdev
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import dev.icerock.moko.permissions.DeniedAlwaysException
-import dev.icerock.moko.permissions.DeniedException
-import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionsController
-import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-import android.content.Intent
-import android.net.Uri
 import com.icerockdev.library.SampleViewModel
 import dev.icerock.moko.mvvm.dispatcher.eventsDispatcherOnMain
 import dev.icerock.moko.mvvm.getViewModel
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
+import dev.icerock.moko.permissions.PermissionsController
 
 class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
 
@@ -56,7 +55,11 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
 
     override fun onDeniedAlways(exception: DeniedAlwaysException) {
         Snackbar
-            .make(findViewById<LinearLayout>(R.id.root_view), "Permission is always denied", Snackbar.LENGTH_LONG)
+            .make(
+                findViewById<LinearLayout>(R.id.root_view),
+                "Permission is always denied",
+                Snackbar.LENGTH_LONG
+            )
             .setAction("Settings") {
                 openAppSettings()
             }
