@@ -4,7 +4,7 @@
 
 package dev.icerock.moko.permissions
 
-expect class PermissionsController {
+expect interface PermissionsController {
     suspend fun providePermission(permission: Permission)
     fun isPermissionGranted(permission: Permission): Boolean
 }

@@ -11,8 +11,8 @@ object Deps {
     private const val androidCoreTestingVersion = "2.1.0"
 
     private const val coroutinesVersion = "1.4.2"
-    private const val mokoMvvmVersion = "0.9.2"
-    const val mokoPermissionsVersion = "0.8.0"
+    private const val mokoMvvmVersion = "0.10.0"
+    const val mokoPermissionsVersion = "0.9.0"
 
     object Android {
         const val compileSdk = 28
@@ -43,11 +43,10 @@ object Deps {
         object MultiPlatform {
             const val coroutines =
                 "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
-            val mokoMvvm = MultiPlatformLibrary(
-                common = "dev.icerock.moko:mvvm:$mokoMvvmVersion",
-                iosArm64 = "dev.icerock.moko:mvvm-iosarm64:$mokoMvvmVersion",
-                iosX64 = "dev.icerock.moko:mvvm-iosx64:$mokoMvvmVersion"
-            )
+            val mokoMvvmCore = "dev.icerock.moko:mvvm-core:$mokoMvvmVersion"
+                .defaultMPL(ios = true)
+            val mokoMvvmTest = "dev.icerock.moko:mvvm-test:$mokoMvvmVersion"
+                .defaultMPL()
             const val mokoPermissions =
                 "dev.icerock.moko:permissions:$mokoPermissionsVersion"
         }
