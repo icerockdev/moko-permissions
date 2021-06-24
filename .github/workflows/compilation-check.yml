@@ -18,3 +18,5 @@ jobs:
           java-version: 1.8
       - name: Build and publish local
         run: ./gradlew build publishToMavenLocal
+      - name: build ios sample
+        run: cd sample/ios-app && xcodebuild -scheme TestProj -workspace TestProj.xcworkspace -configuration Debug build CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
