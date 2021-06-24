@@ -1,10 +1,10 @@
 plugins {
-    plugin(Deps.Plugins.androidApplication)
-    plugin(Deps.Plugins.kotlinAndroid)
+    id("com.android.application")
+    id("kotlin-android")
 }
 
 android {
-    compileSdkVersion(Deps.Android.compileSdk)
+    compileSdkVersion(libs.versions.compileSdk.get().toInt())
 
     buildFeatures.dataBinding = true
 
@@ -13,8 +13,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion(Deps.Android.minSdk)
-        targetSdkVersion(Deps.Android.targetSdk)
+        minSdkVersion(libs.versions.minSdk.get().toInt())
+        targetSdkVersion(libs.versions.targetSdk.get().toInt())
 
         applicationId = "dev.icerock.moko.samples.permissions"
 
@@ -41,8 +41,8 @@ android {
 }
 
 dependencies {
-    implementation(Deps.Libs.Android.appCompat)
-    implementation(Deps.Libs.Android.material)
+    implementation(libs.appCompat)
+    implementation(libs.material)
 
-    implementation(project(":sample:mpp-library"))
+    implementation(projects.sample.mppLibrary)
 }

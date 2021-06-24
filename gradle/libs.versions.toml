@@ -1,0 +1,23 @@
+[versions]
+kotlinVersion = "1.5.10"
+androidAppCompatVersion = "1.2.0"
+materialDesignVersion = "1.0.0"
+androidLifecycleVersion = "2.1.0"
+androidCoreTestingVersion = "2.1.0"
+coroutinesVersion = "1.4.2-native-mt"
+mokoMvvmVersion = "0.10.1"
+mokoPermissionsVersion = "0.9.0"
+compileSdk = "28"
+targetSdk = "28"
+minSdk = "16"
+
+[libraries]
+appCompat = { module = "androidx.appcompat:appcompat", version.ref = "androidAppCompatVersion" }
+material = { module = "com.google.android.material:material", version.ref = "materialDesignVersion" }
+lifecycle = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "androidLifecycleVersion" }
+coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
+mokoMvvmCore = { module = "dev.icerock.moko:mvvm-core", version.ref = "mokoMvvmVersion" }
+mokoMvvmTest = { module = "dev.icerock.moko:mvvm-test", version.ref = "mokoMvvmVersion" }
+mokoPermissions = { module = "dev.icerock.moko:permissions", version.ref = "mokoPermissionsVersion" }
+kotlinTestJUnit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
+androidCoreTesting = { module = "androidx.arch.core:core-testing", version.ref = "androidCoreTestingVersion" }

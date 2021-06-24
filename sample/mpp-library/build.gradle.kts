@@ -3,25 +3,21 @@
  */
 
 plugins {
-    plugin(Deps.Plugins.androidLibrary)
-    plugin(Deps.Plugins.kotlinMultiplatform)
-    plugin(Deps.Plugins.mobileMultiplatform)
-    plugin(Deps.Plugins.iosFramework)
+    id("com.android.library")
+    id("org.jetbrains.kotlin.multiplatform")
+    id("dev.icerock.mobile.multiplatform")
+    id("dev.icerock.mobile.multiplatform.ios-framework")
 }
 
 dependencies {
-    commonMainImplementation(Deps.Libs.MultiPlatform.coroutines)
+    commonMainImplementation(libs.coroutines)
 
-    commonMainApi(Deps.Libs.MultiPlatform.mokoMvvmCore.common)
-    commonMainApi(Deps.Libs.MultiPlatform.mokoPermissions)
+    commonMainApi(libs.mokoMvvmCore)
+    commonMainApi(libs.mokoPermissions)
 
-    androidMainImplementation(Deps.Libs.Android.lifecycle)
+    androidMainImplementation(libs.lifecycle)
 
-    commonTestImplementation(Deps.Libs.MultiPlatform.mokoMvvmTest.common)
-    commonTestImplementation(project(":permissions-test"))
+    commonTestImplementation(libs.mokoMvvmTest)
+    commonTestImplementation(projects.permissionsTest)
 }
 
-framework {
-    export(project(":permissions"))
-    export(Deps.Libs.MultiPlatform.mokoMvvmCore)
-}
