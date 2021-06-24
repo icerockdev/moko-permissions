@@ -19,11 +19,6 @@ buildscript {
 
 allprojects {
 
-    configurations.configureEach {
-        resolutionStrategy {
-            force("${rootProject.libs.coroutines.get().module}:${rootProject.libs.coroutines.get().versionConstraint}")
-        }
-    }
 
     plugins.withId("com.android.library") {
         configure<com.android.build.gradle.LibraryExtension> {
