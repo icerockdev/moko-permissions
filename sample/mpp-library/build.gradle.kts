@@ -13,7 +13,7 @@ dependencies {
     commonMainImplementation(libs.coroutines)
 
     commonMainApi(libs.mokoMvvmCore)
-    commonMainApi(libs.mokoPermissions)
+    commonMainApi(projects.permissions)
 
     androidMainImplementation(libs.lifecycle)
 
