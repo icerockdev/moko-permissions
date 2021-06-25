@@ -23,6 +23,5 @@ dependencies {
 
 framework {
     export(project(":permissions"))
-    export("${libs.mokoMvvmCore.get().module.group}:${libs.mokoMvvmCore.get().module.name}:${libs.versions.mokoMvvmVersion.get()}",
-        "${libs.mokoMvvmCore.get().module.group}:${libs.mokoMvvmCore.get().module.name}:${libs.versions.mokoMvvmVersion.get()}")
+    export(libs.mokoMvvmCore)
 }

@@ -11,8 +11,8 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath("dev.icerock:mobile-multiplatform:0.10.1")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10")
+        classpath("dev.icerock:mobile-multiplatform:0.11.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20")
         classpath("com.android.tools.build:gradle:4.2.1")
     }
 }
