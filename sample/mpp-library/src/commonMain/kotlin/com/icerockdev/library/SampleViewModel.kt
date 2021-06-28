@@ -45,6 +45,5 @@ class SampleViewModel(
         fun onDenied(exception: DeniedException)
 
         fun onDeniedAlways(exception: DeniedAlwaysException)
-
     }
 }

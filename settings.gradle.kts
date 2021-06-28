@@ -11,12 +11,13 @@ dependencyResolutionManagement {
 
         jcenter {
             content {
-                includeGroup("org.jetbrains.trove4j")
                 includeGroup("org.jetbrains.kotlinx")
             }
         }
     }
 }
+
+includeBuild("permissions-build-logic")
 
 include(":permissions")
 include(":permissions-test")

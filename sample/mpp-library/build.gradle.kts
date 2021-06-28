@@ -4,9 +4,16 @@
 
 plugins {
     id("com.android.library")
+    id("android-base-convention")
+    id("detekt-convention")
     id("org.jetbrains.kotlin.multiplatform")
-    id("dev.icerock.mobile.multiplatform")
+    id("dev.icerock.mobile.multiplatform.android-manifest")
     id("dev.icerock.mobile.multiplatform.ios-framework")
+}
+
+kotlin {
+    android()
+    ios()
 }
 
 dependencies {
@@ -15,13 +22,13 @@ dependencies {
     commonMainApi(libs.mokoMvvmCore)
     commonMainApi(projects.permissions)
 
-    androidMainImplementation(libs.lifecycle)
+    "androidMainImplementation"(libs.lifecycle)
 
     commonTestImplementation(libs.mokoMvvmTest)
     commonTestImplementation(projects.permissionsTest)
 }
 
 framework {
-    export(project(":permissions"))
+    export(projects.permissions)
     export(libs.mokoMvvmCore)
 }

@@ -3,23 +3,15 @@
  */
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.multiplatform")
-    id("dev.icerock.mobile.multiplatform")
-    id("org.gradle.maven-publish")
+    id("multiplatform-library-convention")
+    id("dev.icerock.mobile.multiplatform.android-manifest")
+    id("android-publication-convention")
 }
 
 dependencies {
     commonMainImplementation(libs.coroutines)
 
-    androidMainImplementation(libs.appCompat)
+    "androidMainImplementation"(libs.appCompat)
 }
 
-kotlin {
-    sourceSets {
-        val iosArm64Main by getting
-        val iosX64Main by getting
 
-        iosArm64Main.dependsOn(iosX64Main)
-    }
-}
