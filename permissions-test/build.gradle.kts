@@ -3,16 +3,15 @@
  */
 
 plugins {
-    plugin(Deps.Plugins.androidLibrary)
-    plugin(Deps.Plugins.kotlinMultiplatform)
-    plugin(Deps.Plugins.mobileMultiplatform)
-    plugin(Deps.Plugins.mavenPublish)
+    id("multiplatform-library-convention")
+    id("dev.icerock.mobile.multiplatform.android-manifest")
+    id("android-publication-convention")
 }
 
 dependencies {
-    commonMainImplementation(Deps.Libs.MultiPlatform.coroutines)
+    commonMainImplementation(libs.coroutines)
 
-    androidMainImplementation(Deps.Libs.Android.appCompat)
+    "androidMainImplementation"(libs.appCompat)
 
-    commonMainApi(project(":permissions"))
+    commonMainApi(projects.permissions)
 }
