@@ -6,7 +6,7 @@ androidLifecycleVersion = "2.1.0"
 androidCoreTestingVersion = "2.1.0"
 coroutinesVersion = "1.5.0-native-mt"
 mokoMvvmVersion = "0.11.0"
-mokoPermissionsVersion = "0.10.1"
+mokoPermissionsVersion = "0.10.2"
 
 [libraries]
 appCompat = { module = "androidx.appcompat:appcompat", version.ref = "androidAppCompatVersion" }

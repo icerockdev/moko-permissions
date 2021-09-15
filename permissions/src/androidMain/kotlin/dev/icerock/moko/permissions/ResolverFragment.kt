@@ -46,26 +46,24 @@ internal class ResolverFragment : Fragment() {
         val permissionCallback = permissionCallbackMap[requestCode] ?: return
         permissionCallbackMap.remove(requestCode)
 
-        val isCancelled = grantResults.isEmpty()
-        val success = !isCancelled && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+        val isCancelled = grantResults.isEmpty() || permissions.isEmpty()
+        if (isCancelled) {
+            permissionCallback.callback.invoke(
+                Result.failure(RequestCanceledException(permissionCallback.permission))
+            )
+            return
+        }
+        val success = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
         if (success) {
             permissionCallback.callback.invoke(Result.success(Unit))
         } else {
             if (shouldShowRequestPermissionRationale(permissions.first())) {
                 permissionCallback.callback.invoke(
-                    Result.failure(
-                        DeniedException(
-                            permissionCallback.permission
-                        )
-                    )
+                    Result.failure(DeniedException(permissionCallback.permission))
                 )
             } else {
                 permissionCallback.callback.invoke(
-                    Result.failure(
-                        DeniedAlwaysException(
-                            permissionCallback.permission
-                        )
-                    )
+                    Result.failure(DeniedAlwaysException(permissionCallback.permission))
                 )
             }
         }
