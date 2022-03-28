@@ -17,7 +17,7 @@ dependencyResolutionManagement {
     }
 }
 
-includeBuild("permissions-build-logic")
+//includeBuild("permissions-build-logic")
 
 include(":permissions")
 include(":permissions-test")

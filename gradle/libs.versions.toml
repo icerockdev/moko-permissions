@@ -1,12 +1,12 @@
 [versions]
-kotlinVersion = "1.5.20"
+kotlinVersion = "1.6.10"
 androidAppCompatVersion = "1.2.0"
 materialDesignVersion = "1.0.0"
 androidLifecycleVersion = "2.1.0"
 androidCoreTestingVersion = "2.1.0"
-coroutinesVersion = "1.5.0-native-mt"
-mokoMvvmVersion = "0.11.0"
-mokoPermissionsVersion = "0.10.2"
+coroutinesVersion = "1.6.0-native-mt"
+mokoMvvmVersion = "0.12.0"
+mokoPermissionsVersion = "0.11.0"
 
 [libraries]
 appCompat = { module = "androidx.appcompat:appcompat", version.ref = "androidAppCompatVersion" }
@@ -17,3 +17,12 @@ mokoMvvmCore = { module = "dev.icerock.moko:mvvm-core", version.ref = "mokoMvvmV
 mokoMvvmTest = { module = "dev.icerock.moko:mvvm-test", version.ref = "mokoMvvmVersion" }
 kotlinTestJUnit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 androidCoreTesting = { module = "androidx.arch.core:core-testing", version.ref = "androidCoreTestingVersion" }
+
+
+kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
+androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.0.4" }
+googleServicesGradlePlugin = { module = "com.google.gms:google-services", version = "4.3.8" }
+firebaseGradlePlugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.2.0" }
+mokoGradlePlugin = { module = "dev.icerock.moko:moko-gradle-plugin", version = "0.1.0" }
+mobileMultiplatformGradlePlugin = { module = "dev.icerock:mobile-multiplatform", version = "0.14.1" }
+kotlinSerializationGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinVersion" }
