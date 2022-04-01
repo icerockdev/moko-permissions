@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
         }
     }
 
-    fun onRequestButtonClick(view: View?) {
+    fun onRequestButtonClick(@Suppress("UNUSED_PARAMETER") view: View?) {
         // Starts permission providing process.
         viewModel.onRequestPermissionButtonPressed()
     }
