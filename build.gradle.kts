@@ -8,8 +8,14 @@ buildscript {
         google()
         gradlePluginPortal()
     }
+
     dependencies {
-        classpath(":permissions-build-logic")
+        classpath(libs.kotlinGradlePlugin)
+        classpath(libs.androidGradlePlugin)
+        classpath(libs.googleServicesGradlePlugin)
+        classpath(libs.mokoGradlePlugin)
+        classpath(libs.mobileMultiplatformGradlePlugin)
+        classpath(libs.kotlinSerializationGradlePlugin)
     }
 }
 

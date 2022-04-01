@@ -3,10 +3,10 @@ package com.icerockdev.library
 import dev.icerock.moko.mvvm.dispatcher.EventsDispatcher
 import dev.icerock.moko.mvvm.dispatcher.EventsDispatcherOwner
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
-import dev.icerock.moko.permissions.DeniedException
-import dev.icerock.moko.permissions.DeniedAlwaysException
 import kotlinx.coroutines.launch
 
 class SampleViewModel(
