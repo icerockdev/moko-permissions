@@ -69,8 +69,8 @@ class PermissionsControllerImpl(
             return NotificationManagerCompat.from(applicationContext).areNotificationsEnabled()
         }
         return permission.toPlatformPermission().all {
-            ContextCompat.checkSelfPermission(applicationContext, it) ==
-                    PackageManager.PERMISSION_GRANTED
+            val status = ContextCompat.checkSelfPermission(applicationContext, it)
+            status == PackageManager.PERMISSION_GRANTED
         }
     }
 
