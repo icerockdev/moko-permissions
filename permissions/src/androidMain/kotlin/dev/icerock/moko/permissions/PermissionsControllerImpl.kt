@@ -82,12 +82,25 @@ class PermissionsControllerImpl(
             Permission.WRITE_STORAGE -> listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             Permission.LOCATION -> listOf(Manifest.permission.ACCESS_FINE_LOCATION)
             Permission.COARSE_LOCATION -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-            Permission.BLUETOOTH_LE -> listOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+            Permission.BLUETOOTH_LE -> allBluetoothPermissions()
             Permission.REMOTE_NOTIFICATION -> emptyList()
             Permission.RECORD_AUDIO -> listOf(Manifest.permission.RECORD_AUDIO)
         }
     }
+
+    private fun allBluetoothPermissions() =
+        // @see https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_ADVERTISE,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        } else {
+            listOf(
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        }
 }
