@@ -50,13 +50,16 @@ class PermissionsController : PermissionsControllerProtocol {
         when (permission) {
             Permission.GALLERY -> provideGalleryPermission()
             Permission.CAMERA -> provideCameraPermission()
-            Permission.STORAGE -> Unit // not needed any permissions to storage
-            Permission.WRITE_STORAGE -> Unit // not needed any permissions to storage
+            Permission.STORAGE -> Unit // no permissions required to use storage
+            Permission.WRITE_STORAGE -> Unit // no permissions required to use storage
             Permission.LOCATION -> provideLocationPermission(permission)
             Permission.COARSE_LOCATION -> provideLocationPermission(permission)
-            Permission.BLUETOOTH_LE -> Unit // not needed any permissions to bt
             Permission.REMOTE_NOTIFICATION -> provideRemoteNotificationPermission()
             Permission.RECORD_AUDIO -> provideRecordAudioPermission()
+            Permission.BLUETOOTH_LE -> Unit // no permissions required to use bluetooth on iOS
+            Permission.BLUETOOTH_SCAN -> Unit  // no permissions required to use bluetooth on iOS
+            Permission.BLUETOOTH_ADVERTISE -> Unit  // no permissions required to use bluetooth on iOS
+            Permission.BLUETOOTH_CONNECT -> Unit  // no permissions required to use bluetooth on iOS
         }
     }
 
@@ -74,11 +77,14 @@ class PermissionsController : PermissionsControllerProtocol {
                     kCLAuthorizationStatusAuthorizedWhenInUse
                 ).contains(CLLocationManager.authorizationStatus())
             }
-            Permission.BLUETOOTH_LE -> true
             Permission.REMOTE_NOTIFICATION -> UIApplication.sharedApplication().registeredForRemoteNotifications
             Permission.RECORD_AUDIO -> AVCaptureDevice.authorizationStatusForMediaType(
                 AVMediaTypeAudio
             ) == AVAuthorizationStatusAuthorized
+            Permission.BLUETOOTH_LE -> true
+            Permission.BLUETOOTH_SCAN -> true
+            Permission.BLUETOOTH_ADVERTISE -> true
+            Permission.BLUETOOTH_CONNECT -> true
         }
     }
 
