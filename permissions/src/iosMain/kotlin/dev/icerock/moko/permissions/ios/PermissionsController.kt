@@ -4,42 +4,16 @@
 
 package dev.icerock.moko.permissions.ios
 
-import dev.icerock.moko.permissions.DeniedAlwaysException
-import dev.icerock.moko.permissions.LocationManagerDelegate
-import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.mainContinuation
-import platform.AVFoundation.AVAuthorizationStatus
-import platform.AVFoundation.AVAuthorizationStatusAuthorized
-import platform.AVFoundation.AVAuthorizationStatusDenied
-import platform.AVFoundation.AVAuthorizationStatusNotDetermined
-import platform.AVFoundation.AVCaptureDevice
-import platform.AVFoundation.AVMediaTypeAudio
-import platform.AVFoundation.AVMediaTypeVideo
-import platform.AVFoundation.authorizationStatusForMediaType
-import platform.AVFoundation.requestAccessForMediaType
-import platform.CoreLocation.CLAuthorizationStatus
-import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.kCLAuthorizationStatusAuthorized
-import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
-import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
-import platform.CoreLocation.kCLAuthorizationStatusDenied
-import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
-import platform.Photos.PHAuthorizationStatus
-import platform.Photos.PHAuthorizationStatusAuthorized
-import platform.Photos.PHAuthorizationStatusDenied
-import platform.Photos.PHAuthorizationStatusNotDetermined
-import platform.Photos.PHPhotoLibrary
+import dev.icerock.moko.permissions.*
+import platform.AVFoundation.*
+import platform.CoreBluetooth.*
+import platform.CoreLocation.*
+import platform.Foundation.NSSelectorFromString
+import platform.Photos.*
 import platform.UIKit.UIApplication
 import platform.UIKit.registeredForRemoteNotifications
-import platform.UserNotifications.UNAuthorizationOptionAlert
-import platform.UserNotifications.UNAuthorizationOptionBadge
-import platform.UserNotifications.UNAuthorizationOptionSound
-import platform.UserNotifications.UNAuthorizationStatus
-import platform.UserNotifications.UNAuthorizationStatusAuthorized
-import platform.UserNotifications.UNAuthorizationStatusDenied
-import platform.UserNotifications.UNAuthorizationStatusNotDetermined
-import platform.UserNotifications.UNNotificationSettings
-import platform.UserNotifications.UNUserNotificationCenter
+import platform.UserNotifications.*
+import platform.darwin.NSObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -56,10 +30,10 @@ class PermissionsController : PermissionsControllerProtocol {
             Permission.COARSE_LOCATION -> provideLocationPermission(permission)
             Permission.REMOTE_NOTIFICATION -> provideRemoteNotificationPermission()
             Permission.RECORD_AUDIO -> provideRecordAudioPermission()
-            Permission.BLUETOOTH_LE -> Unit // no permissions required to use bluetooth on iOS
-            Permission.BLUETOOTH_SCAN -> Unit  // no permissions required to use bluetooth on iOS
-            Permission.BLUETOOTH_ADVERTISE -> Unit  // no permissions required to use bluetooth on iOS
-            Permission.BLUETOOTH_CONNECT -> Unit  // no permissions required to use bluetooth on iOS
+            Permission.BLUETOOTH_LE,
+            Permission.BLUETOOTH_SCAN,
+            Permission.BLUETOOTH_ADVERTISE,
+            Permission.BLUETOOTH_CONNECT -> provideBluetoothPermission(permission)
         }
     }
 
@@ -81,15 +55,14 @@ class PermissionsController : PermissionsControllerProtocol {
             Permission.RECORD_AUDIO -> AVCaptureDevice.authorizationStatusForMediaType(
                 AVMediaTypeAudio
             ) == AVAuthorizationStatusAuthorized
-            Permission.BLUETOOTH_LE -> true
-            Permission.BLUETOOTH_SCAN -> true
-            Permission.BLUETOOTH_ADVERTISE -> true
-            Permission.BLUETOOTH_CONNECT -> true
+            Permission.BLUETOOTH_LE,
+            Permission.BLUETOOTH_SCAN,
+            Permission.BLUETOOTH_ADVERTISE,
+            Permission.BLUETOOTH_CONNECT -> isBluetoothAuthorized()
         }
     }
 
     private suspend fun provideRemoteNotificationPermission() {
-
         val currentCenter = UNUserNotificationCenter.currentNotificationCenter()
 
         val status = suspendCoroutine<UNAuthorizationStatus> { continuation ->
@@ -193,6 +166,47 @@ class PermissionsController : PermissionsControllerProtocol {
             }
             kCLAuthorizationStatusDenied -> throw DeniedAlwaysException(permission)
             else -> throw IllegalStateException("location permission was denied")
+        }
+    }
+
+    private fun isBluetoothAuthorized(): Boolean {
+        // To maintain compatibility with iOS 12 (@see https://developer.apple.com/documentation/corebluetooth/cbmanagerauthorization)
+        if (CBManager.resolveClassMethod(NSSelectorFromString("authorization"))) {
+            return CBManager.authorization == CBManagerAuthorizationAllowedAlways
+        }
+        return CBCentralManager().state == CBManagerStatePoweredOn
+    }
+
+    private suspend fun provideBluetoothPermission(permission: Permission) {
+        val isNotDetermined: Boolean
+        // To maintain compatibility with iOS 12 (@see https://developer.apple.com/documentation/corebluetooth/cbmanagerauthorization)
+        if (CBManager.resolveClassMethod(NSSelectorFromString("authorization"))) {
+            isNotDetermined = CBManager.authorization == CBManagerAuthorizationNotDetermined
+        } else {
+            isNotDetermined = CBCentralManager().state == CBManagerStateUnknown
+        }
+        
+        val state: CBManagerState
+        if (isNotDetermined) {
+            state = suspendCoroutine { continuation ->
+                CBCentralManager(object : NSObject(), CBCentralManagerDelegateProtocol {
+                    override fun centralManagerDidUpdateState(central: CBCentralManager) {
+                        continuation.resume(central.state)
+                    }
+                }, null)
+            }
+        } else {
+            state = CBCentralManager().state
+        }
+
+        when (state) {
+            CBManagerStatePoweredOn -> return
+            CBManagerStateUnauthorized -> throw DeniedAlwaysException(permission)
+            CBManagerStatePoweredOff -> throw DeniedException(permission, "Bluetooth is powered off.")
+            CBManagerStateResetting -> throw DeniedException(permission, "Bluetooth is restarting.")
+            CBManagerStateUnsupported -> throw DeniedAlwaysException(permission, "Bluetooth is not supported on this device.")
+            CBManagerStateUnknown -> throw IllegalStateException("Bluetooth state should be known at this point.")
+            else -> throw IllegalStateException("Unknown state (Permissions library should be updated) : $state")
         }
     }
 }

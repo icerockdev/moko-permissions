@@ -11,15 +11,14 @@ import kotlinx.coroutines.launch
 
 class SampleViewModel(
     override val eventsDispatcher: EventsDispatcher<EventListener>,
-    private val permissionsController: PermissionsController
+    private val permissionsController: PermissionsController,
+    private val permissionType: Permission
 ) : ViewModel(), EventsDispatcherOwner<SampleViewModel.EventListener> {
 
     /**
      * An example of using [PermissionsController] in common code.
      */
     fun onRequestPermissionButtonPressed() {
-        // For example, let's request the camera permission:
-        val permissionType = Permission.RECORD_AUDIO
         requestPermission(permissionType)
     }
 
