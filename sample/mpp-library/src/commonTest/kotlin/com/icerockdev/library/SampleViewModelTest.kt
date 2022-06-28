@@ -28,12 +28,14 @@ class SampleViewModelTest {
     @Test
     fun `test successful permission`() {
         val eventsListener = EventsListenerCatcher()
+        val permission = Permission.RECORD_AUDIO
         val controller: PermissionsController = createPermissionControllerMock(
-            allow = setOf(Permission.RECORD_AUDIO)
+            allow = setOf(permission)
         )
         val viewModel = SampleViewModel(
             eventsDispatcher = createTestEventsDispatcher(eventsListener),
-            permissionsController = controller
+            permissionsController = controller,
+            permissionType = permission
         )
 
         viewModel.onRequestPermissionButtonPressed()
@@ -44,12 +46,14 @@ class SampleViewModelTest {
     @Test
     fun `test already got permission`() {
         val eventsListener = EventsListenerCatcher()
+        val permission = Permission.RECORD_AUDIO
         val controller: PermissionsController = createPermissionControllerMock(
-            granted = setOf(Permission.RECORD_AUDIO)
+            granted = setOf(permission)
         )
         val viewModel = SampleViewModel(
             eventsDispatcher = createTestEventsDispatcher(eventsListener),
-            permissionsController = controller
+            permissionsController = controller,
+            permissionType = permission
         )
 
         viewModel.onRequestPermissionButtonPressed()
@@ -65,7 +69,8 @@ class SampleViewModelTest {
         )
         val viewModel = SampleViewModel(
             eventsDispatcher = createTestEventsDispatcher(eventsListener),
-            permissionsController = controller
+            permissionsController = controller,
+            permissionType = Permission.RECORD_AUDIO
         )
 
         viewModel.onRequestPermissionButtonPressed()

@@ -82,12 +82,49 @@ class PermissionsControllerImpl(
             Permission.WRITE_STORAGE -> listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             Permission.LOCATION -> listOf(Manifest.permission.ACCESS_FINE_LOCATION)
             Permission.COARSE_LOCATION -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-            Permission.BLUETOOTH_LE -> listOf(
+            Permission.REMOTE_NOTIFICATION -> emptyList()
+            Permission.RECORD_AUDIO -> listOf(Manifest.permission.RECORD_AUDIO)
+            Permission.BLUETOOTH_LE -> allBluetoothPermissions()
+            Permission.BLUETOOTH_SCAN -> bluetoothScanCompat()
+            Permission.BLUETOOTH_ADVERTISE -> bluetoothAdvertiseCompat()
+            Permission.BLUETOOTH_CONNECT -> bluetoothConnectCompat()
+        }
+    }
+
+    private fun allBluetoothPermissions() =
+        // @see https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_ADVERTISE,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        } else {
+            listOf(
                 Manifest.permission.BLUETOOTH,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
-            Permission.REMOTE_NOTIFICATION -> emptyList()
-            Permission.RECORD_AUDIO -> listOf(Manifest.permission.RECORD_AUDIO)
         }
-    }
+
+    private fun bluetoothScanCompat() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(Manifest.permission.BLUETOOTH_SCAN)
+        } else {
+            listOf(Manifest.permission.BLUETOOTH)
+        }
+
+    private fun bluetoothAdvertiseCompat() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(Manifest.permission.BLUETOOTH_ADVERTISE)
+        } else {
+            listOf(Manifest.permission.BLUETOOTH)
+        }
+
+    private fun bluetoothConnectCompat() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(Manifest.permission.BLUETOOTH_CONNECT)
+        } else {
+            listOf(Manifest.permission.BLUETOOTH)
+        }
 }
