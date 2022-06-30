@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlin.coroutines.suspendCoroutine
 
+@Suppress("TooManyFunctions")
 class PermissionsControllerImpl(
     private val resolverFragmentTag: String = "PermissionsControllerResolver",
     private val applicationContext: Context
@@ -66,6 +67,7 @@ class PermissionsControllerImpl(
         }
     }
 
+    @Suppress("ReturnCount")
     override suspend fun getPermissionState(permission: Permission): PermissionState {
         if (permission == Permission.REMOTE_NOTIFICATION && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             val isNotificationsEnabled = NotificationManagerCompat.from(applicationContext)
