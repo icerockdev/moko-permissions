@@ -6,6 +6,7 @@ package dev.icerock.moko.permissions.test
 
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionsController
 
 expect abstract class PermissionsControllerMock constructor() : PermissionsController {
@@ -34,5 +35,12 @@ fun createPermissionControllerMock(
 
     override fun isPermissionGranted(permission: Permission): Boolean {
         return this.granted.contains(permission)
+    }
+
+    override fun openAppSettings() = Unit
+
+    override suspend fun getPermissionState(permission: Permission): PermissionState {
+        return if (isPermissionGranted(permission)) PermissionState.Granted
+        else PermissionState.NotDetermined
     }
 }

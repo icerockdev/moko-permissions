@@ -11,6 +11,8 @@ import androidx.lifecycle.Lifecycle
 actual interface PermissionsController {
     actual suspend fun providePermission(permission: Permission)
     actual fun isPermissionGranted(permission: Permission): Boolean
+    actual suspend fun getPermissionState(permission: Permission): PermissionState
+    actual fun openAppSettings()
 
     fun bind(lifecycle: Lifecycle, fragmentManager: FragmentManager)
 

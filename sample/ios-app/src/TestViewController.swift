@@ -19,7 +19,7 @@ class TestViewController: UIViewController {
         
         viewModel = SampleViewModel(eventsDispatcher: EventsDispatcher(listener: self),
                                     permissionsController: PermissionsController(),
-                                    permissionType: Permission.bluetoothLe)
+                                    permissionType: Permission.recordAudio)
     }
     
     @IBAction func onPermissionPressed() {
