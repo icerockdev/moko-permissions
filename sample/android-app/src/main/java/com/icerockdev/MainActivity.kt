@@ -25,19 +25,15 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Prepares the permissions controller and binds it to the activity lifecycle.
-        val permissionsController = PermissionsController(applicationContext = this).also {
-            it.bind(lifecycle, supportFragmentManager)
-        }
-
         // Creates viewModel from common code.
         viewModel = getViewModel {
             SampleViewModel(
                 eventsDispatcher = eventsDispatcherOnMain(),
-                permissionsController = permissionsController,
+                permissionsController = PermissionsController(applicationContext = applicationContext),
                 permissionType = Permission.RECORD_AUDIO
             )
         }.also {
+            it.permissionsController.bind(lifecycle, supportFragmentManager)
             it.eventsDispatcher.bind(this, this)
         }
     }
@@ -69,11 +65,7 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
     }
 
     private fun openAppSettings() {
-        val intent = Intent().apply {
-            action = ACTION_APPLICATION_DETAILS_SETTINGS
-            data = Uri.fromParts("package", packageName, null)
-        }
-        startActivity(intent)
+        viewModel.permissionsController.openAppSettings()
     }
 
     private fun showToast(message: String) {

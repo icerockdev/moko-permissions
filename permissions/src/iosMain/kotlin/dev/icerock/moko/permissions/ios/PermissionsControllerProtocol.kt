@@ -5,8 +5,11 @@
 package dev.icerock.moko.permissions.ios
 
 import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionState
 
 interface PermissionsControllerProtocol {
     suspend fun providePermission(permission: Permission)
     fun isPermissionGranted(permission: Permission): Boolean
+    suspend fun getPermissionState(permission: Permission): PermissionState
+    fun openAppSettings()
 }

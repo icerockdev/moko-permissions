@@ -6,8 +6,11 @@ package dev.icerock.moko.permissions
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -16,22 +19,24 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlin.coroutines.suspendCoroutine
 
 class PermissionsControllerImpl(
     private val resolverFragmentTag: String = "PermissionsControllerResolver",
     private val applicationContext: Context
 ) : PermissionsController {
-    var fragmentManager: FragmentManager? = null
+    private val fragmentManagerHolder = MutableStateFlow<FragmentManager?>(null)
 
     override fun bind(lifecycle: Lifecycle, fragmentManager: FragmentManager) {
-        this.fragmentManager = fragmentManager
+        this.fragmentManagerHolder.value = fragmentManager
 
         val observer = object : LifecycleObserver {
-
             @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
             fun onDestroyed(source: LifecycleOwner) {
-                this@PermissionsControllerImpl.fragmentManager = null
+                this@PermissionsControllerImpl.fragmentManagerHolder.value = null
                 source.lifecycle.removeObserver(this)
             }
         }
@@ -39,21 +44,8 @@ class PermissionsControllerImpl(
     }
 
     override suspend fun providePermission(permission: Permission) {
-        val fragmentManager =
-            fragmentManager
-                ?: throw IllegalStateException("can't resolve permission without active window")
-
-        val currentFragment: Fragment? = fragmentManager.findFragmentByTag(resolverFragmentTag)
-        val resolverFragment: ResolverFragment = if (currentFragment != null) {
-            currentFragment as ResolverFragment
-        } else {
-            ResolverFragment().apply {
-                fragmentManager
-                    .beginTransaction()
-                    .add(this, resolverFragmentTag)
-                    .commitNow()
-            }
-        }
+        val fragmentManager: FragmentManager = awaitFragmentManager()
+        val resolverFragment: ResolverFragment = getOrCreateResolverFragment(fragmentManager)
 
         val platformPermission = permission.toPlatformPermission()
         suspendCoroutine<Unit> { continuation ->
@@ -74,6 +66,63 @@ class PermissionsControllerImpl(
         }
     }
 
+    override suspend fun getPermissionState(permission: Permission): PermissionState {
+        if (permission == Permission.REMOTE_NOTIFICATION && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            val isNotificationsEnabled = NotificationManagerCompat.from(applicationContext)
+                .areNotificationsEnabled()
+            return if (isNotificationsEnabled) {
+                PermissionState.Granted
+            } else {
+                PermissionState.DeniedAlways
+            }
+        }
+        val permissions: List<String> = permission.toPlatformPermission()
+        val status: List<Int> = permissions.map {
+            ContextCompat.checkSelfPermission(applicationContext, it)
+        }
+        val isAllGranted: Boolean = status.all { it == PackageManager.PERMISSION_GRANTED }
+        if (isAllGranted) return PermissionState.Granted
+
+        val fragmentManager: FragmentManager = awaitFragmentManager()
+        val resolverFragment: ResolverFragment = getOrCreateResolverFragment(fragmentManager)
+
+        val isAllRequestRationale: Boolean = permissions.all {
+            !resolverFragment.shouldShowRequestPermissionRationale(it)
+        }
+        return if (isAllRequestRationale) PermissionState.NotDetermined
+        else PermissionState.Denied
+    }
+
+    override fun openAppSettings() {
+        val intent = Intent().apply {
+            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            data = Uri.fromParts("package", applicationContext.packageName, null)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        applicationContext.startActivity(intent)
+    }
+
+    private suspend fun awaitFragmentManager(): FragmentManager {
+        val fragmentManager: FragmentManager? = fragmentManagerHolder.value
+        if (fragmentManager != null) return fragmentManager
+
+        return fragmentManagerHolder.filterNotNull().first()
+    }
+
+    private fun getOrCreateResolverFragment(fragmentManager: FragmentManager): ResolverFragment {
+        val currentFragment: Fragment? = fragmentManager.findFragmentByTag(resolverFragmentTag)
+        return if (currentFragment != null) {
+            currentFragment as ResolverFragment
+        } else {
+            ResolverFragment().also { fragment ->
+                fragmentManager
+                    .beginTransaction()
+                    .add(fragment, resolverFragmentTag)
+                    .commitNow()
+            }
+        }
+    }
+
     private fun Permission.toPlatformPermission(): List<String> {
         return when (this) {
             Permission.CAMERA -> listOf(Manifest.permission.CAMERA)
@@ -91,8 +140,10 @@ class PermissionsControllerImpl(
         }
     }
 
+    /**
+     * @see https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
+     */
     private fun allBluetoothPermissions() =
-        // @see https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             listOf(
                 Manifest.permission.BLUETOOTH_CONNECT,
