@@ -18,7 +18,8 @@ class TestViewController: UIViewController {
         label.text = "wait press..."
         
         viewModel = SampleViewModel(eventsDispatcher: EventsDispatcher(listener: self),
-                                    permissionsController: PermissionsController())
+                                    permissionsController: PermissionsController(),
+                                    permissionType: Permission.recordAudio)
     }
     
     @IBAction func onPermissionPressed() {

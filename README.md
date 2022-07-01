@@ -38,8 +38,8 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.11.0")
-    commonTestImplementation("dev.icerock.moko:permissions-test:0.11.0")
+    commonMainApi("dev.icerock.moko:permissions:0.12.0")
+    commonTestImplementation("dev.icerock.moko:permissions-test:0.12.0")
 }
 ```
 
@@ -55,6 +55,10 @@ The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
 * Coarse location: **Permission.COARSE_LOCATION**
 * Remote notifications: **Permission.REMOTE_NOTIFICATION**
 * Audio recording: **Permission.RECORD_AUDIO**
+* Bluetooth LE: **Permission.BLUETOOTH_LE**
+* Bluetooth Scan: **Permission.BLUETOOTH_SCAN**
+* Bluetooth Connect: **Permission.BLUETOOTH_CONNECT**
+* Bluetooth Advertise: **Permission.BLUETOOTH_ADVERTISE**
 
 ## Usage
 

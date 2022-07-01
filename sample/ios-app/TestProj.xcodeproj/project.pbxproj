@@ -112,7 +112,7 @@
 				287627FB1F319065007FA12B /* Sources */,
 				287627FC1F319065007FA12B /* Frameworks */,
 				287627FD1F319065007FA12B /* Resources */,
-				02B727FAA6B9D00725C179CA /* [CP] Embed Pods Frameworks */,
+				1B24410EC0AECB63FDC2CA76 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -171,7 +171,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		02B727FAA6B9D00725C179CA /* [CP] Embed Pods Frameworks */ = {
+		1B24410EC0AECB63FDC2CA76 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -271,6 +271,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4VU932NX78;
 				INFOPLIST_FILE = src/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.icerock.moko.sample.permissions;
 				PRODUCT_NAME = mokoSamplePermissions;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -289,6 +290,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4VU932NX78;
 				INFOPLIST_FILE = src/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.icerock.moko.sample.permissions;
 				PRODUCT_NAME = mokoSamplePermissions;
 				PROVISIONING_PROFILE_SPECIFIER = "";
