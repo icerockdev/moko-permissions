@@ -58,7 +58,9 @@ class PermissionsControllerImpl(
     }
 
     override fun isPermissionGranted(permission: Permission): Boolean {
-        if (permission == Permission.REMOTE_NOTIFICATION && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (permission == Permission.REMOTE_NOTIFICATION &&
+            Build.VERSION.SDK_INT in VERSIONS_WITHOUT_NOTIFICATION_PERMISSION
+        ) {
             return NotificationManagerCompat.from(applicationContext).areNotificationsEnabled()
         }
         return permission.toPlatformPermission().all {
@@ -69,7 +71,9 @@ class PermissionsControllerImpl(
 
     @Suppress("ReturnCount")
     override suspend fun getPermissionState(permission: Permission): PermissionState {
-        if (permission == Permission.REMOTE_NOTIFICATION && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (permission == Permission.REMOTE_NOTIFICATION &&
+            Build.VERSION.SDK_INT in VERSIONS_WITHOUT_NOTIFICATION_PERMISSION
+        ) {
             val isNotificationsEnabled = NotificationManagerCompat.from(applicationContext)
                 .areNotificationsEnabled()
             return if (isNotificationsEnabled) {
@@ -133,7 +137,14 @@ class PermissionsControllerImpl(
             Permission.WRITE_STORAGE -> listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             Permission.LOCATION -> listOf(Manifest.permission.ACCESS_FINE_LOCATION)
             Permission.COARSE_LOCATION -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-            Permission.REMOTE_NOTIFICATION -> emptyList()
+            Permission.REMOTE_NOTIFICATION -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    listOf(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    emptyList()
+                }
+            }
+
             Permission.RECORD_AUDIO -> listOf(Manifest.permission.RECORD_AUDIO)
             Permission.BLUETOOTH_LE -> allBluetoothPermissions()
             Permission.BLUETOOTH_SCAN -> bluetoothScanCompat()
@@ -180,4 +191,9 @@ class PermissionsControllerImpl(
         } else {
             listOf(Manifest.permission.BLUETOOTH)
         }
+
+    private companion object {
+        val VERSIONS_WITHOUT_NOTIFICATION_PERMISSION =
+            Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.TIRAMISU
+    }
 }
