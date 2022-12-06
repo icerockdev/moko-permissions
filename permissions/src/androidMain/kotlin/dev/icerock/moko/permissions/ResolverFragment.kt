@@ -7,6 +7,7 @@ package dev.icerock.moko.permissions
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 
 internal class ResolverFragment : Fragment() {
     init {
@@ -20,20 +21,22 @@ internal class ResolverFragment : Fragment() {
         permissions: List<String>,
         callback: (Result<Unit>) -> Unit
     ) {
-        val context = requireContext()
-        val toRequest = permissions.filter {
-            ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
+        lifecycleScope.launchWhenCreated {
+            val context = requireContext()
+            val toRequest = permissions.filter {
+                ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
+            }
+
+            if (toRequest.isEmpty()) {
+                callback.invoke(Result.success(Unit))
+                return@launchWhenCreated
+            }
+
+            val requestCode = (permissionCallbackMap.keys.maxOrNull() ?: 0) + 1
+            permissionCallbackMap[requestCode] = PermissionCallback(permission, callback)
+
+            requestPermissions(toRequest.toTypedArray(), requestCode)
         }
-
-        if (toRequest.isEmpty()) {
-            callback.invoke(Result.success(Unit))
-            return
-        }
-
-        val requestCode = (permissionCallbackMap.keys.maxOrNull() ?: 0) + 1
-        permissionCallbackMap[requestCode] = PermissionCallback(permission, callback)
-
-        requestPermissions(toRequest.toTypedArray(), requestCode)
     }
 
     override fun onRequestPermissionsResult(
