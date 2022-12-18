@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@Suppress("FunctionNaming")
 @Composable
 fun TestScreen(viewModel: SampleViewModel) {
     val scaffoldState = rememberScaffoldState()

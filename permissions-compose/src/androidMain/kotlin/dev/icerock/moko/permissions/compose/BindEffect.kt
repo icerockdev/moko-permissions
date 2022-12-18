@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.fragment.app.FragmentActivity
 import dev.icerock.moko.permissions.PermissionsController
 
+@Suppress("FunctionNaming")
 @Composable
 fun BindEffect(permissionsController: PermissionsController) {
     val lifecycleOwner = LocalLifecycleOwner.current
