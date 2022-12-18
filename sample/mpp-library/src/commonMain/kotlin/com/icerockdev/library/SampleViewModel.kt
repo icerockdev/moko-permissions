@@ -17,7 +17,7 @@ class SampleViewModel(
 
     init {
         viewModelScope.launch {
-            val startState = permissionsController.getPermissionState(Permission.RECORD_AUDIO)
+            val startState = permissionsController.getPermissionState(permissionType)
             println(startState)
         }
     }

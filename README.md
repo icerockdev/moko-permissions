@@ -38,8 +38,9 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.13.0")
-    commonTestImplementation("dev.icerock.moko:permissions-test:0.13.0")
+    commonMainApi("dev.icerock.moko:permissions:0.14.0")
+    androidMainApi("dev.icerock.moko:permissions-compose:0.14.0") // permissions api + compose extensions
+    commonTestImplementation("dev.icerock.moko:permissions-test:0.14.0")
 }
 ```
 
@@ -92,6 +93,20 @@ override fun onCreate(savedInstanceState: Bundle?) {
     
     // Binds the permissions controller to the activity lifecycle.
     viewModel.permissionsController.bind(lifecycle, supportFragmentManager)
+}
+```
+
+Compose:
+```kotlin
+@Composable
+fun TestScreen() {
+    val viewModel = getViewModel {
+        // Pass the platform implementation of the permission controller to a common code.
+        ViewModel(PermissionsController())
+    }
+    
+    // Binds the permissions controller to the LocalLifecycleOwner lifecycle.
+    BindEffect(viewModel.permissionsController)
 }
 ```
 

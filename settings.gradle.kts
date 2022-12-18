@@ -13,6 +13,8 @@ dependencyResolutionManagement {
 }
 
 include(":permissions")
+include(":permissions-compose")
 include(":permissions-test")
 include(":sample:android-app")
+include(":sample:compose-android-app")
 include(":sample:mpp-library")
