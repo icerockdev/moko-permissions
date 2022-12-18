@@ -11,6 +11,7 @@ coroutinesVersion = "1.6.0-native-mt"
 mokoMvvmVersion = "0.12.0"
 mokoPermissionsVersion = "0.13.0"
 composeJetBrainsVersion = "1.1.1"
+lifecycleRuntime = "2.5.1"
 
 [libraries]
 appCompat = { module = "androidx.appcompat:appcompat", version.ref = "androidAppCompatVersion" }
@@ -18,6 +19,7 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 composeMaterial = { module = "androidx.compose.material:material", version.ref = "composeMaterialVersion" }
 composeActivity = { module = "androidx.activity:activity-compose", version.ref = "composeActivityVersion" }
 lifecycle = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "androidLifecycleVersion" }
+lifecycleRuntime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntime" }
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 mokoMvvmCore = { module = "dev.icerock.moko:mvvm-core", version.ref = "mokoMvvmVersion" }
 mokoMvvmTest = { module = "dev.icerock.moko:mvvm-test", version.ref = "mokoMvvmVersion" }
@@ -29,7 +31,7 @@ kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", ver
 androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.0.4" }
 googleServicesGradlePlugin = { module = "com.google.gms:google-services", version = "4.3.8" }
 firebaseGradlePlugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.2.0" }
-mokoGradlePlugin = { module = "dev.icerock.moko:moko-gradle-plugin", version = "0.1.0" }
+mokoGradlePlugin = { module = "dev.icerock.moko:moko-gradle-plugin", version = "0.2.0" }
 mobileMultiplatformGradlePlugin = { module = "dev.icerock:mobile-multiplatform", version = "0.14.1" }
 kotlinSerializationGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinVersion" }
 composeJetBrainsGradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "composeJetBrainsVersion" }
