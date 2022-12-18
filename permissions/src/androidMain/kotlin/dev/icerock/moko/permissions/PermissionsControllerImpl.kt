@@ -22,6 +22,8 @@ import androidx.lifecycle.OnLifecycleEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.suspendCoroutine
 
 @Suppress("TooManyFunctions")
@@ -30,6 +32,7 @@ class PermissionsControllerImpl(
     private val applicationContext: Context
 ) : PermissionsController {
     private val fragmentManagerHolder = MutableStateFlow<FragmentManager?>(null)
+    private val mutex: Mutex = Mutex()
 
     override fun bind(lifecycle: Lifecycle, fragmentManager: FragmentManager) {
         this.fragmentManagerHolder.value = fragmentManager
@@ -45,15 +48,17 @@ class PermissionsControllerImpl(
     }
 
     override suspend fun providePermission(permission: Permission) {
-        val fragmentManager: FragmentManager = awaitFragmentManager()
-        val resolverFragment: ResolverFragment = getOrCreateResolverFragment(fragmentManager)
+        mutex.withLock {
+            val fragmentManager: FragmentManager = awaitFragmentManager()
+            val resolverFragment: ResolverFragment = getOrCreateResolverFragment(fragmentManager)
 
-        val platformPermission = permission.toPlatformPermission()
-        suspendCoroutine<Unit> { continuation ->
-            resolverFragment.requestPermission(
-                permission,
-                platformPermission
-            ) { continuation.resumeWith(it) }
+            val platformPermission = permission.toPlatformPermission()
+            suspendCoroutine<Unit> { continuation ->
+                resolverFragment.requestPermission(
+                    permission,
+                    platformPermission
+                ) { continuation.resumeWith(it) }
+            }
         }
     }
 
@@ -124,7 +129,7 @@ class PermissionsControllerImpl(
                 fragmentManager
                     .beginTransaction()
                     .add(fragment, resolverFragmentTag)
-                    .commitNow()
+                    .commit()
             }
         }
     }
