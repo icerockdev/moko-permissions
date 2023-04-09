@@ -12,11 +12,11 @@ buildscript {
     dependencies {
         classpath(libs.kotlinGradlePlugin)
         classpath(libs.androidGradlePlugin)
-        classpath(libs.googleServicesGradlePlugin)
         classpath(libs.mokoGradlePlugin)
         classpath(libs.mobileMultiplatformGradlePlugin)
         classpath(libs.kotlinSerializationGradlePlugin)
         classpath(libs.composeJetBrainsGradlePlugin)
+        classpath(libs.detektGradlePlugin)
     }
 }
 

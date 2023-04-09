@@ -35,7 +35,7 @@ internal class AVCapturePermissionDelegate(
                 else throw DeniedAlwaysException(permission)
             }
             AVAuthorizationStatusDenied -> throw DeniedAlwaysException(permission)
-            else -> throw IllegalStateException("unknown authorization status $status")
+            else -> error("unknown authorization status $status")
         }
     }
 
@@ -49,7 +49,7 @@ internal class AVCapturePermissionDelegate(
             AVAuthorizationStatusAuthorized -> PermissionState.Granted
             AVAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             AVAuthorizationStatusDenied -> PermissionState.DeniedAlways
-            else -> throw IllegalStateException("unknown authorization status $status")
+            else -> error("unknown authorization status $status")
         }
     }
 
