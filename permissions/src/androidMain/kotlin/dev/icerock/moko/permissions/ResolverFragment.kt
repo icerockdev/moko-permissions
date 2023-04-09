@@ -39,6 +39,7 @@ internal class ResolverFragment : Fragment() {
         }
     }
 
+    @Suppress("UnreachableCode")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -49,6 +50,14 @@ internal class ResolverFragment : Fragment() {
         val permissionCallback = permissionCallbackMap[requestCode] ?: return
         permissionCallbackMap.remove(requestCode)
 
+        managePermissions(permissionCallback, permissions, grantResults)
+    }
+
+    private fun managePermissions(
+        permissionCallback: PermissionCallback,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         val isCancelled = grantResults.isEmpty() || permissions.isEmpty()
         if (isCancelled) {
             permissionCallback.callback.invoke(
