@@ -7,7 +7,7 @@ plugins {
     id("dev.icerock.moko.gradle.android.publication")
     id("dev.icerock.moko.gradle.stub.javadoc")
     id("dev.icerock.moko.gradle.detekt")
-    alias(libs.plugins.jetpack.compose)
+    id("org.jetbrains.compose")
 }
 
 dependencies {

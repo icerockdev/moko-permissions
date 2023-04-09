@@ -20,10 +20,6 @@ buildscript {
     }
 }
 
-plugins {
-    alias(libs.plugins.jetpack.compose) apply false
-}
-
 apply(plugin = "dev.icerock.moko.gradle.publication.nexus")
 val mokoVersion = libs.versions.mokoPermissionsVersion.get()
 allprojects {

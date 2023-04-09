@@ -1,6 +1,5 @@
 [versions]
 kotlinVersion = "1.7.20"
-jetpack-compose = "1.3.0"
 androidAppCompatVersion = "1.2.0"
 composeCompilerVersion = "1.3.2"
 composeMaterialVersion = "1.3.1"
@@ -11,7 +10,7 @@ androidCoreTestingVersion = "2.1.0"
 coroutinesVersion = "1.6.0-native-mt"
 mokoMvvmVersion = "0.12.0"
 mokoPermissionsVersion = "0.14.0"
-composeJetBrainsVersion = "1.1.1"
+composeJetBrainsVersion = "1.3.0"
 lifecycleRuntime = "2.5.1"
 
 [libraries]
@@ -36,6 +35,3 @@ mokoGradlePlugin = { module = "dev.icerock.moko:moko-gradle-plugin", version = "
 mobileMultiplatformGradlePlugin = { module = "dev.icerock:mobile-multiplatform", version = "0.14.1" }
 kotlinSerializationGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinVersion" }
 composeJetBrainsGradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "composeJetBrainsVersion" }
-
-[plugins]
-jetpack-compose = { id = "org.jetbrains.compose", version.ref = "jetpack-compose" }
