@@ -16,7 +16,9 @@ import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNAuthorizationStatus
 import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNAuthorizationStatusDenied
+import platform.UserNotifications.UNAuthorizationStatusEphemeral
 import platform.UserNotifications.UNAuthorizationStatusNotDetermined
+import platform.UserNotifications.UNAuthorizationStatusProvisional
 import platform.UserNotifications.UNNotificationSettings
 import platform.UserNotifications.UNUserNotificationCenter
 import kotlin.coroutines.suspendCoroutine
@@ -85,7 +87,10 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
                 })
         }
         return when (status) {
-            UNAuthorizationStatusAuthorized -> PermissionState.Granted
+            UNAuthorizationStatusAuthorized,
+            UNAuthorizationStatusProvisional,
+            UNAuthorizationStatusEphemeral -> PermissionState.Granted
+
             UNAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             UNAuthorizationStatusDenied -> PermissionState.DeniedAlways
             else -> error("unknown push authorization status $status")
