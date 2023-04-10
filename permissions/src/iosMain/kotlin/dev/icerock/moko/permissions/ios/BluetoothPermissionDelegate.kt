@@ -62,9 +62,9 @@ internal class BluetoothPermissionDelegate(
             CBManagerStateUnsupported ->
                 throw DeniedAlwaysException(permission, "Bluetooth is not supported on this device")
             CBManagerStateUnknown ->
-                throw IllegalStateException("Bluetooth state should be known at this point")
+                error("Bluetooth state should be known at this point")
             else ->
-                throw IllegalStateException("Unknown state (Permissions library should be updated) : $state")
+                error("Unknown state (Permissions library should be updated) : $state")
         }
     }
 
@@ -84,7 +84,7 @@ internal class BluetoothPermissionDelegate(
                 CBManagerAuthorizationNotDetermined -> PermissionState.NotDetermined
                 CBManagerAuthorizationAllowedAlways, CBManagerAuthorizationRestricted -> PermissionState.Granted
                 CBManagerAuthorizationDenied -> PermissionState.DeniedAlways
-                else -> throw IllegalStateException("unknown state $state")
+                else -> error("unknown state $state")
             }
         }
         val state: CBManagerState = CBCentralManager().state
@@ -93,7 +93,7 @@ internal class BluetoothPermissionDelegate(
             CBManagerStateUnauthorized, CBManagerStatePoweredOff,
             CBManagerStateResetting, CBManagerStateUnsupported -> PermissionState.DeniedAlways
             CBManagerStateUnknown -> PermissionState.NotDetermined
-            else -> throw IllegalStateException("unknown state $state")
+            else -> error("unknown state $state")
         }
     }
 }

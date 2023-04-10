@@ -23,9 +23,10 @@ import kotlin.coroutines.suspendCoroutine
 
 internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
     override suspend fun providePermission() {
-        val currentCenter = UNUserNotificationCenter.currentNotificationCenter()
+        val currentCenter: UNUserNotificationCenter = UNUserNotificationCenter
+            .currentNotificationCenter()
 
-        val status = suspendCoroutine<UNAuthorizationStatus> { continuation ->
+        val status: UNAuthorizationStatus = suspendCoroutine { continuation ->
             currentCenter.getNotificationSettingsWithCompletionHandler(
                 mainContinuation { settings: UNNotificationSettings? ->
                     continuation.resumeWith(
@@ -33,7 +34,8 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
                             settings?.authorizationStatus ?: UNAuthorizationStatusNotDetermined
                         )
                     )
-                })
+                }
+            )
         }
         when (status) {
             UNAuthorizationStatusAuthorized -> return
@@ -56,11 +58,12 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
                 if (isSuccess) {
                     providePermission()
                 } else {
-                    throw IllegalStateException("notifications permission failed")
+                    error("notifications permission failed")
                 }
             }
+
             UNAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.REMOTE_NOTIFICATION)
-            else -> throw IllegalStateException("notifications permission status $status")
+            else -> error("notifications permission status $status")
         }
     }
 
@@ -85,7 +88,7 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
             UNAuthorizationStatusAuthorized -> PermissionState.Granted
             UNAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             UNAuthorizationStatusDenied -> PermissionState.DeniedAlways
-            else -> throw IllegalStateException("unknown push authorization status $status")
+            else -> error("unknown push authorization status $status")
         }
     }
 }

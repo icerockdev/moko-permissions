@@ -31,7 +31,7 @@ internal class GalleryPermissionDelegate : PermissionDelegate {
                 providePermission(newStatus)
             }
             PHAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.GALLERY)
-            else -> throw IllegalStateException("unknown gallery authorization status $status")
+            else -> error("unknown gallery authorization status $status")
         }
     }
 
@@ -45,7 +45,7 @@ internal class GalleryPermissionDelegate : PermissionDelegate {
             PHAuthorizationStatusAuthorized -> PermissionState.Granted
             PHAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             PHAuthorizationStatusDenied -> PermissionState.DeniedAlways
-            else -> throw IllegalStateException("unknown gallery authorization status $status")
+            else -> error("unknown gallery authorization status $status")
         }
     }
 }

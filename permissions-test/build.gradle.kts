@@ -5,10 +5,13 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("dev.icerock.moko.gradle.multiplatform.mobile")
-    id("dev.icerock.mobile.multiplatform.android-manifest")
     id("dev.icerock.moko.gradle.publication")
     id("dev.icerock.moko.gradle.stub.javadoc")
     id("dev.icerock.moko.gradle.detekt")
+}
+
+android {
+    namespace = "dev.icerock.moko.permissions.test"
 }
 
 dependencies {

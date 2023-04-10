@@ -4,20 +4,7 @@
 
 package dev.icerock.moko.permissions
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Runnable
-import platform.Foundation.NSRunLoop
 import platform.Foundation.NSThread
-import platform.Foundation.performBlock
-import kotlin.coroutines.CoroutineContext
-
-/**
- * Simple object made to ensure dispatching to the main looper on iOS
- */
-object MainRunDispatcher : CoroutineDispatcher() {
-    override fun dispatch(context: CoroutineContext, block: Runnable) =
-        NSRunLoop.mainRunLoop.performBlock { block.run() }
-}
 
 internal inline fun <T1> mainContinuation(
     noinline block: (T1) -> Unit
