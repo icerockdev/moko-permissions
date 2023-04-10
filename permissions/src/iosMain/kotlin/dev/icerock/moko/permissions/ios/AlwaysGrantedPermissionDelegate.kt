@@ -9,7 +9,5 @@ import dev.icerock.moko.permissions.PermissionState
 internal class AlwaysGrantedPermissionDelegate : PermissionDelegate {
     override suspend fun providePermission() = Unit
 
-    override fun isPermissionGranted(): Boolean = true
-
     override suspend fun getPermissionState(): PermissionState = PermissionState.Granted
 }

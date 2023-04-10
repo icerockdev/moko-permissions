@@ -25,20 +25,15 @@ internal class LocationPermissionDelegate(
         return provideLocationPermission(CLLocationManager.authorizationStatus())
     }
 
-    override fun isPermissionGranted(): Boolean {
-        val status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
-        return status == kCLAuthorizationStatusAuthorizedAlways
-                || status == kCLAuthorizationStatusAuthorizedWhenInUse
-    }
-
     override suspend fun getPermissionState(): PermissionState {
         val status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
         return when (status) {
             kCLAuthorizationStatusAuthorizedAlways,
             kCLAuthorizationStatusAuthorizedWhenInUse -> PermissionState.Granted
+
             kCLAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             kCLAuthorizationStatusDenied -> PermissionState.DeniedAlways
-            else -> throw IllegalStateException("unknown location authorization status $status")
+            else -> error("unknown location authorization status $status")
         }
     }
 
@@ -48,14 +43,16 @@ internal class LocationPermissionDelegate(
         when (status) {
             kCLAuthorizationStatusAuthorizedAlways,
             kCLAuthorizationStatusAuthorizedWhenInUse -> return
+
             kCLAuthorizationStatusNotDetermined -> {
                 val newStatus = suspendCoroutine<CLAuthorizationStatus> { continuation ->
                     locationManagerDelegate.requestLocationAccess { continuation.resume(it) }
                 }
                 provideLocationPermission(newStatus)
             }
+
             kCLAuthorizationStatusDenied -> throw DeniedAlwaysException(permission)
-            else -> throw IllegalStateException("unknown location authorization status $status")
+            else -> error("unknown location authorization status $status")
         }
     }
 }

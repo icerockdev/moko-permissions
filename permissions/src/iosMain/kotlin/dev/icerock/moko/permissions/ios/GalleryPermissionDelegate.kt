@@ -30,13 +30,10 @@ internal class GalleryPermissionDelegate : PermissionDelegate {
                 }
                 providePermission(newStatus)
             }
-            PHAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.GALLERY)
-            else -> throw IllegalStateException("unknown gallery authorization status $status")
-        }
-    }
 
-    override fun isPermissionGranted(): Boolean {
-        return PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatusAuthorized
+            PHAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.GALLERY)
+            else -> error("unknown gallery authorization status $status")
+        }
     }
 
     override suspend fun getPermissionState(): PermissionState {
@@ -45,7 +42,7 @@ internal class GalleryPermissionDelegate : PermissionDelegate {
             PHAuthorizationStatusAuthorized -> PermissionState.Granted
             PHAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             PHAuthorizationStatusDenied -> PermissionState.DeniedAlways
-            else -> throw IllegalStateException("unknown gallery authorization status $status")
+            else -> error("unknown gallery authorization status $status")
         }
     }
 }

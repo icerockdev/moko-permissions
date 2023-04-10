@@ -8,24 +8,25 @@ import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.mainContinuation
-import platform.UIKit.UIApplication
-import platform.UIKit.registeredForRemoteNotifications
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNAuthorizationStatus
 import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNAuthorizationStatusDenied
+import platform.UserNotifications.UNAuthorizationStatusEphemeral
 import platform.UserNotifications.UNAuthorizationStatusNotDetermined
+import platform.UserNotifications.UNAuthorizationStatusProvisional
 import platform.UserNotifications.UNNotificationSettings
 import platform.UserNotifications.UNUserNotificationCenter
 import kotlin.coroutines.suspendCoroutine
 
 internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
     override suspend fun providePermission() {
-        val currentCenter = UNUserNotificationCenter.currentNotificationCenter()
+        val currentCenter: UNUserNotificationCenter = UNUserNotificationCenter
+            .currentNotificationCenter()
 
-        val status = suspendCoroutine<UNAuthorizationStatus> { continuation ->
+        val status: UNAuthorizationStatus = suspendCoroutine { continuation ->
             currentCenter.getNotificationSettingsWithCompletionHandler(
                 mainContinuation { settings: UNNotificationSettings? ->
                     continuation.resumeWith(
@@ -33,7 +34,8 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
                             settings?.authorizationStatus ?: UNAuthorizationStatusNotDetermined
                         )
                     )
-                })
+                }
+            )
         }
         when (status) {
             UNAuthorizationStatusAuthorized -> return
@@ -56,16 +58,13 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
                 if (isSuccess) {
                     providePermission()
                 } else {
-                    throw IllegalStateException("notifications permission failed")
+                    error("notifications permission failed")
                 }
             }
-            UNAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.REMOTE_NOTIFICATION)
-            else -> throw IllegalStateException("notifications permission status $status")
-        }
-    }
 
-    override fun isPermissionGranted(): Boolean {
-        return UIApplication.sharedApplication().registeredForRemoteNotifications
+            UNAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.REMOTE_NOTIFICATION)
+            else -> error("notifications permission status $status")
+        }
     }
 
     override suspend fun getPermissionState(): PermissionState {
@@ -82,10 +81,13 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
                 })
         }
         return when (status) {
-            UNAuthorizationStatusAuthorized -> PermissionState.Granted
+            UNAuthorizationStatusAuthorized,
+            UNAuthorizationStatusProvisional,
+            UNAuthorizationStatusEphemeral -> PermissionState.Granted
+
             UNAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             UNAuthorizationStatusDenied -> PermissionState.DeniedAlways
-            else -> throw IllegalStateException("unknown push authorization status $status")
+            else -> error("unknown push authorization status $status")
         }
     }
 }

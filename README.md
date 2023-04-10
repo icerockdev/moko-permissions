@@ -19,6 +19,7 @@
 - **Permission** - enumeration with primary types of device permissions
 - **PermissionsController** - handler for runtime permission requests can be used in the common code with lifecycle safety for Android
 - **DeniedException** and **DeniedAlwaysException** - exceptions to handle user denial of permissions
+- **Compose Multiplatform** support
 
 ## Requirements
 - Gradle version 6.8+
@@ -38,9 +39,12 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.14.0")
-    androidMainApi("dev.icerock.moko:permissions-compose:0.14.0") // permissions api + compose extensions
-    commonTestImplementation("dev.icerock.moko:permissions-test:0.14.0")
+    commonMainApi("dev.icerock.moko:permissions:0.15.0")
+    
+    // compose multiplatform
+    commonMainApi("dev.icerock.moko:permissions-compose:0.15.0") // permissions api + compose extensions
+    
+    commonTestImplementation("dev.icerock.moko:permissions-test:0.15.0")
 }
 ```
 
@@ -114,6 +118,54 @@ iOS:
 ```swift
 // Just pass the platform implementation of the permission controller to a common code.
 let viewModel = ViewModel(permissionsController: PermissionsController())
+```
+
+### Compose Multiplatform
+```kotlin
+@Composable
+fun Sample() {
+    val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
+    val controller: PermissionsController = remember(factory) { factory.createPermissionsController() }
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    
+    Button(
+        onClick = {
+            coroutineScope.launch {
+                controller.providePermission(Permission.REMOTE_NOTIFICATION)
+            }
+        }
+    ) {
+        Text(text = "give permissions")
+    }
+}
+```
+
+Or with `moko-mvvm` with correct configuration change handle on android:
+```kotlin
+@Composable
+fun Sample() {
+    val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
+    val viewModel: PermissionsViewModel = getViewModel(
+        key = "permissions-screen",
+        factory = viewModelFactory { PermissionsViewModel(factory.createPermissionsController()) }
+    )
+    
+    BindEffect(viewModel.permissionsController)
+
+    Button(onClick = viewModel::onButtonClick) {
+        Text(text = "give permissions")
+    }
+}
+
+class PermissionsViewModel(
+    val permissionsController: PermissionsController
+) : ViewModel() {
+    fun onButtonClick() {
+        viewModelScope.launch {
+            permissionsController.providePermission(Permission.REMOTE_NOTIFICATION)
+        }
+    }
+}
 ```
 
 ## Samples

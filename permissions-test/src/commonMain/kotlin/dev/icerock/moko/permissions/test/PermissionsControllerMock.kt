@@ -12,7 +12,7 @@ import dev.icerock.moko.permissions.PermissionsController
 expect abstract class PermissionsControllerMock constructor() : PermissionsController {
     abstract override suspend fun providePermission(permission: Permission)
 
-    abstract override fun isPermissionGranted(permission: Permission): Boolean
+    abstract override suspend fun isPermissionGranted(permission: Permission): Boolean
 
     companion object
 }
@@ -33,7 +33,7 @@ fun createPermissionControllerMock(
         throw DeniedException(permission, "mock block permission")
     }
 
-    override fun isPermissionGranted(permission: Permission): Boolean {
+    override suspend fun isPermissionGranted(permission: Permission): Boolean {
         return this.granted.contains(permission)
     }
 
