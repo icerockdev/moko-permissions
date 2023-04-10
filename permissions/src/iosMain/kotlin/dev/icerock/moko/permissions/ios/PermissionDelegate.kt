@@ -8,6 +8,5 @@ import dev.icerock.moko.permissions.PermissionState
 
 internal interface PermissionDelegate {
     suspend fun providePermission()
-    fun isPermissionGranted(): Boolean
     suspend fun getPermissionState(): PermissionState
 }

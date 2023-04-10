@@ -62,16 +62,8 @@ class PermissionsControllerImpl(
         }
     }
 
-    override fun isPermissionGranted(permission: Permission): Boolean {
-        if (permission == Permission.REMOTE_NOTIFICATION &&
-            Build.VERSION.SDK_INT in VERSIONS_WITHOUT_NOTIFICATION_PERMISSION
-        ) {
-            return NotificationManagerCompat.from(applicationContext).areNotificationsEnabled()
-        }
-        return permission.toPlatformPermission().all {
-            val status = ContextCompat.checkSelfPermission(applicationContext, it)
-            status == PackageManager.PERMISSION_GRANTED
-        }
+    override suspend fun isPermissionGranted(permission: Permission): Boolean {
+        return getPermissionState(permission) == PermissionState.Granted
     }
 
     @Suppress("ReturnCount")

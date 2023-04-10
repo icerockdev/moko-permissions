@@ -8,8 +8,6 @@ import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.mainContinuation
-import platform.UIKit.UIApplication
-import platform.UIKit.registeredForRemoteNotifications
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
@@ -67,10 +65,6 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
             UNAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.REMOTE_NOTIFICATION)
             else -> error("notifications permission status $status")
         }
-    }
-
-    override fun isPermissionGranted(): Boolean {
-        return UIApplication.sharedApplication().registeredForRemoteNotifications
     }
 
     override suspend fun getPermissionState(): PermissionState {

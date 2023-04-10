@@ -25,12 +25,6 @@ internal class LocationPermissionDelegate(
         return provideLocationPermission(CLLocationManager.authorizationStatus())
     }
 
-    override fun isPermissionGranted(): Boolean {
-        val status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
-        return status == kCLAuthorizationStatusAuthorizedAlways ||
-                status == kCLAuthorizationStatusAuthorizedWhenInUse
-    }
-
     override suspend fun getPermissionState(): PermissionState {
         val status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
         return when (status) {
