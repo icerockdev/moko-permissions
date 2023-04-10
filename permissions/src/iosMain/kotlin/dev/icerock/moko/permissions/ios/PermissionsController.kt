@@ -20,8 +20,8 @@ class PermissionsController : PermissionsControllerProtocol {
         return getDelegate(permission).providePermission()
     }
 
-    override fun isPermissionGranted(permission: Permission): Boolean {
-        return getDelegate(permission).isPermissionGranted()
+    override suspend fun isPermissionGranted(permission: Permission): Boolean {
+        return getDelegate(permission).getPermissionState() == PermissionState.Granted
     }
 
     override suspend fun getPermissionState(permission: Permission): PermissionState {
@@ -41,6 +41,7 @@ class PermissionsController : PermissionsControllerProtocol {
             Permission.STORAGE, Permission.WRITE_STORAGE -> AlwaysGrantedPermissionDelegate()
             Permission.LOCATION, Permission.COARSE_LOCATION ->
                 LocationPermissionDelegate(locationManagerDelegate, permission)
+
             Permission.RECORD_AUDIO -> AVCapturePermissionDelegate(AVMediaTypeAudio, permission)
             Permission.BLUETOOTH_LE, Permission.BLUETOOTH_SCAN,
             Permission.BLUETOOTH_ADVERTISE, Permission.BLUETOOTH_CONNECT ->

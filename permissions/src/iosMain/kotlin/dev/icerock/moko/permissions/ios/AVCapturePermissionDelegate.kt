@@ -41,10 +41,6 @@ internal class AVCapturePermissionDelegate(
         }
     }
 
-    override fun isPermissionGranted(): Boolean {
-        return currentAuthorizationStatus() == AVAuthorizationStatusAuthorized
-    }
-
     override suspend fun getPermissionState(): PermissionState {
         val status: AVAuthorizationStatus = currentAuthorizationStatus()
         return when (status) {

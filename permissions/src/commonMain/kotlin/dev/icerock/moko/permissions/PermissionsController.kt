@@ -20,7 +20,7 @@ expect interface PermissionsController {
     /**
      * @return true if permission already granted. In all other cases - false.
      */
-    fun isPermissionGranted(permission: Permission): Boolean
+    suspend fun isPermissionGranted(permission: Permission): Boolean
 
     /**
      * Returns current state of permission. Can be suspended because on

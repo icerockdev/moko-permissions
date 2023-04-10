@@ -57,23 +57,19 @@ internal class BluetoothPermissionDelegate(
             CBManagerStateUnauthorized -> throw DeniedAlwaysException(permission)
             CBManagerStatePoweredOff ->
                 throw DeniedException(permission, "Bluetooth is powered off")
+
             CBManagerStateResetting ->
                 throw DeniedException(permission, "Bluetooth is restarting")
+
             CBManagerStateUnsupported ->
                 throw DeniedAlwaysException(permission, "Bluetooth is not supported on this device")
+
             CBManagerStateUnknown ->
                 error("Bluetooth state should be known at this point")
+
             else ->
                 error("Unknown state (Permissions library should be updated) : $state")
         }
-    }
-
-    override fun isPermissionGranted(): Boolean {
-        // To maintain compatibility with iOS 12 (@see https://developer.apple.com/documentation/corebluetooth/cbmanagerauthorization)
-        if (CBManager.resolveClassMethod(NSSelectorFromString("authorization"))) {
-            return CBManager.authorization == CBManagerAuthorizationAllowedAlways
-        }
-        return CBCentralManager().state == CBManagerStatePoweredOn
     }
 
     override suspend fun getPermissionState(): PermissionState {
@@ -92,6 +88,7 @@ internal class BluetoothPermissionDelegate(
             CBManagerStatePoweredOn -> PermissionState.Granted
             CBManagerStateUnauthorized, CBManagerStatePoweredOff,
             CBManagerStateResetting, CBManagerStateUnsupported -> PermissionState.DeniedAlways
+
             CBManagerStateUnknown -> PermissionState.NotDetermined
             else -> error("unknown state $state")
         }
