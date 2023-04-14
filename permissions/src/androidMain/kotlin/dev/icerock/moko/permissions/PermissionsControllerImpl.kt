@@ -15,7 +15,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -127,7 +129,7 @@ class PermissionsControllerImpl(
     private fun Permission.toPlatformPermission(): List<String> {
         return when (this) {
             Permission.CAMERA -> listOf(Manifest.permission.CAMERA)
-            Permission.GALLERY -> allStoragePermissions()
+            Permission.GALLERY -> galleryCompat()
             Permission.STORAGE -> allStoragePermissions()
             Permission.WRITE_STORAGE -> listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             Permission.LOCATION -> fineLocationCompat()
@@ -149,13 +151,25 @@ class PermissionsControllerImpl(
     }
 
     /**
-     * @see https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
+     * Behavior changes: Apps targeting Android 13 or higher
+     *
+     * @see https://developer.android.com/about/versions/13/behavior-changes-13#granular-media-permissions
      */
 
     private fun allStoragePermissions() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             listOf(
                 Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO
+            )
+        } else {
+            listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+    private fun galleryCompat() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            listOf(
                 Manifest.permission.READ_MEDIA_IMAGES,
                 Manifest.permission.READ_MEDIA_VIDEO
             )
@@ -172,6 +186,12 @@ class PermissionsControllerImpl(
         } else {
             listOf(Manifest.permission.ACCESS_FINE_LOCATION)
         }
+
+    /**
+     * Bluetooth permissions
+     *
+     * @see https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
+     */
 
     private fun allBluetoothPermissions() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

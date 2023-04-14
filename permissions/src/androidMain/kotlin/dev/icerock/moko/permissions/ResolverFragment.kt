@@ -9,23 +9,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 
 internal class ResolverFragment : Fragment() {
+
     init {
         retainInstance = true
     }
 
-    private var permissionCallbackMap: PermissionCallback? = null
+    private var permissionCallback: PermissionCallback? = null
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionResults ->
-
-            val permissionCallback = permissionCallbackMap ?: return@registerForActivityResult
-            permissionCallbackMap = null
+            val permissionCallback = permissionCallback ?: return@registerForActivityResult
+            this.permissionCallback = null
 
             val isCancelled = permissionResults.isEmpty()
             if (isCancelled) {
@@ -49,7 +48,6 @@ internal class ResolverFragment : Fragment() {
                     )
                 }
             }
-
         }
 
     fun requestPermission(
@@ -57,27 +55,30 @@ internal class ResolverFragment : Fragment() {
         permissions: List<String>,
         callback: (Result<Unit>) -> Unit
     ) {
-        lifecycle.addObserver(object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (event == Lifecycle.Event.ON_CREATE){
-                    lifecycleScope.launch {
-                        val context = requireContext()
-                        val toRequest = permissions.filter {
-                            ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
-                        }
-
-                        if (toRequest.isEmpty()) {
-                            callback.invoke(Result.success(Unit))
-                            return@launch
-                        }
-
-                        permissionCallbackMap = PermissionCallback(permission, callback)
-
-                        requestPermissionLauncher.launch(toRequest.toTypedArray())
-                    }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                val toRequest = permissions.filter {
+                    ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        it
+                    ) != PackageManager.PERMISSION_GRANTED
                 }
+
+                if (toRequest.isEmpty()) {
+                    callback.invoke(Result.success(Unit))
+                    return@repeatOnLifecycle
+                }
+
+                permissionCallback?.let {
+                    it.callback.invoke(Result.failure(RequestCanceledException(it.permission)))
+                    permissionCallback = null
+                }
+
+                permissionCallback = PermissionCallback(permission, callback)
+
+                requestPermissionLauncher.launch(toRequest.toTypedArray())
             }
-        })
+        }
     }
 
     private class PermissionCallback(
