@@ -16,9 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -37,11 +36,12 @@ class PermissionsControllerImpl(
     override fun bind(lifecycle: Lifecycle, fragmentManager: FragmentManager) {
         this.fragmentManagerHolder.value = fragmentManager
 
-        val observer = object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroyed(source: LifecycleOwner) {
-                this@PermissionsControllerImpl.fragmentManagerHolder.value = null
-                source.lifecycle.removeObserver(this)
+        val observer = object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                if (event == Lifecycle.Event.ON_DESTROY){
+                    this@PermissionsControllerImpl.fragmentManagerHolder.value = null
+                    source.lifecycle.removeObserver(this)
+                }
             }
         }
         lifecycle.addObserver(observer)
@@ -53,7 +53,7 @@ class PermissionsControllerImpl(
             val resolverFragment: ResolverFragment = getOrCreateResolverFragment(fragmentManager)
 
             val platformPermission = permission.toPlatformPermission()
-            suspendCoroutine<Unit> { continuation ->
+            suspendCoroutine { continuation ->
                 resolverFragment.requestPermission(
                     permission,
                     platformPermission
@@ -129,10 +129,10 @@ class PermissionsControllerImpl(
     private fun Permission.toPlatformPermission(): List<String> {
         return when (this) {
             Permission.CAMERA -> listOf(Manifest.permission.CAMERA)
-            Permission.GALLERY -> listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-            Permission.STORAGE -> listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            Permission.GALLERY -> galleryCompat()
+            Permission.STORAGE -> allStoragePermissions()
             Permission.WRITE_STORAGE -> listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            Permission.LOCATION -> listOf(Manifest.permission.ACCESS_FINE_LOCATION)
+            Permission.LOCATION -> fineLocationCompat()
             Permission.COARSE_LOCATION -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
             Permission.REMOTE_NOTIFICATION -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -151,8 +151,48 @@ class PermissionsControllerImpl(
     }
 
     /**
+     * Behavior changes: Apps targeting Android 13 or higher
+     *
+     * @see https://developer.android.com/about/versions/13/behavior-changes-13#granular-media-permissions
+     */
+
+    private fun allStoragePermissions() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            listOf(
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO
+            )
+        } else {
+            listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+    private fun galleryCompat() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            listOf(
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO
+            )
+        } else {
+            listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+    private fun fineLocationCompat() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            )
+        } else {
+            listOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+
+    /**
+     * Bluetooth permissions
+     *
      * @see https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
      */
+
     private fun allBluetoothPermissions() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             listOf(

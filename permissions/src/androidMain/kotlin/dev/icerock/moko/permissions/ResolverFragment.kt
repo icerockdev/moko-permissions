@@ -5,78 +5,78 @@
 package dev.icerock.moko.permissions
 
 import android.content.pm.PackageManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 
 internal class ResolverFragment : Fragment() {
+
     init {
         retainInstance = true
     }
 
-    private val permissionCallbackMap = mutableMapOf<Int, PermissionCallback>()
+    private var permissionCallback: PermissionCallback? = null
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionResults ->
+            val permissionCallback = permissionCallback ?: return@registerForActivityResult
+            this.permissionCallback = null
+
+            val isCancelled = permissionResults.isEmpty()
+            if (isCancelled) {
+                permissionCallback.callback.invoke(
+                    Result.failure(RequestCanceledException(permissionCallback.permission))
+                )
+                return@registerForActivityResult
+            }
+
+            val success = permissionResults.values.all { it }
+            if (success) {
+                permissionCallback.callback.invoke(Result.success(Unit))
+            } else {
+                if (shouldShowRequestPermissionRationale(permissionResults.keys.first())) {
+                    permissionCallback.callback.invoke(
+                        Result.failure(DeniedException(permissionCallback.permission))
+                    )
+                } else {
+                    permissionCallback.callback.invoke(
+                        Result.failure(DeniedAlwaysException(permissionCallback.permission))
+                    )
+                }
+            }
+        }
 
     fun requestPermission(
         permission: Permission,
         permissions: List<String>,
         callback: (Result<Unit>) -> Unit
     ) {
-        lifecycleScope.launchWhenCreated {
-            val context = requireContext()
-            val toRequest = permissions.filter {
-                ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
-            }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                val toRequest = permissions.filter {
+                    ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        it
+                    ) != PackageManager.PERMISSION_GRANTED
+                }
 
-            if (toRequest.isEmpty()) {
-                callback.invoke(Result.success(Unit))
-                return@launchWhenCreated
-            }
+                if (toRequest.isEmpty()) {
+                    callback.invoke(Result.success(Unit))
+                    return@repeatOnLifecycle
+                }
 
-            val requestCode = (permissionCallbackMap.keys.maxOrNull() ?: 0) + 1
-            permissionCallbackMap[requestCode] = PermissionCallback(permission, callback)
+                permissionCallback?.let {
+                    it.callback.invoke(Result.failure(RequestCanceledException(it.permission)))
+                    permissionCallback = null
+                }
 
-            requestPermissions(toRequest.toTypedArray(), requestCode)
-        }
-    }
+                permissionCallback = PermissionCallback(permission, callback)
 
-    @Suppress("UnreachableCode")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        val permissionCallback = permissionCallbackMap[requestCode] ?: return
-        permissionCallbackMap.remove(requestCode)
-
-        managePermissions(permissionCallback, permissions, grantResults)
-    }
-
-    private fun managePermissions(
-        permissionCallback: PermissionCallback,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        val isCancelled = grantResults.isEmpty() || permissions.isEmpty()
-        if (isCancelled) {
-            permissionCallback.callback.invoke(
-                Result.failure(RequestCanceledException(permissionCallback.permission))
-            )
-            return
-        }
-        val success = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
-        if (success) {
-            permissionCallback.callback.invoke(Result.success(Unit))
-        } else {
-            if (shouldShowRequestPermissionRationale(permissions.first())) {
-                permissionCallback.callback.invoke(
-                    Result.failure(DeniedException(permissionCallback.permission))
-                )
-            } else {
-                permissionCallback.callback.invoke(
-                    Result.failure(DeniedAlwaysException(permissionCallback.permission))
-                )
+                requestPermissionLauncher.launch(toRequest.toTypedArray())
             }
         }
     }
