@@ -147,6 +147,7 @@ class PermissionsControllerImpl(
             Permission.BLUETOOTH_SCAN -> bluetoothScanCompat()
             Permission.BLUETOOTH_ADVERTISE -> bluetoothAdvertiseCompat()
             Permission.BLUETOOTH_CONNECT -> bluetoothConnectCompat()
+            Permission.MOTION -> motionPermissions()
         }
     }
 
@@ -227,6 +228,18 @@ class PermissionsControllerImpl(
             listOf(Manifest.permission.BLUETOOTH_CONNECT)
         } else {
             listOf(Manifest.permission.BLUETOOTH)
+        }
+
+    private fun motionPermissions() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(
+                Manifest.permission.ACTIVITY_RECOGNITION,
+                Manifest.permission.BODY_SENSORS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            listOf(Manifest.permission.BODY_SENSORS)
+        } else {
+            emptyList()
         }
 
     private companion object {
