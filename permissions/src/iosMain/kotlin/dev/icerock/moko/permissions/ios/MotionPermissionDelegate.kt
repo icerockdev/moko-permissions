@@ -6,13 +6,18 @@ import platform.CoreMotion.CMAuthorizationStatusDenied
 import platform.CoreMotion.CMAuthorizationStatusNotDetermined
 import platform.CoreMotion.CMAuthorizationStatusRestricted
 import platform.CoreMotion.CMMotionActivityManager
+import platform.Foundation.NSDate
 import platform.Foundation.NSOperationQueue
 
 internal class MotionPermissionDelegate : PermissionDelegate {
     override suspend fun providePermission() {
-        val manager = CMMotionActivityManager()
-        manager.startActivityUpdatesToQueue(NSOperationQueue.mainQueue) {}
-        manager.stopActivityUpdates()
+        val cmActivityManager = CMMotionActivityManager()
+        val now = NSDate()
+        cmActivityManager.queryActivityStartingFromDate(
+            now,
+            now,
+            NSOperationQueue.mainQueue()
+        ) { _, _ -> }
     }
 
     @Suppress("MoveVariableDeclarationIntoWhen")
@@ -20,7 +25,8 @@ internal class MotionPermissionDelegate : PermissionDelegate {
         val status = CMMotionActivityManager.authorizationStatus()
         return when (status) {
             CMAuthorizationStatusAuthorized,
-            CMAuthorizationStatusRestricted -> PermissionState.Granted
+            CMAuthorizationStatusRestricted,
+            -> PermissionState.Granted
 
             CMAuthorizationStatusDenied -> PermissionState.DeniedAlways
             CMAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
