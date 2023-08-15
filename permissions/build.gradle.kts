@@ -4,9 +4,19 @@
 
 plugins {
     id("dev.icerock.moko.gradle.multiplatform.mobile")
-    id("dev.icerock.moko.gradle.publication")
+//    id("dev.icerock.moko.gradle.publication")
     id("dev.icerock.moko.gradle.stub.javadoc")
     id("dev.icerock.moko.gradle.detekt")
+    id("maven-publish")
+}
+
+group = "com.hellomr3"
+version = "1.0"
+
+publishing{
+    repositories {
+        mavenLocal()
+    }
 }
 
 android {
