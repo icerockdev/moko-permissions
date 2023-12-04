@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.suspendCoroutine
 
 @Suppress("TooManyFunctions")
@@ -38,7 +39,7 @@ class PermissionsControllerImpl(
 
         val observer = object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (event == Lifecycle.Event.ON_DESTROY){
+                if (event == Lifecycle.Event.ON_DESTROY) {
                     this@PermissionsControllerImpl.fragmentManagerHolder.value = null
                     source.lifecycle.removeObserver(this)
                 }
@@ -109,7 +110,14 @@ class PermissionsControllerImpl(
         val fragmentManager: FragmentManager? = fragmentManagerHolder.value
         if (fragmentManager != null) return fragmentManager
 
-        return fragmentManagerHolder.filterNotNull().first()
+        return withTimeoutOrNull(AWAIT_FRAGMENT_MANAGER_TIMEOUT_DURATION_MS) {
+            fragmentManagerHolder.filterNotNull().first()
+        } ?: throw IllegalStateException(
+            "fragmentManager is null, `bind` function was never called," +
+                " consider calling permissionsController.bind(lifecycle, fragmentManager)" +
+                " or BindEffect(permissionsController) in the composable function," +
+                " check the documentation for more info: https://github.com/icerockdev/moko-permissions/blob/master/README.md"
+        )
     }
 
     private fun getOrCreateResolverFragment(fragmentManager: FragmentManager): ResolverFragment {
@@ -232,5 +240,6 @@ class PermissionsControllerImpl(
     private companion object {
         val VERSIONS_WITHOUT_NOTIFICATION_PERMISSION =
             Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.TIRAMISU
+        private const val AWAIT_FRAGMENT_MANAGER_TIMEOUT_DURATION_MS = 2000L
     }
 }
