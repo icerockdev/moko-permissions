@@ -23,12 +23,13 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.suspendCoroutine
 
 @Suppress("TooManyFunctions")
 class PermissionsControllerImpl(
     private val resolverFragmentTag: String = "PermissionsControllerResolver",
-    private val applicationContext: Context
+    private val applicationContext: Context,
 ) : PermissionsController {
     private val fragmentManagerHolder = MutableStateFlow<FragmentManager?>(null)
     private val mutex: Mutex = Mutex()
@@ -38,7 +39,7 @@ class PermissionsControllerImpl(
 
         val observer = object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (event == Lifecycle.Event.ON_DESTROY){
+                if (event == Lifecycle.Event.ON_DESTROY) {
                     this@PermissionsControllerImpl.fragmentManagerHolder.value = null
                     source.lifecycle.removeObserver(this)
                 }
@@ -109,7 +110,15 @@ class PermissionsControllerImpl(
         val fragmentManager: FragmentManager? = fragmentManagerHolder.value
         if (fragmentManager != null) return fragmentManager
 
-        return fragmentManagerHolder.filterNotNull().first()
+        return withTimeoutOrNull(AWAIT_FRAGMENT_MANAGER_TIMEOUT_DURATION_MS) {
+            fragmentManagerHolder.filterNotNull().first()
+        } ?: error(
+            "fragmentManager is null, `bind` function was never called," +
+                " consider calling permissionsController.bind(lifecycle, fragmentManager)" +
+                " or BindEffect(permissionsController) in the composable function," +
+                " check the documentation for more info: " +
+                    "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
+        )
     }
 
     private fun getOrCreateResolverFragment(fragmentManager: FragmentManager): ResolverFragment {
@@ -126,6 +135,7 @@ class PermissionsControllerImpl(
         }
     }
 
+    @Suppress("CyclomaticComplexMethod")
     private fun Permission.toPlatformPermission(): List<String> {
         return when (this) {
             Permission.CAMERA -> listOf(Manifest.permission.CAMERA)
@@ -134,19 +144,14 @@ class PermissionsControllerImpl(
             Permission.WRITE_STORAGE -> listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             Permission.LOCATION -> fineLocationCompat()
             Permission.COARSE_LOCATION -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-            Permission.REMOTE_NOTIFICATION -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    listOf(Manifest.permission.POST_NOTIFICATIONS)
-                } else {
-                    emptyList()
-                }
-            }
-
+            Permission.REMOTE_NOTIFICATION -> remoteNotificationsPermissions()
             Permission.RECORD_AUDIO -> listOf(Manifest.permission.RECORD_AUDIO)
             Permission.BLUETOOTH_LE -> allBluetoothPermissions()
             Permission.BLUETOOTH_SCAN -> bluetoothScanCompat()
             Permission.BLUETOOTH_ADVERTISE -> bluetoothAdvertiseCompat()
             Permission.BLUETOOTH_CONNECT -> bluetoothConnectCompat()
+            Permission.CONTACTS-> listOf(Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_CONTACTS)
+            Permission.MOTION -> motionPermissions()
         }
     }
 
@@ -229,8 +234,28 @@ class PermissionsControllerImpl(
             listOf(Manifest.permission.BLUETOOTH)
         }
 
+    private fun motionPermissions() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(
+                Manifest.permission.ACTIVITY_RECOGNITION,
+                Manifest.permission.BODY_SENSORS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            listOf(Manifest.permission.BODY_SENSORS)
+        } else {
+            emptyList()
+        }
+
+    private fun remoteNotificationsPermissions() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            listOf(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            emptyList()
+        }
+
     private companion object {
         val VERSIONS_WITHOUT_NOTIFICATION_PERMISSION =
             Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.TIRAMISU
+        private const val AWAIT_FRAGMENT_MANAGER_TIMEOUT_DURATION_MS = 2000L
     }
 }

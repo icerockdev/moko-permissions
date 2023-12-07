@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
             SampleViewModel(
                 eventsDispatcher = eventsDispatcherOnMain(),
                 permissionsController = PermissionsController(applicationContext = applicationContext),
-                permissionType = Permission.RECORD_AUDIO
+                permissionType = Permission.CONTACTS
             )
         }.also {
             it.permissionsController.bind(lifecycle, supportFragmentManager)
