@@ -9,12 +9,14 @@ import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
 import platform.AVFoundation.AVMediaTypeAudio
 import platform.AVFoundation.AVMediaTypeVideo
+import platform.Contacts.CNContactStore
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 import platform.UIKit.UIApplicationOpenSettingsURLString
 
 class PermissionsController : PermissionsControllerProtocol {
     private val locationManagerDelegate = LocationManagerDelegate()
+    private val contactStore = CNContactStore()
 
     override suspend fun providePermission(permission: Permission) {
         return getDelegate(permission).providePermission()
@@ -46,6 +48,8 @@ class PermissionsController : PermissionsControllerProtocol {
             Permission.BLUETOOTH_LE, Permission.BLUETOOTH_SCAN,
             Permission.BLUETOOTH_ADVERTISE, Permission.BLUETOOTH_CONNECT ->
                 BluetoothPermissionDelegate(permission)
+
+            Permission.CONTACTS->ContactsPermissionDelegate(permission,contactStore)
 
             Permission.MOTION -> MotionPermissionDelegate()
         }

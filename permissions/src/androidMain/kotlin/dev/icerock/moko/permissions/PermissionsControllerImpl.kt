@@ -126,6 +126,7 @@ class PermissionsControllerImpl(
         }
     }
 
+    @Suppress("CyclomaticComplexMethod")
     private fun Permission.toPlatformPermission(): List<String> {
         return when (this) {
             Permission.CAMERA -> listOf(Manifest.permission.CAMERA)
@@ -140,6 +141,7 @@ class PermissionsControllerImpl(
             Permission.BLUETOOTH_SCAN -> bluetoothScanCompat()
             Permission.BLUETOOTH_ADVERTISE -> bluetoothAdvertiseCompat()
             Permission.BLUETOOTH_CONNECT -> bluetoothConnectCompat()
+            Permission.CONTACTS-> listOf(Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_CONTACTS)
             Permission.MOTION -> motionPermissions()
         }
     }
