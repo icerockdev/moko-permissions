@@ -112,11 +112,12 @@ class PermissionsControllerImpl(
 
         return withTimeoutOrNull(AWAIT_FRAGMENT_MANAGER_TIMEOUT_DURATION_MS) {
             fragmentManagerHolder.filterNotNull().first()
-        } ?: throw IllegalStateException(
+        } ?: error(
             "fragmentManager is null, `bind` function was never called," +
                 " consider calling permissionsController.bind(lifecycle, fragmentManager)" +
                 " or BindEffect(permissionsController) in the composable function," +
-                " check the documentation for more info: https://github.com/icerockdev/moko-permissions/blob/master/README.md"
+                " check the documentation for more info: " +
+                    "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
         )
     }
 
