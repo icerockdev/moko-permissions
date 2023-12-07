@@ -29,7 +29,7 @@ import kotlin.coroutines.suspendCoroutine
 @Suppress("TooManyFunctions")
 class PermissionsControllerImpl(
     private val resolverFragmentTag: String = "PermissionsControllerResolver",
-    private val applicationContext: Context
+    private val applicationContext: Context,
 ) : PermissionsController {
     private val fragmentManagerHolder = MutableStateFlow<FragmentManager?>(null)
     private val mutex: Mutex = Mutex()
@@ -142,19 +142,13 @@ class PermissionsControllerImpl(
             Permission.WRITE_STORAGE -> listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             Permission.LOCATION -> fineLocationCompat()
             Permission.COARSE_LOCATION -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
-            Permission.REMOTE_NOTIFICATION -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    listOf(Manifest.permission.POST_NOTIFICATIONS)
-                } else {
-                    emptyList()
-                }
-            }
-
+            Permission.REMOTE_NOTIFICATION -> remoteNotificationsPermissions()
             Permission.RECORD_AUDIO -> listOf(Manifest.permission.RECORD_AUDIO)
             Permission.BLUETOOTH_LE -> allBluetoothPermissions()
             Permission.BLUETOOTH_SCAN -> bluetoothScanCompat()
             Permission.BLUETOOTH_ADVERTISE -> bluetoothAdvertiseCompat()
             Permission.BLUETOOTH_CONNECT -> bluetoothConnectCompat()
+            Permission.MOTION -> motionPermissions()
         }
     }
 
@@ -235,6 +229,25 @@ class PermissionsControllerImpl(
             listOf(Manifest.permission.BLUETOOTH_CONNECT)
         } else {
             listOf(Manifest.permission.BLUETOOTH)
+        }
+
+    private fun motionPermissions() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(
+                Manifest.permission.ACTIVITY_RECOGNITION,
+                Manifest.permission.BODY_SENSORS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            listOf(Manifest.permission.BODY_SENSORS)
+        } else {
+            emptyList()
+        }
+
+    private fun remoteNotificationsPermissions() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            listOf(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            emptyList()
         }
 
     private companion object {
