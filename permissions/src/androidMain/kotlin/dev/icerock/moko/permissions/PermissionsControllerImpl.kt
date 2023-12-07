@@ -126,6 +126,7 @@ class PermissionsControllerImpl(
         }
     }
 
+    @Suppress("CyclomaticComplexMethod")
     private fun Permission.toPlatformPermission(): List<String> {
         return when (this) {
             Permission.CAMERA -> listOf(Manifest.permission.CAMERA)
