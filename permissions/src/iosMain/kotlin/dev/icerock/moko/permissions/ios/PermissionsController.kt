@@ -48,7 +48,10 @@ class PermissionsController : PermissionsControllerProtocol {
             Permission.BLUETOOTH_LE, Permission.BLUETOOTH_SCAN,
             Permission.BLUETOOTH_ADVERTISE, Permission.BLUETOOTH_CONNECT ->
                 BluetoothPermissionDelegate(permission)
+
             Permission.CONTACTS->ContactsPermissionDelegate(permission,contactStore)
+
+            Permission.MOTION -> MotionPermissionDelegate()
         }
     }
 }
