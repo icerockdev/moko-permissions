@@ -91,10 +91,10 @@ class PermissionsControllerImpl(
         val resolverFragment: ResolverFragment = getOrCreateResolverFragment(fragmentManager)
 
         val isAllRequestRationale: Boolean = permissions.all {
-            !resolverFragment.shouldShowRequestPermissionRationale(it)
+            resolverFragment.shouldShowRequestPermissionRationale(it)
         }
-        return if (isAllRequestRationale) PermissionState.NotDetermined
-        else PermissionState.Denied
+        return if (isAllRequestRationale) PermissionState.Denied
+        else PermissionState.NotGranted
     }
 
     override fun openAppSettings() {

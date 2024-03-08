@@ -6,7 +6,10 @@ import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionsController
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SampleViewModel(
@@ -15,10 +18,12 @@ class SampleViewModel(
     private val permissionType: Permission
 ) : ViewModel(), EventsDispatcherOwner<SampleViewModel.EventListener> {
 
+    val permissionState = MutableStateFlow(PermissionState.NotDetermined)
+
     init {
         viewModelScope.launch {
-            val startState = permissionsController.getPermissionState(permissionType)
-            println(startState)
+            permissionState.update { permissionsController.getPermissionState(permissionType) }
+            println(permissionState)
         }
     }
 
@@ -45,8 +50,10 @@ class SampleViewModel(
             } catch (deniedException: DeniedException) {
                 eventsDispatcher.dispatchEvent { onDenied(deniedException) }
             } finally {
-                permissionsController.getPermissionState(permission)
-                    .also { println("post provide $it") }
+                permissionState.update {
+                    permissionsController.getPermissionState(permission)
+                        .also { println("post provide $it") }
+                }
             }
         }
     }
