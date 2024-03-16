@@ -19,4 +19,5 @@ enum class Permission {
     BLUETOOTH_CONNECT,
     CONTACTS,
     MOTION,
+    INSTALL_APPLICATION
 }

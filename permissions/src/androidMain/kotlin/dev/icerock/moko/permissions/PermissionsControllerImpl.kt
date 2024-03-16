@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 @Suppress("TooManyFunctions")
@@ -33,6 +35,7 @@ class PermissionsControllerImpl(
 ) : PermissionsController {
     private val fragmentManagerHolder = MutableStateFlow<FragmentManager?>(null)
     private val mutex: Mutex = Mutex()
+    private val lifecycleObservers: MutableList<Observer> = mutableListOf()
 
     override fun bind(lifecycle: Lifecycle, fragmentManager: FragmentManager) {
         this.fragmentManagerHolder.value = fragmentManager
@@ -50,6 +53,7 @@ class PermissionsControllerImpl(
 
     override suspend fun providePermission(permission: Permission) {
         mutex.withLock {
+            if(permission == Permission.INSTALL_APPLICATION) return provideInstallApplicationPermission()
             val fragmentManager: FragmentManager = awaitFragmentManager()
             val resolverFragment: ResolverFragment = getOrCreateResolverFragment(fragmentManager)
 
@@ -69,6 +73,7 @@ class PermissionsControllerImpl(
 
     @Suppress("ReturnCount")
     override suspend fun getPermissionState(permission: Permission): PermissionState {
+        if(permission == Permission.INSTALL_APPLICATION) return getInstallApplicationState()
         if (permission == Permission.REMOTE_NOTIFICATION &&
             Build.VERSION.SDK_INT in VERSIONS_WITHOUT_NOTIFICATION_PERMISSION
         ) {
@@ -95,6 +100,38 @@ class PermissionsControllerImpl(
         }
         return if (isAllRequestRationale) PermissionState.NotDetermined
         else PermissionState.Denied
+    }
+
+    private fun getInstallApplicationState(): PermissionState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (applicationContext.packageManager.canRequestPackageInstalls()) PermissionState.Granted else PermissionState.DeniedAlways
+    } else {
+        PermissionState.Granted
+    }
+
+    private suspend fun provideInstallApplicationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            suspendCoroutine { continuation ->
+                val observer = Observer { observer, event ->
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        if (getInstallApplicationState() == PermissionState.Granted)
+                            continuation.resume(Unit)
+                        else
+                            continuation.resumeWithException(DeniedException(Permission.INSTALL_APPLICATION))
+                        lifecycleObservers.remove(observer)
+                    } else if (event == Lifecycle.Event.ON_DESTROY) {
+                        lifecycleObservers.remove(observer)
+                    }
+                }
+
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                    Uri.parse("package:${applicationContext.packageName}")
+                )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                applicationContext.startActivity(intent)
+                lifecycleObservers.add(observer)
+            }
+        }
     }
 
     override fun openAppSettings() {
@@ -152,6 +189,7 @@ class PermissionsControllerImpl(
             Permission.BLUETOOTH_CONNECT -> bluetoothConnectCompat()
             Permission.CONTACTS-> listOf(Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_CONTACTS)
             Permission.MOTION -> motionPermissions()
+            Permission.INSTALL_APPLICATION -> emptyList()
         }
     }
 
@@ -258,4 +296,8 @@ class PermissionsControllerImpl(
             Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.TIRAMISU
         private const val AWAIT_FRAGMENT_MANAGER_TIMEOUT_DURATION_MS = 2000L
     }
+}
+
+private fun interface Observer {
+    fun onEvent(observer: Observer, event: Lifecycle.Event)
 }

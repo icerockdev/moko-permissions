@@ -52,6 +52,7 @@ class PermissionsController : PermissionsControllerProtocol {
             Permission.CONTACTS->ContactsPermissionDelegate(permission,contactStore)
 
             Permission.MOTION -> MotionPermissionDelegate()
+            Permission.INSTALL_APPLICATION -> InstallApplicationPermissionDelegate()
         }
     }
 }
