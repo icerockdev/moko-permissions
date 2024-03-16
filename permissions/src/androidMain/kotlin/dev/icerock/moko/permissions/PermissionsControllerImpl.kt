@@ -42,6 +42,7 @@ class PermissionsControllerImpl(
 
         val observer = object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                lifecycleObservers.forEach { observer -> observer.onEvent(observer, event) }
                 if (event == Lifecycle.Event.ON_DESTROY) {
                     this@PermissionsControllerImpl.fragmentManagerHolder.value = null
                     source.lifecycle.removeObserver(this)
