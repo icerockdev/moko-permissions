@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                                 permissionsController = PermissionsController(
                                     applicationContext = applicationContext
                                 ),
-                                permissionType = Permission.CAMERA
+                                permissionType = Permission.INSTALL_APPLICATION
                             )
                         }
                     )
