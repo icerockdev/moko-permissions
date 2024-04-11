@@ -41,7 +41,7 @@ class PermissionsController : PermissionsControllerProtocol {
             Permission.CAMERA -> AVCapturePermissionDelegate(AVMediaTypeVideo, permission)
             Permission.GALLERY -> GalleryPermissionDelegate()
             Permission.STORAGE, Permission.WRITE_STORAGE -> AlwaysGrantedPermissionDelegate()
-            Permission.LOCATION, Permission.COARSE_LOCATION ->
+            Permission.LOCATION, Permission.COARSE_LOCATION, Permission.BACKGROUND_LOCATION ->
                 LocationPermissionDelegate(locationManagerDelegate, permission)
 
             Permission.RECORD_AUDIO -> AVCapturePermissionDelegate(AVMediaTypeAudio, permission)
