@@ -24,7 +24,7 @@
 ## Requirements
 - Gradle version 6.8+
 - Android API 16+
-- iOS version 11.0+
+- iOS version 12.0+
 
 ## Installation
 root **build.gradle**

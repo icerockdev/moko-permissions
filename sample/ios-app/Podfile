@@ -4,7 +4,7 @@ source 'https://cdn.cocoapods.org/'
 inhibit_all_warnings!
 
 use_frameworks!
-platform :ios, '11.0'
+platform :ios, '12.0'
 
 # workaround for https://github.com/CocoaPods/CocoaPods/issues/8073
 # need for correct invalidate of cache MultiPlatformLibrary.framework

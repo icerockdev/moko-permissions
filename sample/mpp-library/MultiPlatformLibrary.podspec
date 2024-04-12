@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
     spec.libraries                = "c++"
     spec.module_name              = "#{spec.name}_umbrella"
 
-    spec.ios.deployment_target = '11.0'
+    spec.ios.deployment_target = '12.0'
     spec.osx.deployment_target = '10.6'
 
     spec.pod_target_xcconfig = {
