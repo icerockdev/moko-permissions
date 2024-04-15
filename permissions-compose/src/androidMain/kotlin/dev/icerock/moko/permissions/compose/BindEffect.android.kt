@@ -21,7 +21,9 @@ actual fun BindEffect(permissionsController: PermissionsController) {
     val context: Context = LocalContext.current
 
     LaunchedEffect(permissionsController, lifecycleOwner, context) {
-        val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
+        val fragmentManager: FragmentManager = checkNotNull(context as? FragmentActivity) {
+            "$context context is not instance of FragmentActivity"
+        }.supportFragmentManager
 
         permissionsController.bind(lifecycleOwner.lifecycle, fragmentManager)
     }
