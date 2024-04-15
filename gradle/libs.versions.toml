@@ -11,6 +11,7 @@ mokoMvvmVersion = "0.16.0"
 mokoPermissionsVersion = "0.17.0"
 composeJetBrainsVersion = "1.5.1"
 lifecycleRuntime = "2.6.1"
+activityKtxVersion = "1.7.2"
 
 [libraries]
 appCompat = { module = "androidx.appcompat:appcompat", version.ref = "androidAppCompatVersion" }
@@ -33,3 +34,4 @@ mobileMultiplatformGradlePlugin = { module = "dev.icerock:mobile-multiplatform",
 kotlinSerializationGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinVersion" }
 composeJetBrainsGradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "composeJetBrainsVersion" }
 detektGradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version = "1.22.0" }
+activityKtx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtxVersion" }

@@ -22,6 +22,5 @@ dependencies {
     commonMainApi(projects.permissions)
     commonMainApi(compose.runtime)
 
-    androidMainImplementation(libs.appCompat)
     androidMainImplementation(libs.composeActivity)
 }

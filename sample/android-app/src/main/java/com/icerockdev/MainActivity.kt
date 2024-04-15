@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
                 permissionType = Permission.CONTACTS
             )
         }.also {
-            it.permissionsController.bind(lifecycle, supportFragmentManager)
+            it.permissionsController.bind(this)
             it.eventsDispatcher.bind(this, this)
         }
     }

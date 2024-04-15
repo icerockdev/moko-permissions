@@ -15,6 +15,6 @@ android {
 
 dependencies {
     commonMainImplementation(libs.coroutines)
-    androidMainImplementation(libs.appCompat)
+    androidMainImplementation(libs.activityKtx)
     androidMainImplementation(libs.lifecycleRuntime)
 }

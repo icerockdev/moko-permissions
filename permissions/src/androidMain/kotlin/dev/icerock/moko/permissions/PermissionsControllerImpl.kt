@@ -5,62 +5,110 @@
 package dev.icerock.moko.permissions
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.ActivityResultRegistryOwner
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.activity.ComponentActivity
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withTimeoutOrNull
+import java.util.UUID
 import kotlin.coroutines.suspendCoroutine
 
 @Suppress("TooManyFunctions")
 class PermissionsControllerImpl(
-    private val resolverFragmentTag: String = "PermissionsControllerResolver",
     private val applicationContext: Context,
 ) : PermissionsController {
-    private val fragmentManagerHolder = MutableStateFlow<FragmentManager?>(null)
+    private val activityHolder = MutableStateFlow<Activity?>(null)
+
     private val mutex: Mutex = Mutex()
 
-    override fun bind(lifecycle: Lifecycle, fragmentManager: FragmentManager) {
-        this.fragmentManagerHolder.value = fragmentManager
+    private var launcher: ActivityResultLauncher<Array<String>>? = null
+
+    private var permissionCallback: PermissionCallback? = null
+
+    override fun bind(activity: ComponentActivity) {
+        this.activityHolder.value = activity
+        val activityResultRegistryOwner = activity as ActivityResultRegistryOwner
+
+        val key = UUID.randomUUID().toString()
+
+        launcher = activityResultRegistryOwner.activityResultRegistry.register(
+            key,
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            val isCancelled = permissions.isEmpty()
+
+            val permissionCallback = permissionCallback ?: return@register
+
+            if (isCancelled) {
+                permissionCallback.callback.invoke(
+                    Result.failure(RequestCanceledException(permissionCallback.permission))
+                )
+                return@register
+            }
+
+            val success = permissions.values.all { it }
+
+            if (success) {
+                permissionCallback.callback.invoke(Result.success(Unit))
+            } else {
+                if (shouldShowRequestPermissionRationale(permissions.keys.first())) {
+                    permissionCallback.callback.invoke(
+                        Result.failure(DeniedException(permissionCallback.permission))
+                    )
+                } else {
+                    permissionCallback.callback.invoke(
+                        Result.failure(DeniedAlwaysException(permissionCallback.permission))
+                    )
+                }
+            }
+        }
 
         val observer = object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 if (event == Lifecycle.Event.ON_DESTROY) {
-                    this@PermissionsControllerImpl.fragmentManagerHolder.value = null
+                    this@PermissionsControllerImpl.activityHolder.value = null
                     source.lifecycle.removeObserver(this)
                 }
             }
         }
-        lifecycle.addObserver(observer)
+        activity.lifecycle.addObserver(observer)
     }
 
     override suspend fun providePermission(permission: Permission) {
         mutex.withLock {
-            val fragmentManager: FragmentManager = awaitFragmentManager()
-            val resolverFragment: ResolverFragment = getOrCreateResolverFragment(fragmentManager)
-
             val platformPermission = permission.toPlatformPermission()
             suspendCoroutine { continuation ->
-                resolverFragment.requestPermission(
+                requestPermission(
                     permission,
                     platformPermission
                 ) { continuation.resumeWith(it) }
             }
         }
+    }
+
+    private fun requestPermission(
+        permission: Permission,
+        permissions: List<String>,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        permissionCallback = PermissionCallback(permission, callback)
+        launcher?.launch(permissions.toTypedArray())
     }
 
     override suspend fun isPermissionGranted(permission: Permission): Boolean {
@@ -87,14 +135,25 @@ class PermissionsControllerImpl(
         val isAllGranted: Boolean = status.all { it == PackageManager.PERMISSION_GRANTED }
         if (isAllGranted) return PermissionState.Granted
 
-        val fragmentManager: FragmentManager = awaitFragmentManager()
-        val resolverFragment: ResolverFragment = getOrCreateResolverFragment(fragmentManager)
-
         val isAllRequestRationale: Boolean = permissions.all {
-            resolverFragment.shouldShowRequestPermissionRationale(it)
+            shouldShowRequestPermissionRationale(it).not()
         }
         return if (isAllRequestRationale) PermissionState.Denied
         else PermissionState.NotGranted
+    }
+
+    private fun shouldShowRequestPermissionRationale(permission: String): Boolean {
+        val activity: Activity = checkNotNull(this.activityHolder.value) {
+            "${this.activityHolder.value} activity is null, `bind` function was never called," +
+                    " consider calling permissionsController.bind(activity)" +
+                    " or BindEffect(permissionsController) in the composable function," +
+                    " check the documentation for more info: " +
+                    "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
+        }
+        return ActivityCompat.shouldShowRequestPermissionRationale(
+            activity,
+            permission
+        )
     }
 
     override fun openAppSettings() {
@@ -104,35 +163,6 @@ class PermissionsControllerImpl(
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         applicationContext.startActivity(intent)
-    }
-
-    private suspend fun awaitFragmentManager(): FragmentManager {
-        val fragmentManager: FragmentManager? = fragmentManagerHolder.value
-        if (fragmentManager != null) return fragmentManager
-
-        return withTimeoutOrNull(AWAIT_FRAGMENT_MANAGER_TIMEOUT_DURATION_MS) {
-            fragmentManagerHolder.filterNotNull().first()
-        } ?: error(
-            "fragmentManager is null, `bind` function was never called," +
-                " consider calling permissionsController.bind(lifecycle, fragmentManager)" +
-                " or BindEffect(permissionsController) in the composable function," +
-                " check the documentation for more info: " +
-                    "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
-        )
-    }
-
-    private fun getOrCreateResolverFragment(fragmentManager: FragmentManager): ResolverFragment {
-        val currentFragment: Fragment? = fragmentManager.findFragmentByTag(resolverFragmentTag)
-        return if (currentFragment != null) {
-            currentFragment as ResolverFragment
-        } else {
-            ResolverFragment().also { fragment ->
-                fragmentManager
-                    .beginTransaction()
-                    .add(fragment, resolverFragmentTag)
-                    .commit()
-            }
-        }
     }
 
     @Suppress("CyclomaticComplexMethod")
@@ -273,6 +303,10 @@ class PermissionsControllerImpl(
     private companion object {
         val VERSIONS_WITHOUT_NOTIFICATION_PERMISSION =
             Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.TIRAMISU
-        private const val AWAIT_FRAGMENT_MANAGER_TIMEOUT_DURATION_MS = 2000L
     }
 }
+
+private class PermissionCallback(
+    val permission: Permission,
+    val callback: (Result<Unit>) -> Unit
+)
