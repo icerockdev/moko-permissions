@@ -58,6 +58,7 @@ The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
 * Storage write: **Permission.WRITE_STORAGE**
 * Fine location: **Permission.LOCATION**
 * Coarse location: **Permission.COARSE_LOCATION**
+* Background location: **Permission.BACKGROUND_LOCATION**
 * Remote notifications: **Permission.REMOTE_NOTIFICATION**
 * Audio recording: **Permission.RECORD_AUDIO**
 * Bluetooth LE: **Permission.BLUETOOTH_LE**
