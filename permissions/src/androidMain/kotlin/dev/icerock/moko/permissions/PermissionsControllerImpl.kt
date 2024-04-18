@@ -7,7 +7,6 @@ package dev.icerock.moko.permissions
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -24,8 +23,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.UUID
 import kotlin.coroutines.suspendCoroutine
 
@@ -37,17 +39,17 @@ class PermissionsControllerImpl(
 
     private val mutex: Mutex = Mutex()
 
-    private var launcher: ActivityResultLauncher<Array<String>>? = null
+    private val launcherHolder = MutableStateFlow<ActivityResultLauncher<Array<String>>?>(null)
 
     private var permissionCallback: PermissionCallback? = null
+
+    private val key = UUID.randomUUID().toString()
 
     override fun bind(activity: ComponentActivity) {
         this.activityHolder.value = activity
         val activityResultRegistryOwner = activity as ActivityResultRegistryOwner
 
-        val key = UUID.randomUUID().toString()
-
-        launcher = activityResultRegistryOwner.activityResultRegistry.register(
+        val launcher = activityResultRegistryOwner.activityResultRegistry.register(
             key,
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
@@ -67,7 +69,7 @@ class PermissionsControllerImpl(
             if (success) {
                 permissionCallback.callback.invoke(Result.success(Unit))
             } else {
-                if (shouldShowRequestPermissionRationale(permissions.keys.first())) {
+                if (shouldShowRequestPermissionRationale(activity, permissions.keys.first())) {
                     permissionCallback.callback.invoke(
                         Result.failure(DeniedException(permissionCallback.permission))
                     )
@@ -79,10 +81,13 @@ class PermissionsControllerImpl(
             }
         }
 
+        launcherHolder.value = launcher
+
         val observer = object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 if (event == Lifecycle.Event.ON_DESTROY) {
                     this@PermissionsControllerImpl.activityHolder.value = null
+                    this@PermissionsControllerImpl.launcherHolder.value = null
                     source.lifecycle.removeObserver(this)
                 }
             }
@@ -92,9 +97,11 @@ class PermissionsControllerImpl(
 
     override suspend fun providePermission(permission: Permission) {
         mutex.withLock {
+            val launcher = awaitActivityResultLauncher()
             val platformPermission = permission.toPlatformPermission()
             suspendCoroutine { continuation ->
                 requestPermission(
+                    launcher,
                     permission,
                     platformPermission
                 ) { continuation.resumeWith(it) }
@@ -103,12 +110,43 @@ class PermissionsControllerImpl(
     }
 
     private fun requestPermission(
+        launcher: ActivityResultLauncher<Array<String>>,
         permission: Permission,
         permissions: List<String>,
         callback: (Result<Unit>) -> Unit
     ) {
         permissionCallback = PermissionCallback(permission, callback)
-        launcher?.launch(permissions.toTypedArray())
+        launcher.launch(permissions.toTypedArray())
+    }
+
+    private suspend fun awaitActivityResultLauncher(): ActivityResultLauncher<Array<String>> {
+        val activityResultLauncher = launcherHolder.value
+        if (activityResultLauncher != null) return activityResultLauncher
+
+        return withTimeoutOrNull(AWAIT_ACTIVITY_TIMEOUT_DURATION_MS) {
+            launcherHolder.filterNotNull().first()
+        } ?: error(
+            "activityResultLauncher is null, `bind` function was never called," +
+                    " consider calling permissionsController.bind(activity)" +
+                    " or BindEffect(permissionsController) in the composable function," +
+                    " check the documentation for more info: " +
+                    "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
+        )
+    }
+
+    private suspend fun awaitActivity(): Activity {
+        val activity = activityHolder.value
+        if (activity != null) return activity
+
+        return withTimeoutOrNull(AWAIT_ACTIVITY_TIMEOUT_DURATION_MS) {
+            activityHolder.filterNotNull().first()
+        } ?: error(
+            "activity is null, `bind` function was never called," +
+                    " consider calling permissionsController.bind(activity)" +
+                    " or BindEffect(permissionsController) in the composable function," +
+                    " check the documentation for more info: " +
+                    "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
+        )
     }
 
     override suspend fun isPermissionGranted(permission: Permission): Boolean {
@@ -142,14 +180,12 @@ class PermissionsControllerImpl(
         else PermissionState.NotGranted
     }
 
-    private fun shouldShowRequestPermissionRationale(permission: String): Boolean {
-        val activity: Activity = checkNotNull(this.activityHolder.value) {
-            "${this.activityHolder.value} activity is null, `bind` function was never called," +
-                    " consider calling permissionsController.bind(activity)" +
-                    " or BindEffect(permissionsController) in the composable function," +
-                    " check the documentation for more info: " +
-                    "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
-        }
+    private suspend fun shouldShowRequestPermissionRationale(permission: String): Boolean {
+        val activity = awaitActivity()
+        return shouldShowRequestPermissionRationale(activity, permission)
+    }
+
+    private fun shouldShowRequestPermissionRationale(activity: Activity, permission: String): Boolean {
         return ActivityCompat.shouldShowRequestPermissionRationale(
             activity,
             permission
@@ -303,6 +339,7 @@ class PermissionsControllerImpl(
     private companion object {
         val VERSIONS_WITHOUT_NOTIFICATION_PERMISSION =
             Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.TIRAMISU
+        private const val AWAIT_ACTIVITY_TIMEOUT_DURATION_MS = 2000L
     }
 }
 

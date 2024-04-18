@@ -98,7 +98,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     }
     
     // Binds the permissions controller to the activity lifecycle.
-    viewModel.permissionsController.bind(lifecycle, supportFragmentManager)
+    viewModel.permissionsController.bind(activity)
 }
 ```
 
