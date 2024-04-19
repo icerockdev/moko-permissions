@@ -24,7 +24,7 @@
 ## Requirements
 - Gradle version 6.8+
 - Android API 16+
-- iOS version 11.0+
+- iOS version 12.0+
 
 ## Installation
 root **build.gradle**
@@ -39,12 +39,12 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.17.0")
+    commonMainApi("dev.icerock.moko:permissions:0.18.0")
     
     // compose multiplatform
-    commonMainApi("dev.icerock.moko:permissions-compose:0.17.0") // permissions api + compose extensions
+    commonMainApi("dev.icerock.moko:permissions-compose:0.18.0") // permissions api + compose extensions
     
-    commonTestImplementation("dev.icerock.moko:permissions-test:0.17.0")
+    commonTestImplementation("dev.icerock.moko:permissions-test:0.18.0")
 }
 ```
 
@@ -58,6 +58,7 @@ The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
 * Storage write: **Permission.WRITE_STORAGE**
 * Fine location: **Permission.LOCATION**
 * Coarse location: **Permission.COARSE_LOCATION**
+* Background location: **Permission.BACKGROUND_LOCATION**
 * Remote notifications: **Permission.REMOTE_NOTIFICATION**
 * Audio recording: **Permission.RECORD_AUDIO**
 * Bluetooth LE: **Permission.BLUETOOTH_LE**
@@ -97,7 +98,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     }
     
     // Binds the permissions controller to the activity lifecycle.
-    viewModel.permissionsController.bind(lifecycle, supportFragmentManager)
+    viewModel.permissionsController.bind(activity)
 }
 ```
 

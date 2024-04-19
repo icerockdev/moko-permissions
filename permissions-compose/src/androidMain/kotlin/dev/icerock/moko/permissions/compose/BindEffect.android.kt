@@ -9,8 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.LifecycleOwner
 import dev.icerock.moko.permissions.PermissionsController
 
@@ -21,8 +20,10 @@ actual fun BindEffect(permissionsController: PermissionsController) {
     val context: Context = LocalContext.current
 
     LaunchedEffect(permissionsController, lifecycleOwner, context) {
-        val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
+        val activity: ComponentActivity = checkNotNull(context as? ComponentActivity) {
+            "$context context is not instance of ComponentActivity"
+        }
 
-        permissionsController.bind(lifecycleOwner.lifecycle, fragmentManager)
+        permissionsController.bind(activity)
     }
 }

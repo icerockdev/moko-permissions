@@ -4,6 +4,7 @@
 
 package dev.icerock.moko.permissions.test
 
+import androidx.activity.ComponentActivity
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 
@@ -13,8 +14,7 @@ actual abstract class PermissionsControllerMock : PermissionsController {
     actual abstract override suspend fun isPermissionGranted(permission: Permission): Boolean
 
     override fun bind(
-        lifecycle: androidx.lifecycle.Lifecycle,
-        fragmentManager: androidx.fragment.app.FragmentManager
+        activity: ComponentActivity
     ) {
         TODO("Not yet implemented")
     }

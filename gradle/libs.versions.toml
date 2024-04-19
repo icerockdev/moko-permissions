@@ -1,22 +1,26 @@
 [versions]
-kotlinVersion = "1.8.10"
+kotlinVersion = "1.9.10"
 androidAppCompatVersion = "1.6.1"
 composeMaterialVersion = "1.4.1"
 composeActivityVersion = "1.7.0"
+activityVersion = "1.7.0"
 materialDesignVersion = "1.8.0"
 androidLifecycleVersion = "2.2.0"
 androidCoreTestingVersion = "2.2.0"
 coroutinesVersion = "1.6.4"
 mokoMvvmVersion = "0.16.0"
-mokoPermissionsVersion = "0.17.0"
-composeJetBrainsVersion = "1.3.1"
+mokoPermissionsVersion = "0.18.0"
+composeJetBrainsVersion = "1.5.1"
 lifecycleRuntime = "2.6.1"
+composeUiVersion = "1.0.1"
 
 [libraries]
 appCompat = { module = "androidx.appcompat:appcompat", version.ref = "androidAppCompatVersion" }
 material = { module = "com.google.android.material:material", version.ref = "materialDesignVersion" }
 composeMaterial = { module = "androidx.compose.material:material", version.ref = "composeMaterialVersion" }
 composeActivity = { module = "androidx.activity:activity-compose", version.ref = "composeActivityVersion" }
+activity = { module = "androidx.activity:activity", version.ref = "activityVersion" }
+composeUi = { module = "androidx.compose.ui:ui", version.ref = "composeUiVersion" }
 lifecycle = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "androidLifecycleVersion" }
 lifecycleRuntime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntime" }
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesVersion" }

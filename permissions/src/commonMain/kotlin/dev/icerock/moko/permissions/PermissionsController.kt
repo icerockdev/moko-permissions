@@ -24,12 +24,13 @@ expect interface PermissionsController {
 
     /**
      * Returns current state of permission. Can be suspended because on
-     * android detection of Denied/NotDetermined case require binded FragmentManager.
+     * Android detection of `Denied`/`NotDetermined` requires a bound FragmentManager.
      *
      * @param permission state of what permission we want
      *
-     * @return current state. On Android can't be DeniedAlways (except push notifications).
-     * On iOS can't be Denied.
+     * @return current state. On Android can't be `DeniedAlways` (except push notifications).
+     * On iOS can't be `Denied`.
+     * @see PermissionState for a detailed description.
      */
     suspend fun getPermissionState(permission: Permission): PermissionState
 

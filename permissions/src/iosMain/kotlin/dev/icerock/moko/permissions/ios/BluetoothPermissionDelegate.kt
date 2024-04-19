@@ -8,6 +8,7 @@ import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
+import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBManager
@@ -31,6 +32,7 @@ import kotlin.coroutines.suspendCoroutine
 internal class BluetoothPermissionDelegate(
     private val permission: Permission
 ) : PermissionDelegate {
+    @OptIn(ExperimentalForeignApi::class)
     override suspend fun providePermission() {
         // To maintain compatibility with iOS 12 (@see https://developer.apple.com/documentation/corebluetooth/cbmanagerauthorization)
         val isNotDetermined: Boolean =
@@ -72,6 +74,7 @@ internal class BluetoothPermissionDelegate(
         }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     override suspend fun getPermissionState(): PermissionState {
         // To maintain compatibility with iOS 12 (@see https://developer.apple.com/documentation/corebluetooth/cbmanagerauthorization)
         if (CBManager.resolveClassMethod(NSSelectorFromString("authorization"))) {
