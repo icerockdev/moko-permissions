@@ -65,6 +65,7 @@ The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
 * Bluetooth Scan: **Permission.BLUETOOTH_SCAN**
 * Bluetooth Connect: **Permission.BLUETOOTH_CONNECT**
 * Bluetooth Advertise: **Permission.BLUETOOTH_ADVERTISE**
+* Contacts: **Permission.CONTACTS**
 * Motion: **Permission.MOTION**
 
 ## Usage
