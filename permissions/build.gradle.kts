@@ -13,6 +13,17 @@ android {
     namespace = "dev.icerock.moko.permissions"
 }
 
+kotlin {
+    jvm("desktop")
+
+    sourceSets {
+        val commonMain by getting
+        val desktopMain by getting {
+            dependsOn(commonMain)
+        }
+    }
+}
+
 dependencies {
     commonMainImplementation(libs.coroutines)
     androidMainImplementation(libs.activity)
