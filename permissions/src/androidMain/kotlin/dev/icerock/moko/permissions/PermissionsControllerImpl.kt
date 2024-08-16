@@ -281,26 +281,19 @@ class PermissionsControllerImpl(
      * @see https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
      */
 
-    private fun allBluetoothPermissions() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            listOf(
-                Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_ADVERTISE,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        } else {
-            listOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        }
+    private fun allBluetoothPermissions() = buildSet {
+        addAll(bluetoothConnectCompat())
+        addAll(bluetoothScanCompat())
+        addAll(bluetoothAdvertiseCompat())
+    }.toList()
 
     private fun bluetoothScanCompat() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             listOf(Manifest.permission.BLUETOOTH_SCAN)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            listOf(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
-            listOf(Manifest.permission.BLUETOOTH)
+            listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
         }
 
     private fun bluetoothAdvertiseCompat() =
