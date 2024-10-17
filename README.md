@@ -39,12 +39,12 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.18.0")
+    commonMainApi("dev.icerock.moko:permissions:0.18.1")
     
     // compose multiplatform
-    commonMainApi("dev.icerock.moko:permissions-compose:0.18.0") // permissions api + compose extensions
+    commonMainApi("dev.icerock.moko:permissions-compose:0.18.1") // permissions api + compose extensions
     
-    commonTestImplementation("dev.icerock.moko:permissions-test:0.18.0")
+    commonTestImplementation("dev.icerock.moko:permissions-test:0.18.1")
 }
 ```
 
@@ -65,6 +65,7 @@ The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
 * Bluetooth Scan: **Permission.BLUETOOTH_SCAN**
 * Bluetooth Connect: **Permission.BLUETOOTH_CONNECT**
 * Bluetooth Advertise: **Permission.BLUETOOTH_ADVERTISE**
+* Contacts: **Permission.CONTACTS**
 * Motion: **Permission.MOTION**
 
 ## Usage

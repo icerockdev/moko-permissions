@@ -32,7 +32,7 @@ class PermissionsController : PermissionsControllerProtocol {
 
     override fun openAppSettings() {
         val settingsUrl: NSURL = NSURL.URLWithString(UIApplicationOpenSettingsURLString)!!
-        UIApplication.sharedApplication.openURL(settingsUrl)
+        UIApplication.sharedApplication.openURL(settingsUrl, mapOf<Any?, Any>(), null)
     }
 
     private fun getDelegate(permission: Permission): PermissionDelegate {
