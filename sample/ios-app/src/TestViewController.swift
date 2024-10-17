@@ -25,6 +25,10 @@ class TestViewController: UIViewController {
     @IBAction func onPermissionPressed() {
         viewModel.onRequestPermissionButtonPressed()
     }
+    
+    @IBAction func onOpenSettingsPressed() {
+        PermissionsController().openAppSettings()
+    }
 }
 
 extension TestViewController: SampleViewModelEventListener {

@@ -19,7 +19,6 @@ Pod::Spec.new do |spec|
         'KOTLIN_FRAMEWORK_BUILD_TYPE[config=*elease]' => 'release',
         'CURENT_SDK[sdk=iphoneos*]' => 'iphoneos',
         'CURENT_SDK[sdk=iphonesimulator*]' => 'iphonesimulator',
-        'CURENT_SDK[sdk=macosx*]' => 'macos'
     }
 
     spec.script_phases = [
@@ -37,21 +36,17 @@ fi
 if [ "$CURENT_SDK" == "iphoneos" ]; then
   TARGET="Ios"
   ARCH="Arm64"
-elif [ "$CURENT_SDK" == "macos" ]; then
-  TARGET="Macos"
-  if [ "$NATIVE_ARCH" == "arm64" ]; then
-    ARCH="Arm64"
-  else
-    ARCH="X64"
-  fi
-else
-  if [ "$NATIVE_ARCH" == "arm64" ]; then
+elif [ "$CURENT_SDK" == "iphonesimulator" ]; then
+  if [ "$ARCHS" == "arm64" ]; then
     TARGET="IosSimulator"
     ARCH="Arm64"
   else
     TARGET="Ios"
     ARCH="X64"
   fi
+else
+  echo "unsupported $CURENT_SDK"
+  exit 1
 fi
 
 MPP_PROJECT_ROOT="$SRCROOT/../../mpp-library"
