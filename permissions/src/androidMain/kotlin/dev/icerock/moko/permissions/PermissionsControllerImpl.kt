@@ -174,7 +174,7 @@ class PermissionsControllerImpl(
         if (isAllGranted) return PermissionState.Granted
 
         val isAllRequestRationale: Boolean = permissions.all {
-            shouldShowRequestPermissionRationale(it).not()
+            shouldShowRequestPermissionRationale(it)
         }
         return if (isAllRequestRationale) PermissionState.Denied
         else PermissionState.NotGranted
