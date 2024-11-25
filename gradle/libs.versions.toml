@@ -1,6 +1,7 @@
 [versions]
 kotlinVersion = "1.9.10"
 androidAppCompatVersion = "1.6.1"
+androidxCoreVersion = "1.9.0" # TODO we have two versions (1.8 + 1.9) - unify them
 composeMaterialVersion = "1.4.1"
 composeActivityVersion = "1.7.0"
 activityVersion = "1.7.0"
@@ -15,6 +16,7 @@ lifecycleRuntime = "2.6.1"
 composeUiVersion = "1.0.1"
 
 [libraries]
+androidxCore = { module = "androidx.core:core", version.ref = "androidxCoreVersion" }
 appCompat = { module = "androidx.appcompat:appcompat", version.ref = "androidAppCompatVersion" }
 material = { module = "com.google.android.material:material", version.ref = "materialDesignVersion" }
 composeMaterial = { module = "androidx.compose.material:material", version.ref = "composeMaterialVersion" }

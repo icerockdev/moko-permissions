@@ -19,4 +19,5 @@ dependencies {
     implementation(libs.composeMaterial)
     implementation(projects.sample.mppLibrary)
     implementation(projects.permissionsCompose)
+    implementation(projects.permissionsCamera)
 }

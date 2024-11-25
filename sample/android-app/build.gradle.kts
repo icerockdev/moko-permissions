@@ -20,4 +20,5 @@ dependencies {
     implementation(libs.material)
 
     implementation(projects.sample.mppLibrary)
+    implementation(projects.permissionsContacts)
 }

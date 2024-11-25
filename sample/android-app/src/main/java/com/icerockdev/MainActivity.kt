@@ -13,6 +13,7 @@ import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.permissions.contacts.CONTACTS
 
 class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
 

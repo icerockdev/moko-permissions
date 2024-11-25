@@ -18,6 +18,7 @@ dependencies {
 
     commonTestImplementation(libs.mokoMvvmTest)
     commonTestImplementation(projects.permissionsTest)
+    commonTestImplementation(projects.permissionsMicrophone)
 }
 
 framework {
