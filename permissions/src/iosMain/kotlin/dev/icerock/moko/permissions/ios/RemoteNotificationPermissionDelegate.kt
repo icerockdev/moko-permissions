@@ -10,6 +10,7 @@ import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.mainContinuation
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
+import platform.UserNotifications.UNAuthorizationOptionCarPlay
 import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNAuthorizationStatus
 import platform.UserNotifications.UNAuthorizationStatusAuthorized
