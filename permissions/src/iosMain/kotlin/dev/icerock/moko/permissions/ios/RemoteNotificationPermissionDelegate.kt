@@ -45,7 +45,8 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
                         .requestAuthorizationWithOptions(
                             UNAuthorizationOptionSound
                                 .or(UNAuthorizationOptionAlert)
-                                .or(UNAuthorizationOptionBadge),
+                                .or(UNAuthorizationOptionBadge)
+                                .or(UNAuthorizationOptionCarPlay),
                             mainContinuation { isOk, error ->
                                 if (isOk && error == null) {
                                     continuation.resumeWith(Result.success(true))
