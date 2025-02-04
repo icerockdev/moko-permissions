@@ -14,6 +14,7 @@ import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
 import platform.CoreLocation.kCLAuthorizationStatusDenied
 import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
+import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -32,7 +33,8 @@ internal class LocationPermissionDelegate(
             kCLAuthorizationStatusAuthorizedWhenInUse -> PermissionState.Granted
 
             kCLAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
-            kCLAuthorizationStatusDenied -> PermissionState.DeniedAlways
+            kCLAuthorizationStatusDenied,
+            kCLAuthorizationStatusRestricted -> PermissionState.DeniedAlways
             else -> error("unknown location authorization status $status")
         }
     }
@@ -51,7 +53,8 @@ internal class LocationPermissionDelegate(
                 provideLocationPermission(newStatus)
             }
 
-            kCLAuthorizationStatusDenied -> throw DeniedAlwaysException(permission)
+            kCLAuthorizationStatusDenied,
+            kCLAuthorizationStatusRestricted -> throw DeniedAlwaysException(permission)
             else -> error("unknown location authorization status $status")
         }
     }
