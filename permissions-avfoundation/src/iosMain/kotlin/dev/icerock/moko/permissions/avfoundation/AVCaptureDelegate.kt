@@ -31,7 +31,7 @@ class AVCaptureDelegate(
             AVAuthorizationStatusAuthorized -> return
             AVAuthorizationStatusNotDetermined -> {
                 val isGranted: Boolean = suspendCoroutine { continuation ->
-                    AVCaptureDevice.Companion.requestAccess(type) { continuation.resume(it) }
+                    AVCaptureDevice.requestAccess(type) { continuation.resume(it) }
                 }
                 if (isGranted) return
                 else throw DeniedAlwaysException(permission)
@@ -54,7 +54,7 @@ class AVCaptureDelegate(
     }
 
     private fun currentAuthorizationStatus(): AVAuthorizationStatus {
-        return AVCaptureDevice.Companion.authorizationStatusForMediaType(type)
+        return AVCaptureDevice.authorizationStatusForMediaType(type)
     }
 }
 
