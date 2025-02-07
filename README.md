@@ -40,6 +40,17 @@ project **build.gradle**
 ```groovy
 dependencies {
     commonMainApi("dev.icerock.moko:permissions:0.19.0")
+  
+    // specific permissions support
+    commonMainImplementation("dev.icerock.moko:permissions-bluetooth:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-camera:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-contacts:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-gallery:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-location:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-microphone:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-motion:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-notifications:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-storage:0.19.0")
     
     // compose multiplatform
     commonMainApi("dev.icerock.moko:permissions-compose:0.19.0") // permissions api + compose extensions
