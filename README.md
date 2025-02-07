@@ -39,12 +39,12 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.18.1")
+    commonMainApi("dev.icerock.moko:permissions:0.19.0")
     
     // compose multiplatform
-    commonMainApi("dev.icerock.moko:permissions-compose:0.18.1") // permissions api + compose extensions
+    commonMainApi("dev.icerock.moko:permissions-compose:0.19.0") // permissions api + compose extensions
     
-    commonTestImplementation("dev.icerock.moko:permissions-test:0.18.1")
+    commonTestImplementation("dev.icerock.moko:permissions-test:0.19.0")
 }
 ```
 
