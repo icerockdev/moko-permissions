@@ -4,8 +4,8 @@
 
 package dev.icerock.moko.permissions.motion
 
-import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionDelegate
+import dev.icerock.moko.permissions.PermissionState
 import platform.CoreMotion.CMAuthorizationStatusAuthorized
 import platform.CoreMotion.CMAuthorizationStatusDenied
 import platform.CoreMotion.CMAuthorizationStatusNotDetermined
@@ -31,7 +31,7 @@ private class MotionPermissionDelegate : PermissionDelegate {
         return when (status) {
             CMAuthorizationStatusAuthorized,
             CMAuthorizationStatusRestricted,
-            -> PermissionState.Granted
+                -> PermissionState.Granted
 
             CMAuthorizationStatusDenied -> PermissionState.DeniedAlways
             CMAuthorizationStatusNotDetermined -> PermissionState.NotDetermined

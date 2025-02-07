@@ -1,3 +1,7 @@
+/*
+ * Copyright 2025 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package dev.icerock.moko.permissions.motion
 
 import android.Manifest
@@ -7,7 +11,7 @@ import dev.icerock.moko.permissions.PermissionDelegate
 
 actual val motionDelegate = object : PermissionDelegate {
     override fun getPermissionStateOverride(applicationContext: Context) = null
-    
+
     override fun getPlatformPermission() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             listOf(

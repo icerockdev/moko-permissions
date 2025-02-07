@@ -1,3 +1,7 @@
+/*
+ * Copyright 2025 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package dev.icerock.moko.permissions.location
 
 import dev.icerock.moko.permissions.Permission
@@ -10,9 +14,11 @@ internal expect val backgroundLocationDelegate: PermissionDelegate
 object LocationPermission : Permission {
     override val delegate get() = locationDelegate
 }
+
 object CoarseLocationPermission : Permission {
     override val delegate get() = coarseLocationDelegate
 }
+
 object BackgroundLocationPermission : Permission {
     override val delegate get() = backgroundLocationDelegate
 }
