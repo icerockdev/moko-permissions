@@ -6,8 +6,8 @@ package dev.icerock.moko.permissions.contacts
 
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionDelegate
+import dev.icerock.moko.permissions.PermissionState
 import platform.Contacts.CNAuthorizationStatus
 import platform.Contacts.CNAuthorizationStatusAuthorized
 import platform.Contacts.CNAuthorizationStatusDenied
@@ -53,7 +53,7 @@ private class ContactsPermissionDelegate(
             CNAuthorizationStatusNotDetermined -> {
                 //  用户未选择权限，发起权限申请
                 val newStatus = suspendCoroutine<CNAuthorizationStatus> { continuation ->
-                    contactStore.requestAccessForEntityType(CNEntityType.CNEntityTypeContacts) { flag, error ->
+                    contactStore.requestAccessForEntityType(CNEntityType.CNEntityTypeContacts) { _, _ ->
                         continuation.resume(
                             CNContactStore.authorizationStatusForEntityType(
                                 CNEntityType.CNEntityTypeContacts

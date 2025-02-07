@@ -1,12 +1,9 @@
 plugins {
     id("dev.icerock.moko.gradle.android.application")
     id("dev.icerock.moko.gradle.detekt")
-    id("kotlin-kapt")
 }
 
 android {
-    buildFeatures.dataBinding = true
-
     defaultConfig {
         applicationId = "dev.icerock.moko.samples.permissions"
 
@@ -16,7 +13,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.appCompat)
+    implementation(libs.androidxCore)
     implementation(libs.material)
 
     implementation(projects.sample.mppLibrary)

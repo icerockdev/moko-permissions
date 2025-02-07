@@ -4,8 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
-import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionDelegate
+import dev.icerock.moko.permissions.PermissionState
 
 actual val remoteNotificationDelegate = object : PermissionDelegate {
     override fun getPermissionStateOverride(applicationContext: Context): PermissionState? {

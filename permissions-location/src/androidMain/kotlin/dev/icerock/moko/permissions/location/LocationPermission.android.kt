@@ -7,7 +7,7 @@ import dev.icerock.moko.permissions.PermissionDelegate
 
 actual val locationDelegate = object : PermissionDelegate {
     override fun getPermissionStateOverride(applicationContext: Context) = null
-    
+
     override fun getPlatformPermission() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             listOf(
@@ -21,14 +21,14 @@ actual val locationDelegate = object : PermissionDelegate {
 
 actual val coarseLocationDelegate = object : PermissionDelegate {
     override fun getPermissionStateOverride(applicationContext: Context) = null
-    
+
     override fun getPlatformPermission() =
         listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
 }
 
 actual val backgroundLocationDelegate = object : PermissionDelegate {
     override fun getPermissionStateOverride(applicationContext: Context) = null
-    
+
     override fun getPlatformPermission() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             listOf(

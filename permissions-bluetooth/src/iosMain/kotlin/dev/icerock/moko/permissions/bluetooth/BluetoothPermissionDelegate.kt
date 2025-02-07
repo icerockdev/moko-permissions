@@ -7,8 +7,8 @@ package dev.icerock.moko.permissions.bluetooth
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionDelegate
+import dev.icerock.moko.permissions.PermissionState
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
@@ -99,7 +99,11 @@ internal class BluetoothPermissionDelegate(
     }
 }
 
-actual val bluetoothLEDelegate: PermissionDelegate = BluetoothPermissionDelegate(BluetoothLEPermission)
-actual val bluetoothScanDelegate: PermissionDelegate = BluetoothPermissionDelegate(BluetoothScanPermission)
-actual val bluetoothAdvertiseDelegate: PermissionDelegate = BluetoothPermissionDelegate(BluetoothAdvertisePermission)
-actual val bluetoothConnectDelegate: PermissionDelegate = BluetoothPermissionDelegate(BluetoothConnectPermission)
+actual val bluetoothLEDelegate: PermissionDelegate =
+    BluetoothPermissionDelegate(BluetoothLEPermission)
+actual val bluetoothScanDelegate: PermissionDelegate =
+    BluetoothPermissionDelegate(BluetoothScanPermission)
+actual val bluetoothAdvertiseDelegate: PermissionDelegate =
+    BluetoothPermissionDelegate(BluetoothAdvertisePermission)
+actual val bluetoothConnectDelegate: PermissionDelegate =
+    BluetoothPermissionDelegate(BluetoothConnectPermission)

@@ -6,8 +6,8 @@ package dev.icerock.moko.permissions.notifications
 
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionDelegate
+import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.mainContinuation
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge

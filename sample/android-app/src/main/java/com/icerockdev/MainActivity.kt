@@ -11,9 +11,7 @@ import dev.icerock.moko.mvvm.dispatcher.eventsDispatcherOnMain
 import dev.icerock.moko.mvvm.getViewModel
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
-import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
-import dev.icerock.moko.permissions.contacts.CONTACTS
 
 class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
 
@@ -27,8 +25,7 @@ class MainActivity : AppCompatActivity(), SampleViewModel.EventListener {
         viewModel = getViewModel {
             SampleViewModel(
                 eventsDispatcher = eventsDispatcherOnMain(),
-                permissionsController = PermissionsController(applicationContext = applicationContext),
-                permissionType = Permission.CONTACTS
+                permissionsController = PermissionsController(applicationContext = applicationContext)
             )
         }.also {
             it.permissionsController.bind(this)

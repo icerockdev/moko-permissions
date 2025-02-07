@@ -14,7 +14,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.appCompat)
+    implementation(libs.androidxCore)
     implementation(libs.composeActivity)
     implementation(libs.composeMaterial)
     implementation(projects.sample.mppLibrary)
