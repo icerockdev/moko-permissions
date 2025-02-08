@@ -16,20 +16,44 @@ import dev.icerock.moko.permissions.PermissionDelegate
 actual val bluetoothLEDelegate = object : PermissionDelegate {
     override fun getPermissionStateOverride(applicationContext: Context) = null
 
-    override fun getPlatformPermission() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            listOf(
-                Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_ADVERTISE,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+    override fun getPlatformPermission() = allBluetoothPermissions()
+
+    /**
+     * Bluetooth permissions
+     *
+     * @see https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
+     */
+    private fun allBluetoothPermissions(): List<String> = buildSet {
+        addAll(bluetoothConnectCompat())
+        addAll(bluetoothScanCompat())
+        addAll(bluetoothAdvertiseCompat())
+    }.toList()
+
+    private fun bluetoothScanCompat(): List<String> {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(Manifest.permission.BLUETOOTH_SCAN)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            listOf(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
-            listOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+            listOf(Manifest.permission.ACCESS_COARSE_LOCATION)
         }
+    }
+
+    private fun bluetoothAdvertiseCompat(): List<String> {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(Manifest.permission.BLUETOOTH_ADVERTISE)
+        } else {
+            listOf(Manifest.permission.BLUETOOTH)
+        }
+    }
+
+    private fun bluetoothConnectCompat(): List<String> {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            listOf(Manifest.permission.BLUETOOTH_CONNECT)
+        } else {
+            listOf(Manifest.permission.BLUETOOTH)
+        }
+    }
 }
 
 actual val bluetoothScanDelegate = object : PermissionDelegate {

@@ -10,11 +10,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -172,7 +172,10 @@ class PermissionsControllerImpl(
         return shouldShowRequestPermissionRationale(activity, permission)
     }
 
-    private fun shouldShowRequestPermissionRationale(activity: Activity, permission: String): Boolean {
+    private fun shouldShowRequestPermissionRationale(
+        activity: Activity,
+        permission: String
+    ): Boolean {
         return ActivityCompat.shouldShowRequestPermissionRationale(
             activity,
             permission
