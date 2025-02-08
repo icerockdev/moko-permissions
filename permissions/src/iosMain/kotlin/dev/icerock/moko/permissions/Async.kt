@@ -6,7 +6,7 @@ package dev.icerock.moko.permissions
 
 import platform.Foundation.NSThread
 
-internal inline fun <T1> mainContinuation(
+inline fun <T1> mainContinuation(
     noinline block: (T1) -> Unit
 ): (T1) -> Unit = { arg1 ->
     if (NSThread.isMainThread()) {
@@ -18,7 +18,7 @@ internal inline fun <T1> mainContinuation(
     }
 }
 
-internal inline fun <T1, T2> mainContinuation(
+inline fun <T1, T2> mainContinuation(
     noinline block: (T1, T2) -> Unit
 ): (T1, T2) -> Unit = { arg1, arg2 ->
     if (NSThread.isMainThread()) {

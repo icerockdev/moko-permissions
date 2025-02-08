@@ -39,34 +39,52 @@ allprojects {
 project **build.gradle**
 ```groovy
 dependencies {
-    commonMainApi("dev.icerock.moko:permissions:0.18.1")
+    commonMainApi("dev.icerock.moko:permissions:0.19.0")
+  
+    // specific permissions support
+    commonMainImplementation("dev.icerock.moko:permissions-bluetooth:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-camera:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-contacts:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-gallery:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-location:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-microphone:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-motion:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-notifications:0.19.0")
+    commonMainImplementation("dev.icerock.moko:permissions-storage:0.19.0")
     
     // compose multiplatform
-    commonMainApi("dev.icerock.moko:permissions-compose:0.18.1") // permissions api + compose extensions
+    commonMainApi("dev.icerock.moko:permissions-compose:0.19.0") // permissions api + compose extensions
     
-    commonTestImplementation("dev.icerock.moko:permissions-test:0.18.1")
+    commonTestImplementation("dev.icerock.moko:permissions-test:0.19.0")
 }
 ```
 
 ## List of supported permissions
 
-The full list can be found in `dev.icerock.moko.permissions.Permission` enum.
-
-* Camera: **Permission.CAMERA**
-* Gallery: **Permission.GALLERY**
-* Storage read: **Permission.STORAGE**
-* Storage write: **Permission.WRITE_STORAGE**
-* Fine location: **Permission.LOCATION**
-* Coarse location: **Permission.COARSE_LOCATION**
-* Background location: **Permission.BACKGROUND_LOCATION**
-* Remote notifications: **Permission.REMOTE_NOTIFICATION**
-* Audio recording: **Permission.RECORD_AUDIO**
-* Bluetooth LE: **Permission.BLUETOOTH_LE**
-* Bluetooth Scan: **Permission.BLUETOOTH_SCAN**
-* Bluetooth Connect: **Permission.BLUETOOTH_CONNECT**
-* Bluetooth Advertise: **Permission.BLUETOOTH_ADVERTISE**
-* Contacts: **Permission.CONTACTS**
-* Motion: **Permission.MOTION**
+* `dev.icerock.moko:permissions-bluetooth`
+  * Bluetooth LE: **Permission.BLUETOOTH_LE**
+  * Bluetooth Scan: **Permission.BLUETOOTH_SCAN**
+  * Bluetooth Connect: **Permission.BLUETOOTH_CONNECT**
+  * Bluetooth Advertise: **Permission.BLUETOOTH_ADVERTISE**
+* `dev.icerock.moko:permissions-camera`
+  * Camera: **Permission.CAMERA**
+* `dev.icerock.moko:permissions-contacts`
+  * Contacts: **Permission.CONTACTS**
+* `dev.icerock.moko:permissions-gallery`
+  * Gallery: **Permission.GALLERY** 
+* `dev.icerock.moko:permissions-location`
+  * Fine location: **Permission.LOCATION**
+  * Coarse location: **Permission.COARSE_LOCATION**
+  * Background location: **Permission.BACKGROUND_LOCATION**
+* `dev.icerock.moko:permissions-microphone`
+  * Audio recording: **Permission.RECORD_AUDIO**
+* `dev.icerock.moko:permissions-motion`
+  * Motion: **Permission.MOTION**
+* `dev.icerock.moko:permissions-notifications`
+  * Remote notifications: **Permission.REMOTE_NOTIFICATION**
+* `dev.icerock.moko:permissions-storage`
+  * Storage read: **Permission.STORAGE**
+  * Storage write: **Permission.WRITE_STORAGE**
 
 ## Usage
 
