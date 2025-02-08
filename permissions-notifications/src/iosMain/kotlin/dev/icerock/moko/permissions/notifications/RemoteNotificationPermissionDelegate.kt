@@ -11,6 +11,7 @@ import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.mainContinuation
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
+import platform.UserNotifications.UNAuthorizationOptionCarPlay
 import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNAuthorizationStatus
 import platform.UserNotifications.UNAuthorizationStatusAuthorized
@@ -46,7 +47,8 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
                         .requestAuthorizationWithOptions(
                             UNAuthorizationOptionSound
                                 .or(UNAuthorizationOptionAlert)
-                                .or(UNAuthorizationOptionBadge),
+                                .or(UNAuthorizationOptionBadge)
+                                .or(UNAuthorizationOptionCarPlay),
                             mainContinuation { isOk, error ->
                                 if (isOk && error == null) {
                                     continuation.resumeWith(Result.success(true))
