@@ -17,7 +17,7 @@ android {
 dependencies {
     commonMainImplementation(libs.coroutines)
 
-    androidMainImplementation(libs.appCompat)
+    androidMainImplementation(libs.activity)
 
     commonMainApi(projects.permissions)
 }

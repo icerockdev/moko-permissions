@@ -6,6 +6,7 @@ import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.permissions.contacts.CONTACTS
 import dev.icerock.moko.permissions.test.createPermissionControllerMock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,14 +29,12 @@ class SampleViewModelTest {
     @Test
     fun `test successful permission`() {
         val eventsListener = EventsListenerCatcher()
-        val permission = Permission.RECORD_AUDIO
         val controller: PermissionsController = createPermissionControllerMock(
-            allow = setOf(permission)
+            allow = setOf(Permission.CONTACTS)
         )
         val viewModel = SampleViewModel(
             eventsDispatcher = createTestEventsDispatcher(eventsListener),
             permissionsController = controller,
-            permissionType = permission
         )
 
         viewModel.onRequestPermissionButtonPressed()
@@ -46,14 +45,12 @@ class SampleViewModelTest {
     @Test
     fun `test already got permission`() {
         val eventsListener = EventsListenerCatcher()
-        val permission = Permission.RECORD_AUDIO
         val controller: PermissionsController = createPermissionControllerMock(
-            granted = setOf(permission)
+            granted = setOf(Permission.CONTACTS)
         )
         val viewModel = SampleViewModel(
             eventsDispatcher = createTestEventsDispatcher(eventsListener),
             permissionsController = controller,
-            permissionType = permission
         )
 
         viewModel.onRequestPermissionButtonPressed()
@@ -70,7 +67,6 @@ class SampleViewModelTest {
         val viewModel = SampleViewModel(
             eventsDispatcher = createTestEventsDispatcher(eventsListener),
             permissionsController = controller,
-            permissionType = Permission.RECORD_AUDIO
         )
 
         viewModel.onRequestPermissionButtonPressed()
