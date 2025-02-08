@@ -31,7 +31,6 @@ import dev.icerock.moko.mvvm.dispatcher.eventsDispatcherOnMain
 import dev.icerock.moko.mvvm.getViewModel
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
-import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.permissions.compose.BindEffect
 import kotlinx.coroutines.launch
@@ -48,8 +47,7 @@ class MainActivity : ComponentActivity() {
                                 eventsDispatcher = eventsDispatcherOnMain(),
                                 permissionsController = PermissionsController(
                                     applicationContext = applicationContext
-                                ),
-                                permissionType = Permission.CAMERA
+                                )
                             )
                         }
                     )
