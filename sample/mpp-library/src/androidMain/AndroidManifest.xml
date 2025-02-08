@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.icerockdev.library" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.icerockdev.library">
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+</manifest>
