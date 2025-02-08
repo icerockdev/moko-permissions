@@ -13,11 +13,13 @@ dependencies {
 
     commonMainApi(libs.mokoMvvmCore)
     commonMainApi(projects.permissions)
+    commonMainImplementation(projects.permissionsContacts)
 
     androidMainImplementation(libs.lifecycle)
 
     commonTestImplementation(libs.mokoMvvmTest)
     commonTestImplementation(projects.permissionsTest)
+    commonTestImplementation(projects.permissionsMicrophone)
 }
 
 framework {
