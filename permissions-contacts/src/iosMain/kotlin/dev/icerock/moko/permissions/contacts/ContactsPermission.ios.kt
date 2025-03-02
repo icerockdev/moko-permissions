@@ -13,7 +13,6 @@ import platform.Contacts.CNAuthorizationStatusAuthorized
 import platform.Contacts.CNAuthorizationStatusDenied
 import platform.Contacts.CNAuthorizationStatusNotDetermined
 import platform.Contacts.CNAuthorizationStatusRestricted
-import platform.Contacts.CNAuthorizationStatusLimited
 import platform.Contacts.CNContactStore
 import platform.Contacts.CNEntityType
 import kotlin.coroutines.resume
@@ -70,5 +69,10 @@ private class ContactsPermissionDelegate(
         }
     }
 }
+
+// declared as constant because at now we use kotlin 1.9.10 that not know about 
+// platform.Contacts.CNAuthorizationStatusLimited
+@Suppress("TopLevelPropertyNaming")
+private const val CNAuthorizationStatusLimited: Long = 4
 
 actual val contactsDelegate: PermissionDelegate = ContactsPermissionDelegate(ContactPermission)
