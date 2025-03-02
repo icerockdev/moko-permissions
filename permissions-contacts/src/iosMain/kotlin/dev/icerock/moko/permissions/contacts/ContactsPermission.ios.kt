@@ -13,6 +13,7 @@ import platform.Contacts.CNAuthorizationStatusAuthorized
 import platform.Contacts.CNAuthorizationStatusDenied
 import platform.Contacts.CNAuthorizationStatusNotDetermined
 import platform.Contacts.CNAuthorizationStatusRestricted
+import platform.Contacts.CNAuthorizationStatusLimited
 import platform.Contacts.CNContactStore
 import platform.Contacts.CNEntityType
 import kotlin.coroutines.resume
@@ -35,7 +36,7 @@ private class ContactsPermissionDelegate(
         val status: CNAuthorizationStatus =
             CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts)
         return when (status) {
-            CNAuthorizationStatusAuthorized -> PermissionState.Granted
+            CNAuthorizationStatusAuthorized, CNAuthorizationStatusLimited -> PermissionState.Granted
 
             CNAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             CNAuthorizationStatusDenied, CNAuthorizationStatusRestricted -> PermissionState.DeniedAlways
