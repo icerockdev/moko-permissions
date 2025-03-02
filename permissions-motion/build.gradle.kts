@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.icerock.moko.permissions.contacts"
+    namespace = "dev.icerock.moko.permissions.motion"
 }
 
 dependencies {
