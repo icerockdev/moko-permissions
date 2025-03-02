@@ -35,7 +35,7 @@ private class ContactsPermissionDelegate(
         val status: CNAuthorizationStatus =
             CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts)
         return when (status) {
-            CNAuthorizationStatusAuthorized -> PermissionState.Granted
+            CNAuthorizationStatusAuthorized, CNAuthorizationStatusLimited -> PermissionState.Granted
 
             CNAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             CNAuthorizationStatusDenied, CNAuthorizationStatusRestricted -> PermissionState.DeniedAlways
@@ -69,5 +69,10 @@ private class ContactsPermissionDelegate(
         }
     }
 }
+
+// declared as constant because at now we use kotlin 1.9.10 that not know about 
+// platform.Contacts.CNAuthorizationStatusLimited
+@Suppress("TopLevelPropertyNaming")
+private const val CNAuthorizationStatusLimited: Long = 4
 
 actual val contactsDelegate: PermissionDelegate = ContactsPermissionDelegate(ContactPermission)

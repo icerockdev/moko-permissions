@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.icerock.moko.permissions.common"
+    namespace = "dev.icerock.moko.permissions.storage"
 }
 
 dependencies {
