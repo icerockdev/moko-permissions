@@ -18,6 +18,17 @@ android {
     }
 }
 
+kotlin {
+    jvm("desktop")
+
+    sourceSets {
+        val commonMain by getting
+        val desktopMain by getting {
+            dependsOn(commonMain)
+        }
+    }
+}
+
 dependencies {
     commonMainApi(projects.permissions)
     commonMainApi(compose.runtime)
