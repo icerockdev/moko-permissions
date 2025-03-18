@@ -76,3 +76,4 @@ private class ContactsPermissionDelegate(
 private const val CNAuthorizationStatusLimited: Long = 4
 
 actual val contactsDelegate: PermissionDelegate = ContactsPermissionDelegate(ContactPermission)
+actual val readContactsDelegate: PermissionDelegate = ContactsPermissionDelegate(ReadContactPermission)
