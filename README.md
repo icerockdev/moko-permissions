@@ -201,7 +201,7 @@ All development (both new features and bug fixes) is performed in `develop` bran
 
 The `develop` branch is pushed to `master` during release.
 
-More detailed guide for contributers see in [contributing guide](CONTRIBUTING.md).
+More detailed guide for contributors see in [contributing guide](CONTRIBUTING.md).
 
 ## License
         
