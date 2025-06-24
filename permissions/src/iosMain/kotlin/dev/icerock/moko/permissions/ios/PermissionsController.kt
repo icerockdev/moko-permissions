@@ -28,5 +28,4 @@ class PermissionsController : PermissionsControllerProtocol {
         val settingsUrl: NSURL = NSURL.URLWithString(UIApplicationOpenSettingsURLString)!!
         UIApplication.sharedApplication.openURL(settingsUrl, mapOf<Any?, Any>(), null)
     }
-
 }

@@ -23,7 +23,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class AVCaptureDelegate(
     private val type: AVMediaType,
-    private val permission: Permission
+    private val permission: Permission,
 ) : PermissionDelegate {
     override suspend fun providePermission() {
         val status: AVAuthorizationStatus = currentAuthorizationStatus()
@@ -33,8 +33,11 @@ class AVCaptureDelegate(
                 val isGranted: Boolean = suspendCoroutine { continuation ->
                     AVCaptureDevice.requestAccess(type) { continuation.resume(it) }
                 }
-                if (isGranted) return
-                else throw DeniedAlwaysException(permission)
+                if (isGranted) {
+                    return
+                } else {
+                    throw DeniedAlwaysException(permission)
+                }
             }
 
             AVAuthorizationStatusDenied -> throw DeniedAlwaysException(permission)
@@ -60,9 +63,12 @@ class AVCaptureDelegate(
 
 private fun AVCaptureDevice.Companion.requestAccess(
     type: AVMediaType,
-    callback: (isGranted: Boolean) -> Unit
+    callback: (isGranted: Boolean) -> Unit,
 ) {
-    this.requestAccessForMediaType(type, mainContinuation { isGranted: Boolean ->
-        callback(isGranted)
-    })
+    this.requestAccessForMediaType(
+        type,
+        mainContinuation { isGranted: Boolean ->
+            callback(isGranted)
+        }
+    )
 }

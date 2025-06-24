@@ -8,6 +8,10 @@ plugins {
     id("dev.icerock.moko.gradle.detekt")
 }
 
+android {
+    namespace = "com.icerockdev.library"
+}
+
 dependencies {
     commonMainImplementation(libs.coroutines)
 
