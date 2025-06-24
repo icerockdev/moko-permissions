@@ -31,7 +31,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 internal class BluetoothPermissionDelegate(
-    private val permission: Permission
+    private val permission: Permission,
 ) : PermissionDelegate {
     @OptIn(ExperimentalForeignApi::class)
     override suspend fun providePermission() {
@@ -45,11 +45,14 @@ internal class BluetoothPermissionDelegate(
 
         val state: CBManagerState = if (isNotDetermined) {
             suspendCoroutine { continuation ->
-                CBCentralManager(object : NSObject(), CBCentralManagerDelegateProtocol {
-                    override fun centralManagerDidUpdateState(central: CBCentralManager) {
-                        continuation.resume(central.state)
-                    }
-                }, null)
+                CBCentralManager(
+                    object : NSObject(), CBCentralManagerDelegateProtocol {
+                        override fun centralManagerDidUpdateState(central: CBCentralManager) {
+                            continuation.resume(central.state)
+                        }
+                    },
+                    null
+                )
             }
         } else {
             CBCentralManager().state
@@ -91,7 +94,8 @@ internal class BluetoothPermissionDelegate(
         return when (state) {
             CBManagerStatePoweredOn -> PermissionState.Granted
             CBManagerStateUnauthorized, CBManagerStatePoweredOff,
-            CBManagerStateResetting, CBManagerStateUnsupported -> PermissionState.DeniedAlways
+            CBManagerStateResetting, CBManagerStateUnsupported,
+            -> PermissionState.DeniedAlways
 
             CBManagerStateUnknown -> PermissionState.NotDetermined
             else -> error("unknown state $state")

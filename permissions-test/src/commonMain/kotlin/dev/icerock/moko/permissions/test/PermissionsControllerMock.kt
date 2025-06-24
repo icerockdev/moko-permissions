@@ -19,7 +19,7 @@ expect abstract class PermissionsControllerMock constructor() : PermissionsContr
 
 fun createPermissionControllerMock(
     allow: Set<Permission> = emptySet(),
-    granted: Set<Permission> = emptySet()
+    granted: Set<Permission> = emptySet(),
 ): PermissionsControllerMock = object : PermissionsControllerMock() {
     private val granted = mutableSetOf<Permission>().apply { addAll(granted) }
 
@@ -40,7 +40,10 @@ fun createPermissionControllerMock(
     override fun openAppSettings() = Unit
 
     override suspend fun getPermissionState(permission: Permission): PermissionState {
-        return if (isPermissionGranted(permission)) PermissionState.Granted
-        else PermissionState.NotDetermined
+        return if (isPermissionGranted(permission)) {
+            PermissionState.Granted
+        } else {
+            PermissionState.NotDetermined
+        }
     }
 }

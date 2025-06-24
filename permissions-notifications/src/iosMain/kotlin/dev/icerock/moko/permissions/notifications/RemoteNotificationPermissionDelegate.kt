@@ -81,12 +81,14 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
                             settings?.authorizationStatus ?: UNAuthorizationStatusNotDetermined
                         )
                     )
-                })
+                }
+            )
         }
         return when (status) {
             UNAuthorizationStatusAuthorized,
             UNAuthorizationStatusProvisional,
-            UNAuthorizationStatusEphemeral -> PermissionState.Granted
+            UNAuthorizationStatusEphemeral,
+            -> PermissionState.Granted
 
             UNAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             UNAuthorizationStatusDenied -> PermissionState.DeniedAlways

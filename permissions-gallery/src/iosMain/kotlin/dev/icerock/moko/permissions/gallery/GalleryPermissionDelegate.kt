@@ -49,9 +49,11 @@ internal class GalleryPermissionDelegate : PermissionDelegate {
 }
 
 private fun requestGalleryAccess(callback: (PHAuthorizationStatus) -> Unit) {
-    PHPhotoLibrary.requestAuthorization(mainContinuation { status: PHAuthorizationStatus ->
-        callback(status)
-    })
+    PHPhotoLibrary.requestAuthorization(
+        mainContinuation { status: PHAuthorizationStatus ->
+            callback(status)
+        }
+    )
 }
 
 actual val galleryDelegate: PermissionDelegate = GalleryPermissionDelegate()
