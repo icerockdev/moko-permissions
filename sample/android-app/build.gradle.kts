@@ -4,6 +4,8 @@ plugins {
 }
 
 android {
+    namespace = "com.icerockdev"
+
     defaultConfig {
         applicationId = "dev.icerock.moko.samples.permissions"
 

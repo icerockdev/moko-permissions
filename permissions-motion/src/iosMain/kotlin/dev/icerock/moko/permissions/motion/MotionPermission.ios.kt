@@ -30,9 +30,7 @@ private class MotionPermissionDelegate : PermissionDelegate {
         val status = CMMotionActivityManager.authorizationStatus()
         return when (status) {
             CMAuthorizationStatusAuthorized,
-            CMAuthorizationStatusRestricted,
-                -> PermissionState.Granted
-
+            CMAuthorizationStatusRestricted, -> PermissionState.Granted
             CMAuthorizationStatusDenied -> PermissionState.DeniedAlways
             CMAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             else -> error("unknown motion authorization status $status")

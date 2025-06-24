@@ -124,10 +124,10 @@ class PermissionsControllerImpl(
             launcherHolder.filterNotNull().first()
         } ?: error(
             "activityResultLauncher is null, `bind` function was never called," +
-                    " consider calling permissionsController.bind(activity)" +
-                    " or BindEffect(permissionsController) in the composable function," +
-                    " check the documentation for more info: " +
-                    "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
+                " consider calling permissionsController.bind(activity)" +
+                " or BindEffect(permissionsController) in the composable function," +
+                " check the documentation for more info: " +
+                "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
         )
     }
 
@@ -139,10 +139,10 @@ class PermissionsControllerImpl(
             activityHolder.filterNotNull().first()
         } ?: error(
             "activity is null, `bind` function was never called," +
-                    " consider calling permissionsController.bind(activity)" +
-                    " or BindEffect(permissionsController) in the composable function," +
-                    " check the documentation for more info: " +
-                    "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
+                " consider calling permissionsController.bind(activity)" +
+                " or BindEffect(permissionsController) in the composable function," +
+                " check the documentation for more info: " +
+                "https://github.com/icerockdev/moko-permissions/blob/master/README.md"
         )
     }
 
@@ -163,8 +163,11 @@ class PermissionsControllerImpl(
         val isAllRequestRationale: Boolean = permissions.all {
             shouldShowRequestPermissionRationale(it)
         }
-        return if (isAllRequestRationale) PermissionState.Denied
-        else PermissionState.NotGranted
+        return if (isAllRequestRationale) {
+            PermissionState.Denied
+        } else {
+            PermissionState.NotGranted
+        }
     }
 
     private suspend fun shouldShowRequestPermissionRationale(permission: String): Boolean {
