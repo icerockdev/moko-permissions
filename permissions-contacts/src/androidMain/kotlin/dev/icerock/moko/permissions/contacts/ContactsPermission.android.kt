@@ -17,3 +17,12 @@ actual val contactsDelegate = object : PermissionDelegate {
             Manifest.permission.WRITE_CONTACTS
         )
 }
+
+actual val readContactsDelegate = object : PermissionDelegate {
+    override fun getPermissionStateOverride(applicationContext: Context) = null
+
+    override fun getPlatformPermission() =
+        listOf(
+            Manifest.permission.READ_CONTACTS
+        )
+}
