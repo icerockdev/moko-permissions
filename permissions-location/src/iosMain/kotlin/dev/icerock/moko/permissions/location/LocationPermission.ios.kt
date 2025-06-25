@@ -30,8 +30,13 @@ private class LocationPermissionDelegate(
     override suspend fun getPermissionState(): PermissionState {
         val status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
         return when (status) {
-            kCLAuthorizationStatusAuthorizedAlways,
-            kCLAuthorizationStatusAuthorizedWhenInUse -> PermissionState.Granted
+            kCLAuthorizationStatusAuthorizedAlways -> PermissionState.Granted
+            kCLAuthorizationStatusAuthorizedWhenInUse -> {
+                when (permission) {
+                    is BackgroundLocationPermission -> PermissionState.NotGranted
+                    else -> PermissionState.Granted
+                }
+            }
 
             kCLAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             kCLAuthorizationStatusDenied,
