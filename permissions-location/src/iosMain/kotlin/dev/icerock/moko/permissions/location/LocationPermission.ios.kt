@@ -6,8 +6,8 @@ package dev.icerock.moko.permissions.location
 
 import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionDelegate
+import dev.icerock.moko.permissions.PermissionState
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
@@ -33,7 +33,7 @@ private class LocationPermissionDelegate(
             kCLAuthorizationStatusAuthorizedAlways -> PermissionState.Granted
             kCLAuthorizationStatusAuthorizedWhenInUse -> {
                 when (permission) {
-                    is BackgroundLocationPermission -> PermissionState.NotGranted
+                    BackgroundLocationPermission -> PermissionState.NotGranted
                     else -> PermissionState.Granted
                 }
             }
@@ -49,20 +49,33 @@ private class LocationPermissionDelegate(
         status: CLAuthorizationStatus
     ) {
         when (status) {
-            kCLAuthorizationStatusAuthorizedAlways,
-            kCLAuthorizationStatusAuthorizedWhenInUse -> return
-
-            kCLAuthorizationStatusNotDetermined -> {
-                val newStatus = suspendCoroutine<CLAuthorizationStatus> { continuation ->
-                    locationManagerDelegate.requestLocationAccess { continuation.resume(it) }
+            kCLAuthorizationStatusAuthorizedAlways -> Unit
+            kCLAuthorizationStatusAuthorizedWhenInUse -> {
+                if (permission == BackgroundLocationPermission) {
+                    requestAlwaysAuthorization()
                 }
-                provideLocationPermission(newStatus)
             }
+
+            kCLAuthorizationStatusNotDetermined -> requestWhenInUseAuthorization()
 
             kCLAuthorizationStatusDenied,
             kCLAuthorizationStatusRestricted -> throw DeniedAlwaysException(permission)
             else -> error("unknown location authorization status $status")
         }
+    }
+
+    private suspend fun requestWhenInUseAuthorization() {
+        val newStatus = suspendCoroutine { continuation ->
+            locationManagerDelegate.requestWhenInUseAuthorization { continuation.resume(it) }
+        }
+        provideLocationPermission(newStatus)
+    }
+
+    private suspend fun requestAlwaysAuthorization() {
+        val newStatus = suspendCoroutine { continuation ->
+            locationManagerDelegate.requestAlwaysAuthorization { continuation.resume(it) }
+        }
+        provideLocationPermission(newStatus)
     }
 }
 
