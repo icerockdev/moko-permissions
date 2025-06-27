@@ -18,10 +18,16 @@ internal class LocationManagerDelegate : NSObject(), CLLocationManagerDelegatePr
         locationManager.delegate = this
     }
 
-    fun requestLocationAccess(callback: (CLAuthorizationStatus) -> Unit) {
+    fun requestWhenInUseAuthorization(callback: (CLAuthorizationStatus) -> Unit) {
         this.callback = callback
 
         locationManager.requestWhenInUseAuthorization()
+    }
+
+    fun requestAlwaysAuthorization(callback: (CLAuthorizationStatus) -> Unit) {
+        this.callback = callback
+
+        locationManager.requestAlwaysAuthorization()
     }
 
     override fun locationManager(

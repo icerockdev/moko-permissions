@@ -30,8 +30,13 @@ private class LocationPermissionDelegate(
     override suspend fun getPermissionState(): PermissionState {
         val status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
         return when (status) {
-            kCLAuthorizationStatusAuthorizedAlways,
-            kCLAuthorizationStatusAuthorizedWhenInUse -> PermissionState.Granted
+            kCLAuthorizationStatusAuthorizedAlways -> PermissionState.Granted
+            kCLAuthorizationStatusAuthorizedWhenInUse -> {
+                when (permission) {
+                    BackgroundLocationPermission -> PermissionState.NotGranted
+                    else -> PermissionState.Granted
+                }
+            }
 
             kCLAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             kCLAuthorizationStatusDenied,
@@ -44,20 +49,33 @@ private class LocationPermissionDelegate(
         status: CLAuthorizationStatus
     ) {
         when (status) {
-            kCLAuthorizationStatusAuthorizedAlways,
-            kCLAuthorizationStatusAuthorizedWhenInUse -> return
-
-            kCLAuthorizationStatusNotDetermined -> {
-                val newStatus = suspendCoroutine<CLAuthorizationStatus> { continuation ->
-                    locationManagerDelegate.requestLocationAccess { continuation.resume(it) }
+            kCLAuthorizationStatusAuthorizedAlways -> Unit
+            kCLAuthorizationStatusAuthorizedWhenInUse -> {
+                if (permission == BackgroundLocationPermission) {
+                    requestAlwaysAuthorization()
                 }
-                provideLocationPermission(newStatus)
             }
+
+            kCLAuthorizationStatusNotDetermined -> requestWhenInUseAuthorization()
 
             kCLAuthorizationStatusDenied,
             kCLAuthorizationStatusRestricted -> throw DeniedAlwaysException(permission)
             else -> error("unknown location authorization status $status")
         }
+    }
+
+    private suspend fun requestWhenInUseAuthorization() {
+        val newStatus = suspendCoroutine { continuation ->
+            locationManagerDelegate.requestWhenInUseAuthorization { continuation.resume(it) }
+        }
+        provideLocationPermission(newStatus)
+    }
+
+    private suspend fun requestAlwaysAuthorization() {
+        val newStatus = suspendCoroutine { continuation ->
+            locationManagerDelegate.requestAlwaysAuthorization { continuation.resume(it) }
+        }
+        provideLocationPermission(newStatus)
     }
 }
 
