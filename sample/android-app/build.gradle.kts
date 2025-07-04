@@ -1,6 +1,8 @@
+import io.gitlab.arturbosch.detekt.CONFIGURATION_DETEKT_PLUGINS
+
 plugins {
     id("dev.icerock.moko.gradle.android.application")
-    id("dev.icerock.moko.gradle.detekt")
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -20,4 +22,7 @@ dependencies {
 
     implementation(projects.sample.mppLibrary)
     implementation(projects.permissionsContacts)
+
+    CONFIGURATION_DETEKT_PLUGINS(libs.detekt.cli)
+    CONFIGURATION_DETEKT_PLUGINS(libs.detekt.formatting)
 }

@@ -4,6 +4,7 @@
 
 plugins {
     alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.detekt) apply false
 }
 
 buildscript {
@@ -20,7 +21,6 @@ buildscript {
         classpath(libs.mobileMultiplatformGradlePlugin)
         classpath(libs.kotlinSerializationGradlePlugin)
         classpath(libs.composeJetBrainsGradlePlugin)
-        classpath(libs.detektGradlePlugin)
     }
 }
 

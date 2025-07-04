@@ -14,6 +14,7 @@ mokoPermissionsVersion = "0.19.1"
 composeJetBrainsVersion = "1.8.2"
 lifecycleRuntime = "2.9.1"
 composeUiVersion = "1.8.3"
+detekt = "1.23.8"
 
 [libraries]
 androidxCore = { module = "androidx.core:core", version.ref = "androidxCoreVersion" }
@@ -30,7 +31,9 @@ mokoMvvmCore = { module = "dev.icerock.moko:mvvm-core", version.ref = "mokoMvvmV
 mokoMvvmTest = { module = "dev.icerock.moko:mvvm-test", version.ref = "mokoMvvmVersion" }
 kotlinTestJUnit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 androidCoreTesting = { module = "androidx.arch.core:core-testing", version.ref = "androidCoreTestingVersion" }
-
+detekt-cli = { group = "io.gitlab.arturbosch.detekt", name = "detekt-cli", version.ref = "detekt" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+detekt-libraries = { group = "io.gitlab.arturbosch.detekt", name = "detekt-rules-libraries", version.ref = "detekt" }
 
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.11.0" }
@@ -38,7 +41,8 @@ mokoGradlePlugin = { module = "dev.icerock.moko:moko-gradle-plugin", version = "
 mobileMultiplatformGradlePlugin = { module = "dev.icerock:mobile-multiplatform", version = "0.14.4" }
 kotlinSerializationGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinVersion" }
 composeJetBrainsGradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "composeJetBrainsVersion" }
-detektGradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version = "1.23.8" }
+detektGradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinVersion" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

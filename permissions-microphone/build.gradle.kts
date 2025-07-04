@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.CONFIGURATION_DETEKT_PLUGINS
+
 /*
  * Copyright 2024 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
  */
@@ -7,7 +9,7 @@ plugins {
     id("com.android.library")
     id("dev.icerock.moko.gradle.publication")
     id("dev.icerock.moko.gradle.stub.javadoc")
-    id("dev.icerock.moko.gradle.detekt")
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -18,7 +20,7 @@ android {
 kotlin {
     applyDefaultHierarchyTemplate()
 
-    androidTarget()
+    androidTarget { publishLibraryVariants("release", "debug") }
 
     listOf(
         iosX64(),
@@ -39,5 +41,10 @@ kotlin {
                 implementation(projects.permissionsAvfoundation)
             }
         }
+    }
+
+    dependencies {
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.cli)
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.formatting)
     }
 }

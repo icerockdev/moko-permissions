@@ -5,11 +5,12 @@
 import dev.icerock.moko.gradle.utils.connectTargetsToSourceSet
 import dev.icerock.moko.gradle.utils.createMainTest
 import dev.icerock.moko.gradle.utils.setupDependency
+import io.gitlab.arturbosch.detekt.CONFIGURATION_DETEKT_PLUGINS
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("dev.icerock.moko.gradle.publication")
-    id("dev.icerock.moko.gradle.detekt")
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -28,5 +29,10 @@ kotlin {
                 implementation(libs.coroutines)
             }
         }
+    }
+
+    dependencies {
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.cli)
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.formatting)
     }
 }

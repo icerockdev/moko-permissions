@@ -1,3 +1,4 @@
+import io.gitlab.arturbosch.detekt.CONFIGURATION_DETEKT_PLUGINS
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 /*
@@ -8,7 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
     id("dev.icerock.mobile.multiplatform.ios-framework")
-    id("dev.icerock.moko.gradle.detekt")
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -19,7 +20,7 @@ android {
 kotlin {
     applyDefaultHierarchyTemplate()
 
-    androidTarget()
+    androidTarget { publishLibraryVariants("release", "debug") }
 
     val xcf = XCFramework()
     listOf(
@@ -66,5 +67,10 @@ kotlin {
                 implementation(projects.permissionsMicrophone)
             }
         }
+    }
+
+    dependencies {
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.cli)
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.formatting)
     }
 }

@@ -1,6 +1,8 @@
+import io.gitlab.arturbosch.detekt.CONFIGURATION_DETEKT_PLUGINS
+
 plugins {
     id("dev.icerock.moko.gradle.android.application")
-    id("dev.icerock.moko.gradle.detekt")
+    alias(libs.plugins.detekt)
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
 }
@@ -23,4 +25,7 @@ dependencies {
     implementation(projects.sample.mppLibrary)
     implementation(projects.permissionsCompose)
     implementation(projects.permissionsCamera)
+
+    CONFIGURATION_DETEKT_PLUGINS(libs.detekt.cli)
+    CONFIGURATION_DETEKT_PLUGINS(libs.detekt.formatting)
 }
