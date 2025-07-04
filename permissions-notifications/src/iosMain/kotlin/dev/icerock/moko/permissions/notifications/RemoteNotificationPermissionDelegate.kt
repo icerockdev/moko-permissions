@@ -25,65 +25,14 @@ import kotlin.coroutines.suspendCoroutine
 
 internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
     override suspend fun providePermission() {
-        val currentCenter: UNUserNotificationCenter = UNUserNotificationCenter
-            .currentNotificationCenter()
-
-        val status: UNAuthorizationStatus = suspendCoroutine { continuation ->
-            currentCenter.getNotificationSettingsWithCompletionHandler(
-                mainContinuation { settings: UNNotificationSettings? ->
-                    continuation.resumeWith(
-                        Result.success(
-                            settings?.authorizationStatus ?: UNAuthorizationStatusNotDetermined
-                        )
-                    )
-                }
-            )
-        }
-        when (status) {
-            UNAuthorizationStatusAuthorized -> return
-            UNAuthorizationStatusNotDetermined -> {
-                val isSuccess = suspendCoroutine<Boolean> { continuation ->
-                    UNUserNotificationCenter.currentNotificationCenter()
-                        .requestAuthorizationWithOptions(
-                            UNAuthorizationOptionSound
-                                .or(UNAuthorizationOptionAlert)
-                                .or(UNAuthorizationOptionBadge)
-                                .or(UNAuthorizationOptionCarPlay),
-                            mainContinuation { isOk, error ->
-                                if (isOk && error == null) {
-                                    continuation.resumeWith(Result.success(true))
-                                } else {
-                                    continuation.resumeWith(Result.success(false))
-                                }
-                            }
-                        )
-                }
-                if (isSuccess) {
-                    providePermission()
-                } else {
-                    error("notifications permission failed")
-                }
-            }
-
-            UNAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.REMOTE_NOTIFICATION)
-            else -> error("notifications permission status $status")
-        }
+        return provideNotificationPermission(
+            getPermissionStatus()
+        )
     }
 
     override suspend fun getPermissionState(): PermissionState {
-        val currentCenter = UNUserNotificationCenter.currentNotificationCenter()
+        val status: UNAuthorizationStatus = getPermissionStatus()
 
-        val status = suspendCoroutine<UNAuthorizationStatus> { continuation ->
-            currentCenter.getNotificationSettingsWithCompletionHandler(
-                mainContinuation { settings: UNNotificationSettings? ->
-                    continuation.resumeWith(
-                        Result.success(
-                            settings?.authorizationStatus ?: UNAuthorizationStatusNotDetermined
-                        )
-                    )
-                }
-            )
-        }
         return when (status) {
             UNAuthorizationStatusAuthorized,
             UNAuthorizationStatusProvisional,
@@ -93,6 +42,55 @@ internal class RemoteNotificationPermissionDelegate : PermissionDelegate {
             UNAuthorizationStatusNotDetermined -> PermissionState.NotDetermined
             UNAuthorizationStatusDenied -> PermissionState.DeniedAlways
             else -> error("unknown push authorization status $status")
+        }
+    }
+
+    private suspend fun getPermissionStatus(): UNAuthorizationStatus {
+        val currentCenter = UNUserNotificationCenter.currentNotificationCenter()
+        return suspendCoroutine { continuation ->
+            currentCenter.getNotificationSettingsWithCompletionHandler(
+                mainContinuation { settings: UNNotificationSettings? ->
+                    continuation.resumeWith(
+                        Result.success(
+                            settings?.authorizationStatus ?: UNAuthorizationStatusNotDetermined
+                        )
+                    )
+                }
+            )
+        }
+    }
+
+    private suspend fun provideNotificationPermission(
+        status: UNAuthorizationStatus
+    ) {
+        when (status) {
+            UNAuthorizationStatusAuthorized,
+            UNAuthorizationStatusProvisional,
+            UNAuthorizationStatusEphemeral -> return
+
+            UNAuthorizationStatusNotDetermined -> {
+                // User has not yet chosen permission, request permission
+                val newStatus = suspendCoroutine<UNAuthorizationStatus> { continuation ->
+                    UNUserNotificationCenter.currentNotificationCenter()
+                        .requestAuthorizationWithOptions(
+                            UNAuthorizationOptionSound
+                                .or(UNAuthorizationOptionAlert)
+                                .or(UNAuthorizationOptionBadge)
+                                .or(UNAuthorizationOptionCarPlay),
+                            mainContinuation { isOk, error ->
+                                if (isOk && error == null) {
+                                    continuation.resumeWith(Result.success(UNAuthorizationStatusAuthorized))
+                                } else {
+                                    continuation.resumeWith(Result.success(UNAuthorizationStatusDenied))
+                                }
+                            }
+                        )
+                }
+                provideNotificationPermission(newStatus)
+            }
+
+            UNAuthorizationStatusDenied -> throw DeniedAlwaysException(Permission.REMOTE_NOTIFICATION)
+            else -> error("unknown notifications authorization status $status")
         }
     }
 }
