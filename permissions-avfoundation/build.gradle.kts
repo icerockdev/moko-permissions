@@ -13,24 +13,20 @@ plugins {
 }
 
 kotlin {
-    iosArm64()
-    iosX64()
-    iosSimulatorArm64()
+    applyDefaultHierarchyTemplate()
 
-    with(this.sourceSets) {
-        // creation
-        createMainTest("ios")
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+    )
 
-        // ios dependencies
-        setupDependency("ios", "common")
-        connectTargetsToSourceSet(
-            targetNames = listOf("iosX64", "iosArm64", "iosSimulatorArm64"),
-            sourceSetPrefix = "ios"
-        )
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(projects.permissions)
+                implementation(libs.coroutines)
+            }
+        }
     }
-}
-
-dependencies {
-    commonMainApi(projects.permissions)
-    commonMainImplementation(libs.coroutines)
 }

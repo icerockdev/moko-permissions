@@ -10,3 +10,5 @@ Pods
 xcuserdata
 local.properties
 local.gradle
+.kotlin
+.DS_Store

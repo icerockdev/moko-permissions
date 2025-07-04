@@ -3,7 +3,8 @@
  */
 
 plugins {
-    id("dev.icerock.moko.gradle.multiplatform.mobile")
+    id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.library")
     id("dev.icerock.moko.gradle.publication")
     id("dev.icerock.moko.gradle.stub.javadoc")
     id("dev.icerock.moko.gradle.detekt")
@@ -11,9 +12,26 @@ plugins {
 
 android {
     namespace = "dev.icerock.moko.permissions.bluetooth"
+    compileSdk = 36
 }
 
-dependencies {
-    commonMainApi(projects.permissions)
-    commonMainImplementation(libs.coroutines)
+kotlin {
+    applyDefaultHierarchyTemplate()
+
+    androidTarget()
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+    )
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(projects.permissions)
+                implementation(libs.coroutines)
+            }
+        }
+    }
 }

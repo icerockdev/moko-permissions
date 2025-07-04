@@ -1,6 +1,7 @@
 plugins {
     id("dev.icerock.moko.gradle.android.application")
     id("dev.icerock.moko.gradle.detekt")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
 }
 
