@@ -1,19 +1,19 @@
 [versions]
 kotlinVersion = "2.2.0"
-androidAppCompatVersion = "1.6.1"
-androidxCoreVersion = "1.9.0" # TODO we have two versions (1.8 + 1.9) - unify them
-composeMaterialVersion = "1.4.1"
-composeActivityVersion = "1.7.0"
-activityVersion = "1.7.0"
-materialDesignVersion = "1.8.0"
+androidAppCompatVersion = "1.7.1"
+androidxCoreVersion = "1.16.0" # TODO we have two versions (1.8 + 1.9) - unify them
+composeMaterialVersion = "1.8.3"
+composeActivityVersion = "1.10.1"
+activityVersion = "1.10.1"
+materialDesignVersion = "1.12.0"
 androidLifecycleVersion = "2.2.0"
 androidCoreTestingVersion = "2.2.0"
-coroutinesVersion = "1.6.4"
-mokoMvvmVersion = "0.16.0"
+coroutinesVersion = "1.10.2"
+mokoMvvmVersion = "0.16.1"
 mokoPermissionsVersion = "0.19.1"
-composeJetBrainsVersion = "1.7.1"
-lifecycleRuntime = "2.6.1"
-composeUiVersion = "1.0.1"
+composeJetBrainsVersion = "1.8.2"
+lifecycleRuntime = "2.9.1"
+composeUiVersion = "1.8.3"
 
 [libraries]
 androidxCore = { module = "androidx.core:core", version.ref = "androidxCoreVersion" }
