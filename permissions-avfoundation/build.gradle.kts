@@ -5,32 +5,34 @@
 import dev.icerock.moko.gradle.utils.connectTargetsToSourceSet
 import dev.icerock.moko.gradle.utils.createMainTest
 import dev.icerock.moko.gradle.utils.setupDependency
+import io.gitlab.arturbosch.detekt.CONFIGURATION_DETEKT_PLUGINS
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("dev.icerock.moko.gradle.publication")
-    id("dev.icerock.moko.gradle.detekt")
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
-    iosArm64()
-    iosX64()
-    iosSimulatorArm64()
+    applyDefaultHierarchyTemplate()
 
-    with(this.sourceSets) {
-        // creation
-        createMainTest("ios")
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+    )
 
-        // ios dependencies
-        setupDependency("ios", "common")
-        connectTargetsToSourceSet(
-            targetNames = listOf("iosX64", "iosArm64", "iosSimulatorArm64"),
-            sourceSetPrefix = "ios"
-        )
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(projects.permissions)
+                implementation(libs.coroutines)
+            }
+        }
     }
-}
 
-dependencies {
-    commonMainApi(projects.permissions)
-    commonMainImplementation(libs.coroutines)
+    dependencies {
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.cli)
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.formatting)
+    }
 }

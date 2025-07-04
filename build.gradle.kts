@@ -2,6 +2,11 @@
  * Copyright 2019 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
  */
 
+plugins {
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.detekt) apply false
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -16,7 +21,6 @@ buildscript {
         classpath(libs.mobileMultiplatformGradlePlugin)
         classpath(libs.kotlinSerializationGradlePlugin)
         classpath(libs.composeJetBrainsGradlePlugin)
-        classpath(libs.detektGradlePlugin)
     }
 }
 
