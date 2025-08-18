@@ -1,32 +1,76 @@
+import io.gitlab.arturbosch.detekt.CONFIGURATION_DETEKT_PLUGINS
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+
 /*
  * Copyright 2019 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
-    id("dev.icerock.moko.gradle.multiplatform.mobile")
+    id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.library")
     id("dev.icerock.mobile.multiplatform.ios-framework")
-    id("dev.icerock.moko.gradle.detekt")
+    alias(libs.plugins.detekt)
 }
 
 android {
     namespace = "com.icerockdev.library"
+    compileSdk = 36
 }
 
-dependencies {
-    commonMainImplementation(libs.coroutines)
+kotlin {
+    applyDefaultHierarchyTemplate()
 
-    commonMainApi(libs.mokoMvvmCore)
-    commonMainApi(projects.permissions)
-    commonMainImplementation(projects.permissionsContacts)
+    androidTarget { publishLibraryVariants("release", "debug") }
 
-    androidMainImplementation(libs.lifecycle)
+    val xcf = XCFramework()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { target ->
+        target.binaries.framework {
+            baseName = "MultiPlatformLibrary"
+            export(projects.permissions)
+            export(libs.mokoMvvmCore)
 
-    commonTestImplementation(libs.mokoMvvmTest)
-    commonTestImplementation(projects.permissionsTest)
-    commonTestImplementation(projects.permissionsMicrophone)
-}
+            linkerOpts.add("-dead_strip")
+            linkerOpts.add("-force_load_swift_libs")
+            freeCompilerArgs += listOf(
+                "-Xbinary=bundleId=dev.icerock.moko.sample.permissions",
+            )
 
-framework {
-    export(projects.permissions)
-    export(libs.mokoMvvmCore)
+            xcf.add(this)
+            isStatic = true
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(projects.permissions)
+                api(libs.mokoMvvmCore)
+                implementation(libs.coroutines)
+                implementation(projects.permissionsContacts)
+            }
+        }
+
+        androidMain {
+            dependencies {
+                implementation(libs.lifecycle)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(libs.mokoMvvmTest)
+                implementation(projects.permissionsTest)
+                implementation(projects.permissionsMicrophone)
+            }
+        }
+    }
+
+    dependencies {
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.cli)
+        CONFIGURATION_DETEKT_PLUGINS(libs.detekt.formatting)
+    }
 }
