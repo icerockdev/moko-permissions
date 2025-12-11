@@ -35,11 +35,7 @@ actual val backgroundLocationDelegate = object : PermissionDelegate {
 
     override fun getPlatformPermission() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            listOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-            )
+            listOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             listOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
