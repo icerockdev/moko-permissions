@@ -5,6 +5,7 @@
 package dev.icerock.moko.permissions.compose
 
 import android.content.Context
+import android.content.ContextWrapper
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,10 +21,17 @@ actual fun BindEffect(permissionsController: PermissionsController) {
     val context: Context = LocalContext.current
 
     LaunchedEffect(permissionsController, lifecycleOwner, context) {
-        val activity: ComponentActivity = checkNotNull(context as? ComponentActivity) {
-            "$context context is not instance of ComponentActivity"
-        }
+        val activity: ComponentActivity = context.findActivity()
 
         permissionsController.bind(activity)
     }
+}
+
+private fun Context.findActivity(): ComponentActivity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is ComponentActivity) return context
+        context = context.baseContext
+    }
+    error("$context context is not instance of ComponentActivity")
 }
